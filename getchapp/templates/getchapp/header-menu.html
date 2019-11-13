@@ -1,0 +1,28 @@
+<div class="ui container">
+  <div class="ui icon secondary {% if banner %} inverted {% endif %} menu">
+
+    {% if not banner %}
+    <a class="logo item" href="{% url 'intro' %}">
+      <h2 class="ui header" >
+        <div class="content">
+          GETCH
+        </div>
+      </h2>
+    </a>
+    {% endif %}
+
+    <div class="right menu">
+      <a class="apphub item" href="#" data-inverted="" data-tooltip="" data-content="apphub" data-variation="inverted">
+        <img src="/static/materials/icons8-search-100.png">
+      </a>
+      <a class="develop item" href="#" data-inverted="" data-tooltip="" data-content="develop" data-variation="inverted">
+        <img src="/static/materials/icons8-plus-100.png">
+      </a>
+
+      <a class="my signin item" data-inverted="" data-tooltip="" data-content="my" data-variation="inverted">
+        <img src="/static/materials/icons8-user-100.png">
+      </a>
+
+    </div>
+  </div>
+</div>

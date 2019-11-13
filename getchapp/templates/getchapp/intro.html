@@ -1,0 +1,23 @@
+{% extends "getchapp/layout.html" %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+  </style>
+{% endblock css %}
+
+{% block mastheader %}
+{% include "getchapp/header.html" with type="with_banner" %}
+{% endblock mastheader %}
+
+{% block mastbody %}
+<div style="height:1000px;">
+INTRO
+</div>
+{% endblock mastbody %}
+
+{% block js %}
+  {{ block.super }}
+  <script>
+  </script>
+{% endblock js %}
