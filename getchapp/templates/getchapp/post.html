@@ -99,6 +99,12 @@
     </div>
   </div>
 </div>
+
+<div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:10px;">
+  <div class="ui text container" style="background:black;height:200px">
+    <img class="ui image" src="{{ post.author.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;"/>
+  </div>
+</div>
 {% endblock mastbody %}
 
 {% block js %}
