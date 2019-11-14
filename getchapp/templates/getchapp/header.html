@@ -26,54 +26,20 @@
     border: none
   }
 
-  #topheader .logo.item {
+  #topheader .item,
+  #topbanner .item {
     background: none;
-    padding: 0;
+    /* padding: 0; */
   }
 
-  #topheader .logo.item:hover {
+  #topheader .item:hover,
+  #topbanner .item:hover {
     opacity: 0.5;
-  }
-
-  #topheader .logo.item .icon {
-    font-size: 40px;
-    color: var(--theme-color);
   }
 
   #topheader .logo.item .content {
     font-size: 40px;
     /* font-family: 'Roboto Mono', monospace; */
-  }
-
-  #banner {
-    background: url('/static/materials/taw_lcm_day_4_kd_09.jpg');
-    background-size: cover;
-    background-position: 0 -400px;
-    padding-top: 120px;
-    padding-bottom: 80px;
-    height: 500px;
-  }
-
-  #banner .header {
-    background: none;
-    margin: 0;
-  }
-
-  #banner .header .icon {
-    background: none;
-    margin: 0;
-    font-size: 100px
-  }
-
-  #banner .header .content {
-    background: none;
-    font-size: 80px;
-    /* font-family: 'Roboto Mono', monospace; */
-  }
-
-  #banner .header .sub.header {
-    font-size: 20px;
-    margin-top: 20px;
   }
 
   #signin {
@@ -93,7 +59,7 @@
     visibility: collapse;
     background: white;
     position: absolute;
-    top: 60px;
+    top: 70px;
     right: 10px;
     padding: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
@@ -182,15 +148,52 @@
   {% include "getchapp/header-menu.html" with banner="true" %}
 </div>
 
-<div id="banner" class="ui center aligned vertical segment">
-  <div class="ui container">
-    <div class="detector"></div>
-    <h1 class="ui icon inverted header">
-      <div class="content">
-        GETCH
-        <div class="sub header">GET TREND by TAG, SHARE, VISIT</div>
-      </div>
-    </h1>
-  </div>
+<div id="banner" class="ui center aligned vertical segment" style="background:none;padding:0;position:relative;border:none;">
+  <img src="/static/materials/taw_lcm_day_4_kd_09.jpg" style="width:100%;height:auto;max-height:60vh;object-fit:cover;object-position:top">
+  <div class="detector" style="position:absolute;top:70px;left:50%;"></div>
+  <h1 class="ui icon header" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">
+    <div class="content" style="font-size:120px;font-family: 'Noto Sans KR', sans-serif;">
+      GET.CH
+      <div class="sub header" style="font-size:25px;margin-top:50px;">GET TREND by TAG, SHARE, VISIT</div>
+    </div>
+  </h1>
 </div>
 {% endif %}
+
+
+{% load socialaccount %}
+<div id="signin" class="ui vertical segment">
+  <div class="ui container">
+
+    <input class="signin-checkbox" type="checkbox">
+
+    <div class="signin-modal ui center aligned segment">
+      <div class="ui container">
+        <h3 class="ui icon header">
+          Sign in with
+        </h3>
+
+        <div class="ui divider"></div>
+
+        <table class="ui unstackable celled center aligned table">
+          <tbody>
+            <tr>
+              <td><i class="brand ui huge google icon"></i></td>
+              <td>
+                <a href="{% provider_login_url 'facebook' method='oauth2' %}">
+                  <i class="brand ui huge facebook icon"></i>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td><i class="brand ui huge twitter icon"></i></td>
+              <td><i class="more ui huge ellipsis horizontal icon"></i></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="dismiss ui fluid black button">dismiss</div>
+    </div>
+  </div>
+</div>

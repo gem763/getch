@@ -1,4 +1,4 @@
-{% extends "flowrence/layout.html" %}
+{% extends "getchapp/layout.html" %}
 
 {% block css %}
   {{ block.super }}
@@ -22,14 +22,13 @@
           </div>
         </div>
       </div>
-      <img class="ui centered image" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:150px;height:150px;border-radius:10px;">
+      <img class="ui circular centered image" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:150px;height:150px;">
     </div>
 
 
     <h1>{{ user.socialaccount_set.all.0.extra_data.name }}</h1>
     <p>
       {{ user.email }} <br>
-      Signed-in with {{ user.socialaccount_set.all.0.get_provider_display }}
     </p>
 
     <br>

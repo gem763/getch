@@ -1,0 +1,230 @@
+{% extends "getchapp/layout.html" %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@5/themes/light.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@5/dist/svg-arrow.css"/>
+
+  <style>
+    .button:hover {
+      opacity: 0.5;
+    }
+
+    .tag {
+      position: absolute;
+      background: white;
+      border-radius: 25px;
+      visibility: hidden;
+      height: 50px;
+      width: 50px;
+      z-index: 2;
+    }
+
+    .tag span {
+      position: absolute;
+      width: 20px;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .spot {
+      background: none;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .bubble {
+      position: absolute;
+      opacity: 0;
+      top: -80px;
+      left: -30px;
+      right: -30px;
+      bottom: 20px;
+      border-radius: 30px;
+      background: rgba(255,255,255,1);
+      box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.1s;
+    }
+
+    .bubble:before {
+      content: '';
+      position: absolute;
+      bottom: 0%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-top: 30px solid white;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 0;
+      margin-left: -10px;
+      margin-bottom: -15px;
+    }
+  </style>
+{% endblock css %}
+
+
+{% block mastbody %}
+{% load static %}
+<div class="ui center aligned vertical segment" style="background:none;border:none;margin-top:100px;">
+  <div class="ui text container" style="background:none">
+    <div id="post" class="ui basic black button" style="border-radius:0;">POST</div>
+    <div id="review" class="ui black button" style="border-radius:0;">REVIEW</div>
+    <div id="qna" class="ui basic black button" style="border-radius:0;">QNA</div>
+  </div>
+</div>
+
+<div class="tag-segment ui vertical center aligned segment" style="background:none;border:none;padding-top:10px;">
+  <div class="ui text container" style="background:none;">
+    <!-- <img id="canvas" class="ui centered image" src="/files/{{post.image}}" onerror="imgerr(this)" onclick="console.log(1)"/> -->
+    <img id="canvas" class="ui centered image" src="/files/{{post.image}}" onclick="clickcoord(event)"/>
+    <div>{{ post.content }}</div>
+  </div>
+</div>
+
+<div id="cursor" class="spot">
+  <div id="cursor-bubble" class="bubble" style="z-index:100;">
+    <div class="searcher ui fluid search" style="background:none;width:100%;">
+      <div class="ui fluid left icon transparent input" style="height:60px;font-size:20px;">
+        <i class="plus icon" style="background:none;width:60px;left:0;opacity:1;"></i>
+        <!-- <i class="material-icons" style="background:orange;width:60px;left:50px;opacity:1;">add</i> -->
+        <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:50px !important;opacity:0;">
+      </div>
+      <div class="results"></div>
+    </div>
+  </div>
+</div>
+{% endblock mastbody %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="https://unpkg.com/popper.js@1"></script>
+  <script src="https://unpkg.com/tippy.js@5"></script>
+
+  <script>
+    var onTagging = false;
+    var onCanvas = false;
+    var onBubble = false;
+    var tagX;
+    var tagY;
+
+
+    function clickcoord(e) {
+      if (onTagging) {
+        positioning_mode();
+        show_cursor(e);
+      } else {
+        tagging_mode(e);
+        tagX = e.pageX;
+        tagY = e.pageY;
+      }
+    };
+
+
+    const template_channeltag = ({ch, image, top, left}) => `
+      <div class="spot" style="top:${top};left:${left};">
+        <div class="bubble" style="opacity:1;" ch="${ch}">
+          <img class="ui circular image" src="${image}" style="object-fit:contain;width:60px;height:60px;border:2px solid #ffffff;">
+        </div>
+      </div>
+    `;
+
+    function set_tag(ch, image) {
+      hide_cursor();
+      var top = tagY + 'px';
+      var left = tagX + 'px';
+      var elems = template_channeltag({ch:ch, image:image, top:top, left:left})
+      $('.tag-segment').append($(elems));
+      positioning_mode();
+    }
+
+    function tagging_mode(e) {
+      onTagging = true;
+      $('#cursor-bubble .prompt').css('opacity', '1');
+      $('#cursor-bubble').css({
+        left: '-150px',
+        right: '-150px',
+      });
+      $('#cursor-bubble .prompt').focus();
+    };
+
+    function positioning_mode() {
+      onTagging = false;
+      $('#cursor-bubble').css({
+        left: '-30px',
+        right: '-30px',
+      });
+      $('#cursor-bubble .prompt').css('opacity', '0');
+    };
+
+
+    function show_cursor(e) {
+      if (!onTagging) {
+        $('#cursor').css({
+          left: e.pageX,
+          top: e.pageY
+        });
+      };
+
+      $('#cursor-bubble').css('opacity', 1);
+    }
+
+    function hide_cursor() {
+      $('#cursor-bubble').css({ opacity: 0 });
+    }
+
+    $('#canvas').on({
+      'mouseenter': function() { onCanvas = true },
+      'mouseleave': function() { onCanvas = false }
+    });
+
+    $('#cursor-bubble').on({
+      'mouseenter': function() { onBubble = true },
+      'mouseleave': function() { onBubble = false }
+    });
+
+    $('body').on('mousemove', function(e) {
+      if (onCanvas || onBubble || onTagging) {
+        show_cursor(e);
+      } else {
+        hide_cursor();
+      }
+    });
+
+
+    $('#cursor-bubble .ui.search').search({
+      source: {{ brands | safe }},
+      fullTextSearch: true,
+      showNoResults: false,
+      maxResults: 5,
+      minCharacters: 1,
+      searchFields: ['name', 'category', 'keywords'],
+      templates: {
+        standard: function(response){
+          htmls = $.map(response.results, function(item) {
+                    var image = item.image.replace('\\', '/');
+                    var onclick = "set_tag(0, '/files/" + image + "')";
+                    var html = '<div class="result" style="height:100px" onclick="' + onclick + '">';
+                    html += '<div class="image" style="height:80px;width:80px;">'
+                          + '<img src="/files/' + item.image + '" style="object-fit:contain;height:80px;width:80px;">'
+                          + '</div>';
+                    html += '<div class="content">';
+                    html += '<div class="ui header">' + item.fullname_en;
+                    html += '<div class="sub header">' + item.fullname_kr + '</div>';
+                    html += '</div></div>';
+                    html += '</div>';
+                    return html
+                  });
+
+          return htmls
+        },
+      },
+    });
+
+  </script>
+{% endblock js %}
