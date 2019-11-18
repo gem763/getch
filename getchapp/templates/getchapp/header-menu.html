@@ -2,32 +2,33 @@
   <div class="ui icon secondary {% if banner %} inverted {% endif %} menu">
 
     {% if not banner %}
-    <a class="logo item" href="{% url 'intro' %}">
+    <a class="logo item" href="{% url 'intro' %}" style="background:none;padding-top:0;padding-bottom:0;">
       <h2 class="ui header" >
-        <div class="content">
+        <div class="content"  style="color:black;font-size:7vw;font-family: 'Noto Sans KR', sans-serif;text-align:left;">
           GET.CH
+          <div class="sub header" style="font-weight:bold;font-size:2vw;margin-top:0vw;">GET TREND by TAG, SHARE, VISIT</div>
         </div>
       </h2>
     </a>
     {% endif %}
 
-    <div class="right menu">
-      <a class="search item" href="#" style="background:none;">
-        <img src="/static/materials/icons8-search-100.png">
+    <div class="right menu" style="background:none;">
+      <a class="search item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-search-100.png" style="width:25px;height:25px;">
       </a>
-      <a class="posting item" href="#" style="background:none">
-        <img src="/static/materials/icons8-plus-100.png">
+      <a class="posting item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;">
       </a>
 
       {% if user.is_authenticated %}
-      <a class="my signed item" href="{% url 'my' %}" style="background:none;">
+      <a class="my signed item" href="{% url 'my' %}" style="background:none;margin:0;">
         <!-- <img src="/static/materials/icons8-user-100.png"> -->
         {% include "getchapp/avatar.html" %}
       </a>
 
       {% else %}
-      <a class="my signin item" style="background:none;">
-        <img src="/static/materials/icons8-user-100.png">
+      <a class="my signin item" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-user-100.png" style="width:25px;height:25px;">
       </a>
       {% endif %}
 

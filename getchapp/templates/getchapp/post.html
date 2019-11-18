@@ -41,9 +41,11 @@
       left: -30px;
       right: -30px;
       bottom: 20px;
-      border-radius: 30px;
+      /* border-radius: 30px; */
+      border-radius: 0px;
       background: rgba(255,255,255,1);
-      box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
+      /* box-shadow: 0 0 5px rgba(0,0,0,0.2) !important; */
+      border: 1.5px solid;
       padding: 0 !important;
       display: flex !important;
       align-items: center !important;
@@ -79,10 +81,14 @@
   </div>
 </div>
 
-<div class="tag-segment ui vertical center aligned segment" style="background:none;border:none;padding-top:10px;">
-  <div class="ui text container" style="background:none;">
+<div class="tag-segment ui vertical center aligned segment" style="background:none;border:none;padding:0;">
+  <div class="ui text container" style="background:red;margin-left:0 !important;margin-right:0 !important;">
     <!-- <img id="canvas" class="ui centered image" src="/files/{{post.image}}" onerror="imgerr(this)" onclick="console.log(1)"/> -->
     <img id="canvas" class="ui centered image" src="/files/{{post.image}}" onclick="clickcoord(event)"/>
+    <div style="height:30px;background:white;text-align:left;padding-left:15px;border-bottom:0.5px solid rgba(0,0,0,0.5);font-size:12px;padding-top:5px;position:relative;">
+      Show Tags
+      <i class="ui angle right icon" style="position:absolute;top:8px;right:10px;"></i>
+    </div>
   </div>
 </div>
 
@@ -99,7 +105,7 @@
   </div>
 </div>
 
-<div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:10px;">
+<div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:20px;">
   <div class="ui text container" style="background:black;height:200px">
     <img class="ui image" src="{{ post.author.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;"/>
     <span style="color:white;">@{{ post.author.socialaccount_set.all.0.extra_data.first_name }}</span>
