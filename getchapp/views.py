@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from getchapp.models import Post, Brand
+from getchapp.models import Post, Brand, Profile, Item
 
 
 # Create your views here.
@@ -21,3 +21,18 @@ def post(request, pk):
     _post = get_object_or_404(Post, pk=pk)
     _brands = Brand.objects.all().values('name', 'image', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name')
     return render(request, 'getchapp/post.html', {'post':_post, 'brands':list(_brands)})
+
+
+def brand(request, pk):
+    _brand = get_object_or_404(Brand, pk=pk)
+    return render(request, 'getchapp/brand.html', {'brand':_brand})
+
+
+def item(request, pk):
+    _item = get_object_or_404(Item, pk=pk)
+    return render(request, 'getchapp/item.html', {'item':_item})
+
+
+def profile(request, pk):
+    _profile = get_object_or_404(Profile, pk=pk)
+    return render(request, 'getchapp/profile.html', {'profile':_profile})

@@ -22,8 +22,8 @@
 
       {% if user.is_authenticated %}
       <a class="my signed item" href="{% url 'my' %}" style="background:none;margin:0;">
-        <!-- <img src="/static/materials/icons8-user-100.png"> -->
-        {% include "getchapp/avatar.html" %}
+        <img src="/static/materials/icons8-user-100.png" style="width:25px;height:25px;">
+        <!-- {% include "getchapp/avatar.html" %} -->
       </a>
 
       {% else %}

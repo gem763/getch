@@ -9,4 +9,7 @@ urlpatterns = [
     path('my/', v.my, name='my'),
 
     path('post/<int:pk>/', v.post, name='post'),
+    path('channel/brand/<int:pk>/', v.brand, name='brand'),
+    path('channel/item/<int:pk>/', v.item, name='item'),
+    path('channel/profile/<int:pk>/', v.profile, name='profile'),
 ]
