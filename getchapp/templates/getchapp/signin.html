@@ -1,0 +1,132 @@
+<style>
+  #signin {
+    padding: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index:100;
+  }
+
+  #signin > .container {
+    background: none;
+    position: relative;
+  }
+
+  #signin .signin-modal {
+    transform: scale(0);
+    visibility: collapse;
+    background: white;
+    position: absolute;
+    top: 30px;
+    right: 10px;
+    padding: 10px;
+    /* box-shadow: 0 0 10px rgba(0,0,0,0.2); */
+    border-radius: 0;
+    border: 1px solid black;
+    transition: all 0.1s ease;
+    transform-origin: top right;
+  }
+
+  #signin .signin-modal > .container {
+    width: 160px;
+    margin: 0 !important;
+  }
+
+  #signin .signin-modal > .container > h3.header {
+    margin: 10px;
+  }
+
+  #signin .signin-modal .dismiss {
+    margin-top: 10px;
+  }
+
+  #signin .signin-modal .dismiss:hover {
+    opacity: 0.5;
+  }
+
+  #signin .signin-modal table {
+    margin: 0;
+    background: none;
+    border: none;
+  }
+
+  #signin .signin-modal td {
+    width: 80px;
+    height: 80px;
+    border: none;
+  }
+
+  #signin .signin-modal td .icon {
+    color: black;
+    background: none;
+    margin: 0;
+  }
+
+  #signin .signin-modal td .brand.icon {
+    font-size: 40px;
+  }
+
+  #signin .signin-modal td .more.icon {
+    font-size: 30px;
+  }
+
+  #signin .signin-modal td:hover {
+    cursor: pointer;
+  }
+
+  #signin .signin-modal td:hover .icon {
+    color: var(--theme-color);
+  }
+
+  #signin .sigin-modal .divider {
+    margin: 5px;
+  }
+
+  #signin .signin-checkbox {
+    display: none;
+    visibility: hidden;
+  }
+
+  #signin .signin-checkbox:checked ~ .signin-modal {
+    visibility: visible;
+    transform: scale(1);
+  }
+</style>
+
+
+{% load socialaccount %}
+<div id="signin" class="ui vertical segment">
+  <div class="ui container">
+
+    <input class="signin-checkbox" type="checkbox">
+
+    <div class="signin-modal ui center aligned segment">
+      <div class="ui container">
+        <h3 class="ui icon header">
+          Sign in with
+        </h3>
+
+        <div class="ui divider"></div>
+
+        <table class="ui unstackable celled center aligned table">
+          <tbody>
+            <tr>
+              <td><i class="brand ui huge google icon"></i></td>
+              <td>
+                <a href="{% provider_login_url 'facebook' method='oauth2' %}">
+                  <i class="brand ui huge facebook icon"></i>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td><i class="brand ui huge twitter icon"></i></td>
+              <td><i class="more ui huge ellipsis horizontal icon"></i></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="dismiss ui fluid black button">dismiss</div>
+    </div>
+  </div>
+</div>

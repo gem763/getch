@@ -3,19 +3,13 @@
 {% block css %}
   {{ block.super }}
   <style>
-    .grid {
-      /* background: lightgreen; */
-      /* max-width: 1200px; */
-    }
+    .grid {}
 
-    /* clearfix */
     .grid:after {
       content: '';
       display: block;
       clear: both;
     }
-
-    /* ---- grid-item ---- */
 
     .grid-sizer,
     .grid-item {
@@ -23,16 +17,12 @@
       float: left;
       padding: 5px;
       padding-bottom:0px;
-      /* padding-bottom: 30px; */
       background: none;
-      /* opacity: 0;
-      transition: opacity 0.5s !important; */
     }
 
     .grid-item img {
       display: block;
       max-width: 100%;
-      /* border-bottom: 10px solid; */
     }
 
     .grid-item img:hover {
@@ -46,20 +36,22 @@
 {% endblock mastheader %}
 
 {% block mastbody %}
-<div class="ui vertical center aligned segment" style="background:none;">
-  <div class="ui container" style="background:none;">
-    <div class="grid" style="background:none;">
+<div class="ui vertical center aligned segment">
+  <div class="ui container">
+    <div class="grid">
+
       {% for post in posts %}
-      <div class="grid-item" style="position:relative;">
-        <div style="background:none;text-align:left;">
+      <div class="grid-item">
+        <div>
           <a href="/post/{{post.id}}">
-            <img class="ui image" src="{{ post.image.url }}"/>
+            <img class="ui image" src="{{post.image.url}}"/>
           </a>
-          <i class="ui big barcode icon" style="background:none;padding-left:10px;padding-top:3px;color:rgba(22,187,204,1);transform:scale(1.5,0.7)"></i>
-          <!-- <i class="ui ellipsis horizontal icon" style="position:absolute;bottom:8px;right:10px;opacity:0.5;"></i> -->
+
+          {% include "getchapp/barcode.html" %}
         </div>
       </div>
       {% endfor %}
+
       <div class="grid-sizer"></div>
     </div>
   </div>
@@ -74,6 +66,12 @@
       itemSelector: '.grid-item',
       percentPosition: true,
       columnWidth: '.grid-sizer'
+    });
+
+    $('.ui.barcode.icon').popup({
+      inline: true,
+      hoverable: true,
+      position: 'top right',
     });
   </script>
 {% endblock js %}

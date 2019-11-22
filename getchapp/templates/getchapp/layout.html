@@ -12,6 +12,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
 
+  <!-- favicon.ico 404 Not found error -->
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
   <style>
     * {
       /* font-family: 'Noto Sans KR', sans-serif; */
@@ -41,7 +44,7 @@
 
 
   <script>
-    $('#banner .detector').visibility({
+    $('#banner-detector').visibility({
       once: false,
       onTopPassed: function() {
         $('#topheader').transition('fade in');
@@ -52,7 +55,7 @@
     });
 
 
-    $('#topheader .item, #topbanner .item').popup({position: 'bottom center'});
+    // $('#topheader .item, #topbanner .item').popup({position: 'bottom center'});
 
     $('.my.signin.item').click(function() {
       $('.signin-checkbox').prop('checked', true);
