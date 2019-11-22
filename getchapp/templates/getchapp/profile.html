@@ -3,6 +3,9 @@
 {% block css %}
   {{ block.super }}
   <style>
+    #signout:hover {
+      opacity: 0.5;
+    }
   </style>
 {% endblock css %}
 
@@ -28,6 +31,8 @@
       {{ profile.user.email }} <br>
     </p>
 
+    <br>
+    <a id="signout" class="ui black button" href="{% url 'account_logout' %}" style="border-radius:0;">Sign-out</a>
   </div>
 </div>
 {% endblock mastbody %}

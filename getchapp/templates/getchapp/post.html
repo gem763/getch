@@ -10,7 +10,7 @@
       opacity: 0.5;
     }
 
-    .tag {
+    /* .tag {
       position: absolute;
       background: white;
       border-radius: 25px;
@@ -25,7 +25,7 @@
       width: 20px;
       color: #ffffff;
       text-align: center;
-    }
+    } */
 
     .spot {
       background: none;
@@ -37,10 +37,10 @@
     .bubble {
       position: absolute;
       opacity: 0;
-      top: -80px;
-      left: -30px;
-      right: -30px;
-      bottom: 20px;
+      top: -50px;
+      bottom: 10px;
+      left: -20px;
+      right: -20px;
       /* border-radius: 30px; */
       border-radius: 0px;
       background: rgba(255,255,255,1);
@@ -53,7 +53,7 @@
       transition: all 0.1s;
     }
 
-    .bubble:before {
+    /* .bubble:before {
       content: '';
       position: absolute;
       bottom: 0%;
@@ -65,7 +65,7 @@
       border-right: 10px solid transparent;
       border-bottom: 0;
       margin-left: -10px;
-      margin-bottom: -15px;
+      margin-bottom: -15px; */
     }
   </style>
 {% endblock css %}
@@ -93,12 +93,12 @@
 </div>
 
 <div id="cursor" class="spot">
-  <div id="cursor-bubble" class="bubble" style="z-index:100;">
+  <div id="cursor-bubble" class="bubble" style="z-index:100;background:orange;">
     <div class="searcher ui fluid search" style="background:none;width:100%;">
-      <div class="ui fluid left icon transparent input" style="height:60px;font-size:20px;">
-        <i class="plus icon" style="background:none;width:60px;left:0;opacity:1;"></i>
-        <!-- <i class="material-icons" style="background:orange;width:60px;left:50px;opacity:1;">add</i> -->
-        <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:50px !important;opacity:0;">
+      <div class="ui fluid left icon transparent input" style="font-size:15px;background:none;">
+        <!-- <i class="plus icon" style="background:none;width:60px;left:0;opacity:1;"></i> -->
+        <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;margin-left:6px;">
+        <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:10px !important;opacity:0;">
       </div>
       <div class="results"></div>
     </div>
@@ -106,12 +106,41 @@
 </div>
 
 <div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:20px;">
-  <div class="ui text container" style="background:black;height:200px">
-    <img class="ui image" src="{{ post.author.user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;"/>
-    <span style="color:white;">@{{ post.author.user.socialaccount_set.all.0.extra_data.first_name }}</span>
-    <div style="color:white">{{ post.text }}</div>
+  <div class="ui text container" style="background:black;">
+    <div style="background:none;width:100%;height:40px;position:relative;">
+      <a href="{% url 'profile' post.author.pk %}">
+        <img class="ui image" src="{{ post.author.user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;border-right:2px solid white;border-bottom:2px solid white;"/>
+      </a>
+      <div style="color:white;position:absolute;top:8px;left:50px;">@{{ post.author.user.socialaccount_set.all.0.extra_data.first_name }}</div>
+      <i class="ui ellipsis horizontal icon" style="color:white;position:absolute;right:10px;top:10px;opacity:0.5"></i>
+    </div>
+
+    <div style="color:white;padding:10px;padding-left:50px;text-align:left;">{{ post.text }}</div>
+  </div>
+
+  <div class="ui text container">
+    <div class="ui icon secondary menu">
+      <a class="item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-heart-100.png" style="width:25px;height:25px;">
+      </a>
+      <a class="item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-topic-100.png" style="width:22px;height:22px;">
+      </a>
+      <a class="item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-upload-100.png" style="width:25px;height:25px;">
+      </a>
+
+      <div class="right menu" style="background:none;">
+        <a class="item" href="#" style="background:none;margin:0;">
+          <img src="/static/materials/icons8-bookmark-100.png" style="width:25px;height:25px;">
+        </a>
+      </div>
+    </div>
   </div>
 </div>
+
+{% include "getchapp/comment.html" %}
+{% include "getchapp/comment.html" %}
 {% endblock mastbody %}
 
 {% block js %}
@@ -142,14 +171,17 @@
     const template_channeltag = ({ch, image, top, left}) => `
       <div class="spot" style="top:${top};left:${left};">
         <div class="bubble" style="opacity:1;" ch="${ch}">
-          <img class="ui circular image" src="${image}" style="object-fit:contain;width:60px;height:60px;border:2px solid #ffffff;">
+          <a href="{% url 'brand' 1 %}">
+            <img class="ui image" src="${image}" style="object-fit:contain;width:36px;height:36px;">
+          </a>
         </div>
       </div>
     `;
 
+
     function set_tag(ch, image) {
       hide_cursor();
-      var top = tagY + 'px';
+      var top = tagY - 150 + 'px';
       var left = tagX + 'px';
       var elems = template_channeltag({ch:ch, image:image, top:top, left:left})
       $('.tag-segment').append($(elems));
@@ -160,8 +192,8 @@
       onTagging = true;
       $('#cursor-bubble .prompt').css('opacity', '1');
       $('#cursor-bubble').css({
-        left: '-150px',
-        right: '-150px',
+        left: '-100px',
+        right: '-100px',
       });
       $('#cursor-bubble .prompt').focus();
     };
@@ -169,8 +201,8 @@
     function positioning_mode() {
       onTagging = false;
       $('#cursor-bubble').css({
-        left: '-30px',
-        right: '-30px',
+        left: '-20px',
+        right: '-20px',
       });
       $('#cursor-bubble .prompt').css('opacity', '0');
     };
@@ -221,7 +253,8 @@
         standard: function(response){
           htmls = $.map(response.results, function(item) {
                     var image = item.image.replace('\\', '/');
-                    var onclick = "set_tag(0, '/files/" + image + "')";
+                    var onclick = "set_tag(" + item.pk + ", '/files/" + image + "')";
+                    // console.log(onclick);
                     var html = '<div class="result" style="height:100px" onclick="' + onclick + '">';
                     html += '<div class="image" style="height:80px;width:80px;">'
                           + '<img src="/files/' + item.image + '" style="object-fit:contain;height:80px;width:80px;">'

@@ -19,7 +19,7 @@ def my(request):
 
 def post(request, pk):
     _post = get_object_or_404(Post, pk=pk)
-    _brands = Brand.objects.all().values('name', 'image', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name')
+    _brands = Brand.objects.all().values('pk', 'name', 'image', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name')
     return render(request, 'getchapp/post.html', {'post':_post, 'brands':list(_brands)})
 
 
