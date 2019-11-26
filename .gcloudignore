@@ -17,3 +17,11 @@
 __pycache__/
 # Ignored by the build system
 /setup.cfg
+
+data/.ipynb_checkpoints
+data/uploads
+data/db loader.ipynb
+data/keywords and logos.xlsx
+cloud_sql_proxy.exe
+
+venv
