@@ -138,15 +138,50 @@ TEMPLATES = [
 WSGI_APPLICATION = 'home.wsgi.application'
 
 
+# Storage
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'getch-storage'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(BASE_DIR, 'data', 'getchproj-0cca45779be6.json')
+
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+
+if os.getenv('GAE_APPLICATION', None):
+    # Running on production App Engine, so connect to Google Cloud SQL using
+    # the unix socket at /cloudsql/<your-cloudsql-connection string>
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'HOST': '/cloudsql/getchproj:us-central1:getchdb-instance',
+            'USER': 'postgres',
+            'PASSWORD': 'kkangse1',
+            'NAME': 'postgres',
+        }
     }
-}
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+            'NAME': 'postgres',      # sql 인스턴스에서 실제로 생성된 db 명칭 (인스턴스명 아님)
+                                           # https://console.cloud.google.com/sql/instances/getchdb-001/databases?project=getch-245810
+            'USER': 'postgres',            # sql 사용자계정 (IAM 서비스계정 아님)
+                                           # https://console.cloud.google.com/sql/instances/getchdb-001/users?project=getch-245810
+            'PASSWORD': 'kkangse1',
+        }
+    }
+
 
 
 # Password validation

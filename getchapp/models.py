@@ -25,7 +25,7 @@ class CustomEmailUser(AbstractEmailUser, BigIdAbstract):
 
 
 class Channel(models.Model):
-    limit = models.Q(app_label='getchapp', model='brand') #| models.Q(app_label='app', model='customchannel')
+    limit = models.Q(app_label='getchapp', model='brand') | models.Q(app_label='getchapp', model='profile') | models.Q(app_label='getchapp', model='item')
     content_type = models.ForeignKey(ContentType, limit_choices_to=limit, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     of = GenericForeignKey('content_type', 'object_id')
