@@ -36,7 +36,7 @@
 {% endblock mastheader %}
 
 {% block mastbody %}
-<div class="ui vertical center aligned segment">
+<div class="ui vertical center aligned segment" style="margin-top:-70px;">
   <div class="ui container">
     <div class="grid">
 
@@ -62,10 +62,14 @@
 {% block js %}
   {{ block.super }}
   <script>
-    $('.grid').masonry({
+    var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
       percentPosition: true,
       columnWidth: '.grid-sizer'
+    });
+
+    $grid.imagesLoaded().progress(function() {
+      $grid.masonry('layout');
     });
 
     $('.ui.barcode.icon').popup({

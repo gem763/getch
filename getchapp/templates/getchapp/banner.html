@@ -1,4 +1,9 @@
 <style>
+  :root {
+    --LOGO-fontsize: 12vw;
+    --SUBLOGO-fontsize: 3vw;
+  }
+
   #banner {
     background: none;
     padding: 0 !important;
@@ -19,23 +24,39 @@
     left: 50%;
   }
 
-  #banner .ui.header {
-    background:orange;
+  #banner-logo {
+    width: 100%;
+    background: none;
+    color: black;
+    font-weight: bold;
+    font-size: var(--LOGO-fontsize);
+    font-family: 'Noto Sans KR', sans-serif;
     position: absolute;
-    top: 0%;
-    left: 0%;
-    /* transform: translate(-50%,-50%) */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  #banner-logo-sub {
+    font-size: var(--SUBLOGO-fontsize);
+    margin-top: calc(var(--SUBLOGO-fontsize) * 1.5);
+  }
+
+  #banner .logodot {
+    display: inline-block;
+    width: calc(var(--LOGO-fontsize) / 5);
+    transform: scale(0.25, 0.5) translate(calc(-1 * var(--LOGO-fontsize) / 4), calc(var(--LOGO-fontsize) / 2));
+    transform-origin: bottom left;
+    color: rgb(22, 187, 204);
   }
 </style>
 
 
-<div id="banner" class="ui center aligned vertical segment">
-  <img id="banner-img" src="/static/materials/taw_lcm_day_4_kd_09.jpg">
-  <div id="banner-detector"></div>
-  <div class="ui header">
-    <div class="content" style="color:black;font-size:12vw;font-family: 'Noto Sans KR', sans-serif;margin:0 !important;">
-      GET.CH
-      <div class="sub header" style="font-weight:bold;font-size:3vw;margin-top:4vw;">GET TREND by TAG, SHARE, VISIT</div>
-    </div>
+<div id='banner' class='ui center aligned vertical segment'>
+  <img id='banner-img' src='/static/materials/taw_lcm_day_4_kd_09.jpg'>
+  <div id='banner-detector'></div>
+  <div id='banner-logo'>
+    GET<div class='logodot'>■</div>CH
+    <div id='banner-logo-sub'>GET TREND by TAG, SHARE, VISIT</div>
   </div>
 </div>

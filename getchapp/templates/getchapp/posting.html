@@ -1,0 +1,90 @@
+{% extends "getchapp/layout.html" %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/dropzone/dropzone.css">
+  <style>
+  </style>
+{% endblock css %}
+
+
+{% block mastbody %}
+{% load widget_tweaks %}
+<div class="ui center aligned vertical segment" style="background:none;padding:0;">
+  <!-- <div class="ui container"> -->
+  <div style="background:none;">
+    <!-- <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form> -->
+
+    <!-- <div id='imageupload' class='dropzone'>
+      <div class='dz-default dz-message'>파일 업로드</div>
+    </div> -->
+
+
+    <form class="ui form" method="post" action="" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="field">
+        <!-- https://neurowhai.tistory.com/195 -->
+        {% render_field form.image onchange="upload_img(this)" id="imageupload" style="display:none;" %}
+        <div style="background:none;text-align:center;margin-top:0;display:none;">
+          <img id="img_uploaded" src="#" alt="image uploaded" style="width:100%;height:auto;" />
+        </div>
+
+        <label for='imageupload'>
+          <img src="/static/materials/icons8-unsplash-96.png" style="width:30px;height:30px;margin-top:20px;">
+        </label>
+      </div>
+
+      <div class="field" style="margin-top:0;">
+        <div class="ui text container">
+          {% render_field form.text %}
+        </div>
+      </div>
+
+      <button class="ui button" type="submit">Save</button>
+    </form>
+
+
+
+
+
+  </div>
+</div>
+{% endblock mastbody %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="/static/dropzone/dropzone.js"></script>
+  <script>
+    // $('#imageupload').dropzone({
+    //   url: '/file/post',
+    // })
+    // var myDropzone = new Dropzone('#imageupload', {
+    //   url: '파일업로드 경로',
+    //   addRemoveLinks: true,
+    //   maxFiles: 1,
+    //   success: function(file, response) {
+    //   },
+    //   error: function() {}
+    // });
+
+    $("form").bind("keypress", function(e) {
+      if (e.keyCode == 13) {
+        return false;
+      }
+    });
+
+    function upload_img(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          $("#img_uploaded").attr("src", e.target.result);
+          $("#img_uploaded").parent().css("display", "block");
+        }
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  </script>
+{% endblock js %}

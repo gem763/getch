@@ -10,23 +10,6 @@
       opacity: 0.5;
     }
 
-    /* .tag {
-      position: absolute;
-      background: white;
-      border-radius: 25px;
-      visibility: hidden;
-      height: 50px;
-      width: 50px;
-      z-index: 2;
-    }
-
-    .tag span {
-      position: absolute;
-      width: 20px;
-      color: #ffffff;
-      text-align: center;
-    } */
-
     .spot {
       background: none;
       width: 0;
@@ -41,10 +24,8 @@
       bottom: 10px;
       left: -20px;
       right: -20px;
-      /* border-radius: 30px; */
       border-radius: 0px;
       background: rgba(255,255,255,1);
-      /* box-shadow: 0 0 5px rgba(0,0,0,0.2) !important; */
       border: 1.5px solid;
       padding: 0 !important;
       display: flex !important;
@@ -65,30 +46,24 @@
       border-right: 10px solid transparent;
       border-bottom: 0;
       margin-left: -10px;
-      margin-bottom: -15px; */
-    }
+      margin-bottom: -15px;
+    }*/
+
   </style>
 {% endblock css %}
 
 
 {% block mastbody %}
 {% load static %}
-<div class="ui center aligned vertical segment" style="background:none;border:none;margin-top:100px;">
-  <div class="ui text container" style="background:none">
-    <div id="post" class="ui basic black button" style="border-radius:0;">POST</div>
-    <div id="review" class="ui black button" style="border-radius:0;">REVIEW</div>
-    <div id="qna" class="ui basic black button" style="border-radius:0;">QNA</div>
-  </div>
-</div>
-
 <div class="tag-segment ui vertical center aligned segment" style="background:none;border:none;padding:0;">
-  <div class="ui text container" style="background:red;margin-left:0 !important;margin-right:0 !important;">
+  <!-- <div class="ui text container" style="background:red;margin-left:0 !important;margin-right:0 !important;"> -->
+  <div style="background:red;">
     <!-- <img id="canvas" class="ui centered image" src="/files/{{post.image}}" onerror="imgerr(this)" onclick="console.log(1)"/> -->
-    <img id="canvas" class="ui centered image" src="/files/{{post.image}}" onclick="clickcoord(event)"/>
-    <div style="height:30px;background:white;text-align:left;padding-left:15px;border-bottom:0.5px solid rgba(0,0,0,0.5);font-size:12px;padding-top:5px;position:relative;">
+    <img id="canvas" src="{{post.image.url}}" onclick="clickcoord(event)" style="width:100%;height:auto;display:block;"/>
+    <!-- <div style="height:30px;background:white;text-align:left;padding-left:15px;border-bottom:0.5px solid rgba(0,0,0,0.5);font-size:12px;padding-top:5px;position:relative;">
       Show Tags
       <i class="ui angle right icon" style="position:absolute;top:8px;right:10px;"></i>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -96,7 +71,6 @@
   <div id="cursor-bubble" class="bubble" style="z-index:100;background:orange;">
     <div class="searcher ui fluid search" style="background:none;width:100%;">
       <div class="ui fluid left icon transparent input" style="font-size:15px;background:none;">
-        <!-- <i class="plus icon" style="background:none;width:60px;left:0;opacity:1;"></i> -->
         <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;margin-left:6px;">
         <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:10px !important;opacity:0;">
       </div>
@@ -105,11 +79,11 @@
   </div>
 </div>
 
-<div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:20px;">
-  <div class="ui text container" style="background:black;">
+<div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:0px;">
+  <div style="background:black;">
     <div style="background:none;width:100%;height:40px;position:relative;">
       <a href="{% url 'profile' post.author.pk %}">
-        <img class="ui image" src="{{ post.author.user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;border-right:2px solid white;border-bottom:2px solid white;"/>
+        <img class="ui image" src="{{ post.author.user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;border-right:2px solid white;border-bottom:2px solid white;border:none;"/>
       </a>
       <div style="color:white;position:absolute;top:8px;left:50px;">@{{ post.author.user.socialaccount_set.all.0.extra_data.first_name }}</div>
       <i class="ui ellipsis horizontal icon" style="color:white;position:absolute;right:10px;top:10px;opacity:0.5"></i>
@@ -139,6 +113,14 @@
   </div>
 </div>
 
+
+<!-- <div class="ui center aligned vertical segment" style="background:lightyellow;border:none;margin-top:70px;">
+  <div class="ui text container" style="background:none">
+    <div id="post" class="ui basic black button" style="border-radius:0;">POST</div>
+    <div id="review" class="ui black button" style="border-radius:0;">REVIEW</div>
+    <div id="qna" class="ui basic black button" style="border-radius:0;">QNA</div>
+  </div>
+</div> -->
 {% include "getchapp/comment.html" %}
 {% include "getchapp/comment.html" %}
 {% endblock mastbody %}

@@ -1,34 +1,81 @@
-<div class="ui container">
+<style>
+  :root {
+    --logo-fontsize: 7vw;
+    --sublogo-fontsize: 2vw;
+  }
+
+  #header-menu .logo.item {
+    background: none;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  #header-menu .logo.item .header .content {
+    color: black;
+    font-size: var(--logo-fontsize);
+    font-family: 'Noto Sans KR', sans-serif;
+    text-align: left;
+  }
+
+  #header-menu .logo.item .sub.header {
+    font-weight: bold;
+    font-size: var(--sublogo-fontsize);
+    margin-top: calc(var(--sublogo-fontsize) / 2);
+    margin-left: calc(var(--sublogo-fontsize) / 4);
+  }
+
+  #header-menu .right.menu .item {
+    padding: 8px !important;
+    margin: 2px;
+    background: none;
+  }
+
+  #header-menu .right.menu .item img {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  #header-menu .logodot {
+    display: inline-block;
+    width: calc(var(--logo-fontsize) / 5);
+    transform: scale(0.25, 0.5) translate(calc(-1 * var(--logo-fontsize) / 4), calc(var(--logo-fontsize) / 4));
+    transform-origin: bottom left;
+    color: rgb(22, 187, 204);
+  }
+</style>
+
+
+<div id='header-menu' class="ui container">
   <div class="ui icon secondary {% if banner %} inverted {% endif %} menu">
 
     {% if not banner %}
-    <a class="logo item" href="{% url 'intro' %}" style="background:none;padding-top:0;padding-bottom:0;">
+    <a class="logo item" href="{% url 'intro' %}">
       <h2 class="ui header" >
-        <div class="content"  style="color:black;font-size:7vw;font-family: 'Noto Sans KR', sans-serif;text-align:left;">
-          GET.CH
-          <div class="sub header" style="font-weight:bold;font-size:2vw;margin-top:1vw;margin-left:0.5vw;">GET TREND by TAG, SHARE, VISIT</div>
+        <div class="content">
+          GET<div class="logodot">■</div>CH
+          <div class="sub header">GET TREND by TAG, SHARE, VISIT</div>
         </div>
       </h2>
     </a>
     {% endif %}
 
-    <div class="right menu" style="background:none;">
-      <a class="search item" href="#" style="background:none;margin:0;">
-        <img src="/static/materials/icons8-search-100.png" style="width:25px;height:25px;">
+    <div class="right menu">
+      <a class="search item" href="#">
+        <img src="/static/materials/icons8-search-100.png">
       </a>
-      <a class="posting item" href="#" style="background:none;margin:0;">
-        <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;">
+      <a class="posting item" href="{% url 'posting' %}">
+        <img src="/static/materials/icons8-plus-100.png">
       </a>
 
       {% if user.is_authenticated %}
-      <a class="my signed item" href="{% url 'my' %}" style="background:none;margin:0;">
-        <img src="/static/materials/icons8-user-100.png" style="width:25px;height:25px;">
+      <a class="my signed item" href="{% url 'my' %}">
+        <img src="/static/materials/icons8-user-100.png">
         <!-- {% include "getchapp/avatar.html" %} -->
       </a>
 
       {% else %}
-      <a class="my signin item" style="background:none;margin:0;">
-        <img src="/static/materials/icons8-user-100.png" style="width:25px;height:25px;">
+      <a class="my signin item">
+        <img src="/static/materials/icons8-user-100.png">
       </a>
       {% endif %}
 

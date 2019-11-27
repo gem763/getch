@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse_lazy
 from custom_user.models import AbstractEmailUser
 
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -94,3 +95,7 @@ class Post(BigIdAbstract):
 
     def __str__(self):
         return '{created_at} {email}'.format(created_at=self.created_at, email=self.author.user.email)
+
+    def get_absolute_url(self):
+        url = reverse_lazy('post', kwargs={'pk':self.pk})
+        return url
