@@ -67,7 +67,7 @@ MIDDLEWARE = [
 # https://django-allauth.readthedocs.io/en/latest/installation.html#django
 # https://ldgeao99.tistory.com/117
 
-#2983148471713661:aa895db8d3c4425679b37b1f8ddbbc2bf
+#1331691227003429:eedf26d0e0df7b15784591d5eeabf513f
 #Q60jbPX1POJFmqb0dgGl:5RnWiWQnmln
 #1070422112021-th03c2jjibfvdmvt9ab5cbt0m8em0pjo.apps.googleusercontent.com:fbXaoEl90xvwaj4EI6m0bnZug
 

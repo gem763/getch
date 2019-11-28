@@ -5,7 +5,7 @@ from custom_user.models import AbstractEmailUser
 
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-
+from datetime import datetime
 
 
 class BigIdAbstract(models.Model):
@@ -87,9 +87,20 @@ class Item(ChannelBase):
     master = models.ForeignKey(Profile, blank=True, null=True, on_delete=models.SET_NULL)
 
 
+
+def post_image_path(instance, fname):
+    now = datetime.now()
+    year = now.strftime('%Y')
+    month = now.strftime('%m')
+    day = now.strftime('%d')
+    return 'post_images/{author}/{year}/{month}/{day}/origin/{fname}'.format(author=instance.author, fname=fname, year=year, month=month, day=day)
+
+
+# Post도 channel 이다!~~~~~~~~~~~~~~~~~~~~
 class Post(BigIdAbstract):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='posts/%Y/%m/%d/origin')
+    # image = models.ImageField(upload_to='post_images/%Y/%m/%d/origin')
+    image = models.ImageField(upload_to=post_image_path)
     text = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -2,229 +2,220 @@
 
 {% block css %}
   {{ block.super }}
-  <link rel="stylesheet" href="https://unpkg.com/tippy.js@5/themes/light.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/tippy.js@5/dist/svg-arrow.css"/>
-
   <style>
     .button:hover {
       opacity: 0.5;
     }
 
-    .spot {
-      background: none;
-      width: 0;
-      height: 0;
+    #cursor {
       position: absolute;
+      background: white;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+      transform: translate(-50%, -50%) scale(0);
+      visibility: collapse;
+      transition: all 0.1s ease;
+      transform-origin: center center;
     }
 
-    .bubble {
+    #tagger {
+      z-index: 100;
       position: absolute;
-      opacity: 0;
-      top: -50px;
-      bottom: 10px;
-      left: -20px;
-      right: -20px;
-      border-radius: 0px;
-      background: rgba(255,255,255,1);
-      border: 1.5px solid;
-      padding: 0 !important;
+      background: none;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 40px;
+      border: 1px solid black;
+      transform: translateY(-60px), scale(0);
+      visibility: collapse;
+      transition: all 0.1s ease;
+    }
+
+    #cursor-checkbox {
+      display: none;
+      visibility: hidden;
+    }
+
+    #tagger-checkbox {
+      display: none;
+      visibility: hidden;
+    }
+
+    #cursor-checkbox:checked ~ #cursor {
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #tagger-checkbox:checked ~ #tagger {
+      visibility: visible;
+      transform: translateY(-60px) scale(1);
+    }
+
+    .results {
+      margin-top: 0 !important;
+      border-radius: 0 !important;
+      border: 1px solid black !important;
+      box-shadow: none !important;
+    }
+
+
+    #item-selector {
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      transition: all 0.1s;
+      transform: translateY(-20px);
+      border: 1px solid black;
+      transition: all 0.1s ease;
+      visibility: hidden;
     }
 
-    /* .bubble:before {
-      content: '';
-      position: absolute;
-      bottom: 0%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-top: 30px solid white;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 0;
-      margin-left: -10px;
-      margin-bottom: -15px;
-    }*/
-
+    #item-selector td {
+      padding: 0px;
+    }
   </style>
 {% endblock css %}
 
 
 {% block mastbody %}
 {% load static %}
-<div class="tag-segment ui vertical center aligned segment" style="background:none;border:none;padding:0;">
-  <!-- <div class="ui text container" style="background:red;margin-left:0 !important;margin-right:0 !important;"> -->
-  <div style="background:red;">
-    <!-- <img id="canvas" class="ui centered image" src="/files/{{post.image}}" onerror="imgerr(this)" onclick="console.log(1)"/> -->
-    <img id="canvas" src="{{post.image.url}}" onclick="clickcoord(event)" style="width:100%;height:auto;display:block;"/>
+<div class="ui vertical center aligned segment" style="background:none;border:none;padding:0;">
+  <div style="background:red;position:relative;">
+    <img id="canvas" src="{{post.image.url}}" style="width:100%;height:auto;display:block;" />
     <!-- <div style="height:30px;background:white;text-align:left;padding-left:15px;border-bottom:0.5px solid rgba(0,0,0,0.5);font-size:12px;padding-top:5px;position:relative;">
       Show Tags
       <i class="ui angle right icon" style="position:absolute;top:8px;right:10px;"></i>
     </div> -->
-  </div>
-</div>
 
-<div id="cursor" class="spot">
-  <div id="cursor-bubble" class="bubble" style="z-index:100;background:orange;">
-    <div class="searcher ui fluid search" style="background:none;width:100%;">
-      <div class="ui fluid left icon transparent input" style="font-size:15px;background:none;">
-        <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;margin-left:6px;">
-        <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:10px !important;opacity:0;">
-      </div>
-      <div class="results"></div>
-    </div>
-  </div>
-</div>
+    <input id="cursor-checkbox" type="checkbox">
+    <div id='cursor'></div>
 
-<div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:0px;">
-  <div style="background:black;">
-    <div style="background:none;width:100%;height:40px;position:relative;">
-      <a href="{% url 'profile' post.author.pk %}">
-        <img class="ui image" src="{{ post.author.user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;border-right:2px solid white;border-bottom:2px solid white;border:none;"/>
-      </a>
-      <div style="color:white;position:absolute;top:8px;left:50px;">@{{ post.author.user.socialaccount_set.all.0.extra_data.first_name }}</div>
-      <i class="ui ellipsis horizontal icon" style="color:white;position:absolute;right:10px;top:10px;opacity:0.5"></i>
-    </div>
-
-    <div style="color:white;padding:10px;padding-left:50px;text-align:left;">{{ post.text }}</div>
-  </div>
-
-  <div class="ui text container">
-    <div class="ui icon secondary menu">
-      <a class="item" href="#" style="background:none;margin:0;">
-        <img src="/static/materials/icons8-heart-100.png" style="width:25px;height:25px;">
-      </a>
-      <a class="item" href="#" style="background:none;margin:0;">
-        <img src="/static/materials/icons8-topic-100.png" style="width:22px;height:22px;">
-      </a>
-      <a class="item" href="#" style="background:none;margin:0;">
-        <img src="/static/materials/icons8-upload-100.png" style="width:25px;height:25px;">
-      </a>
-
-      <div class="right menu" style="background:none;">
-        <a class="item" href="#" style="background:none;margin:0;">
-          <img src="/static/materials/icons8-bookmark-100.png" style="width:25px;height:25px;">
-        </a>
+    <input id="tagger-checkbox" type="checkbox">
+    <div id='tagger'>
+      <div class="ui fluid search" style="background:white;height:100%;">
+        <div class="ui fluid left icon transparent input" style="font-size:15px;background:none;height:100%;">
+          <img class='tagger-brand' src="" style="width:38px;height:38px;background:none;display:none;" />
+          <img class='tagger-item' src="" style="width:25px;height:25px;background:none;margin:7.5px;display:none;" />
+          <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;background:none;margin:7.5px;" />
+          <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:0 !important;opacity:1;">
+          <div style='background:none;padding:3px;'>
+            <div class='ui icon compact button' style='background:none;'><i class='ui undo icon'></i></div>
+            <div class='ui icon compact button' style='background:none;'><i class='ui arrow right icon'></i></div>
+          </div>
+        </div>
+        <div class="results"></div>
       </div>
     </div>
+
+    <div id='item-selector' style="position:absolute;bottom:20px;left:10%;right:10%;height:40px;background:white;">
+      <table class='ui eight column unstackable very compact basic table' style='border:none;'>
+        <tbody>
+          <tr class='center aligned'>
+            <td><img src="/files/item_images/accessory.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="/files/item_images/bag.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="/files/item_images/bottom.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="/files/item_images/dress.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="/files/item_images/outer.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="/files/item_images/shoe.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="/files/item_images/skirt.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="/files/item_images/top.png" style="width:25px;height:25px;background:none;" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id='tags'></div>
   </div>
 </div>
 
 
-<!-- <div class="ui center aligned vertical segment" style="background:lightyellow;border:none;margin-top:70px;">
-  <div class="ui text container" style="background:none">
-    <div id="post" class="ui basic black button" style="border-radius:0;">POST</div>
-    <div id="review" class="ui black button" style="border-radius:0;">REVIEW</div>
-    <div id="qna" class="ui basic black button" style="border-radius:0;">QNA</div>
-  </div>
-</div> -->
-{% include "getchapp/comment.html" %}
-{% include "getchapp/comment.html" %}
+{% include "getchapp/post-author.html" %}
+{% include "getchapp/post-comment.html" %}
+{% include "getchapp/post-comment.html" %}
 {% endblock mastbody %}
 
 {% block js %}
   {{ block.super }}
-  <script src="https://unpkg.com/popper.js@1"></script>
-  <script src="https://unpkg.com/tippy.js@5"></script>
-
   <script>
-    var onTagging = false;
-    var onCanvas = false;
-    var onBubble = false;
-    var tagX;
-    var tagY;
-
-
-    function clickcoord(e) {
-      if (onTagging) {
-        positioning_mode();
-        show_cursor(e);
-      } else {
-        tagging_mode(e);
-        tagX = e.pageX;
-        tagY = e.pageY;
-      }
-    };
-
-
-    const template_channeltag = ({ch, image, top, left}) => `
-      <div class="spot" style="top:${top};left:${left};">
-        <div class="bubble" style="opacity:1;" ch="${ch}">
-          <a href="{% url 'brand' 1 %}">
-            <img class="ui image" src="${image}" style="object-fit:contain;width:36px;height:36px;">
-          </a>
-        </div>
-      </div>
-    `;
-
-
-    function set_tag(ch, image) {
-      hide_cursor();
-      var top = tagY - 150 + 'px';
-      var left = tagX + 'px';
-      var elems = template_channeltag({ch:ch, image:image, top:top, left:left})
-      $('.tag-segment').append($(elems));
-      positioning_mode();
-    }
-
-    function tagging_mode(e) {
-      onTagging = true;
-      $('#cursor-bubble .prompt').css('opacity', '1');
-      $('#cursor-bubble').css({
-        left: '-100px',
-        right: '-100px',
-      });
-      $('#cursor-bubble .prompt').focus();
-    };
-
-    function positioning_mode() {
-      onTagging = false;
-      $('#cursor-bubble').css({
-        left: '-20px',
-        right: '-20px',
-      });
-      $('#cursor-bubble .prompt').css('opacity', '0');
-    };
-
-
-    function show_cursor(e) {
-      if (!onTagging) {
-        $('#cursor').css({
-          left: e.pageX,
-          top: e.pageY
-        });
-      };
-
-      $('#cursor-bubble').css('opacity', 1);
-    }
-
-    function hide_cursor() {
-      $('#cursor-bubble').css({ opacity: 0 });
-    }
+    var pos;
 
     $('#canvas').on({
-      'mouseenter': function() { onCanvas = true },
-      'mouseleave': function() { onCanvas = false }
+      'click': function(e) {
+        pos = get_position(e);
+
+        $('#cursor').css({ left: pos.x_in_canvas + '%', top: pos.y_in_canvas + '%' });
+        $('#cursor-checkbox').prop('checked', true);
+
+        $('#tagger').css({ top: pos.y_in_canvas + '%' });
+        $('#tagger-checkbox').prop('checked', true);
+
+        $('#item-selector').css({ top: pos.y_in_canvas + '%' });
+
+        // 요게 안먹히네..
+        $('#tagger input.prompt').focus();
+      },
     });
 
-    $('#cursor-bubble').on({
-      'mouseenter': function() { onBubble = true },
-      'mouseleave': function() { onBubble = false }
-    });
+    function get_position(e) {
+      var canvas_position = $(e.target).offset();
+      var canvas_left = canvas_position.left;
+      var canvas_top = canvas_position.top;
+      var canvas_width = $(e.target).width();
+      var canvas_height = $(e.target).height();
 
-    $('body').on('mousemove', function(e) {
-      if (onCanvas || onBubble || onTagging) {
-        show_cursor(e);
-      } else {
-        hide_cursor();
-      }
-    });
+      var x = e.pageX;
+      var y = e.pageY;
+
+      var x_in_canvas = (x - canvas_left) / canvas_width * 100;
+      var y_in_canvas = (y - canvas_top) / canvas_height * 100;
+
+      var pos = {
+        x: x,
+        y: y,
+        x_in_canvas: x_in_canvas,
+        y_in_canvas: y_in_canvas
+      };
+
+      return pos;
+    }
+
+    $('#item-selector td').click(function() {
+      var src = $(this).children('img').attr('src');
+      $('.tagger-item').attr('src', src);
+      $('.tagger-item').css({
+        display: 'block'
+      })
+    })
 
 
-    $('#cursor-bubble .ui.search').search({
+    // const template_channeltag = ({ch, image, top, left}) => `
+    //   <div class="tag" style="top:${top};left:${left};position:absolute;transform:translate(-50%,-150%);width:40px;height:40px;background:white;border:1px solid black;">
+    //     <div class="tag-brand" style="opacity:1;" ch="${ch}">
+    //       <a href="{% url 'brand' 1 %}">
+    //         <img class="ui image" src="${image}" style="object-fit:contain;width:36px;height:36px;">
+    //       </a>
+    //     </div>
+    //   </div>
+    // `;
+
+    function set_tag(ch, image) {
+      $('.tagger-brand').attr('src', image);
+      $('.tagger-brand').css({
+        display: 'block'
+      })
+      $('#tagger input.prompt').css({
+        opacity: 0
+      });
+
+      $('#item-selector').css({
+        visibility: 'visible'
+      });
+    }
+
+    $('#tagger .ui.search').search({
       source: {{ brands | safe }},
       fullTextSearch: true,
       showNoResults: false,
@@ -236,7 +227,6 @@
           htmls = $.map(response.results, function(item) {
                     var image = item.image.replace('\\', '/');
                     var onclick = "set_tag(" + item.pk + ", '/files/" + image + "')";
-                    // console.log(onclick);
                     var html = '<div class="result" style="height:100px" onclick="' + onclick + '">';
                     html += '<div class="image" style="height:80px;width:80px;">'
                           + '<img src="/files/' + item.image + '" style="object-fit:contain;height:80px;width:80px;">'
@@ -253,6 +243,81 @@
         },
       },
     });
+
+
+    // var onTagging = false;
+    // var onCanvas = false;
+    // var onBubble = false;
+    // var tagX;
+    // var tagY;
+    //
+    //
+    // function clickcoord(e) {
+    //   if (onTagging) {
+    //     positioning_mode();
+    //     show_cursor(e);
+    //   } else {
+    //     tagging_mode(e);
+    //     tagX = e.pageX;
+    //     tagY = e.pageY;
+    //   }
+    // };
+    //
+    //
+    // function tagging_mode(e) {
+    //   onTagging = true;
+    //   $('#cursor-bubble .prompt').css('opacity', '1');
+    //   $('#cursor-bubble').css({
+    //     left: '-100px',
+    //     right: '-100px',
+    //   });
+    //   $('#cursor-bubble .prompt').focus();
+    // };
+    //
+    // function positioning_mode() {
+    //   onTagging = false;
+    //   $('#cursor-bubble').css({
+    //     left: '-20px',
+    //     right: '-20px',
+    //   });
+    //   $('#cursor-bubble .prompt').css('opacity', '0');
+    // };
+    //
+    //
+    // function show_cursor(e) {
+    //   if (!onTagging) {
+    //     $('#cursor').css({
+    //       left: e.pageX,
+    //       top: e.pageY
+    //     });
+    //   };
+    //
+    //   $('#cursor-bubble').css('opacity', 1);
+    // }
+    //
+    // function hide_cursor() {
+    //   $('#cursor-bubble').css({ opacity: 0 });
+    // }
+    //
+    //
+    // $('#canvas').on({
+    //   'mouseenter': function() { onCanvas = true },
+    //   'mouseleave': function() { onCanvas = false }
+    // });
+    //
+    // $('#cursor-bubble').on({
+    //   'mouseenter': function() { onBubble = true },
+    //   'mouseleave': function() { onBubble = false }
+    // });
+    //
+    //
+    // $('body').on('mousemove', function(e) {
+    //   if (onCanvas || onBubble || onTagging) {
+    //     show_cursor(e);
+    //   } else {
+    //     hide_cursor();
+    //   }
+    // });
 
   </script>
 {% endblock js %}

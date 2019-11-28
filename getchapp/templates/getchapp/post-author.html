@@ -1,0 +1,33 @@
+<div class="ui vertical center aligned segment" style="background:none;border:none;padding-top:0px;">
+  <div style="background:black;">
+    <div style="background:none;width:100%;height:40px;position:relative;">
+      <a href="{% url 'profile' post.author.pk %}">
+        <img class="ui image" src="{{ post.author.user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:40px;height:40px;border-right:2px solid white;border-bottom:2px solid white;border:none;"/>
+      </a>
+      <div style="color:white;position:absolute;top:8px;left:50px;">@{{ post.author.user.socialaccount_set.all.0.extra_data.first_name }}</div>
+      <i class="ui ellipsis horizontal icon" style="color:white;position:absolute;right:10px;top:10px;opacity:0.5"></i>
+    </div>
+
+    <div style="color:white;padding:10px;padding-left:50px;text-align:left;">{{ post.text }}</div>
+  </div>
+
+  <div class="ui text container">
+    <div class="ui icon secondary menu">
+      <a class="item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-heart-100.png" style="width:25px;height:25px;">
+      </a>
+      <a class="item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-topic-100.png" style="width:22px;height:22px;">
+      </a>
+      <a class="item" href="#" style="background:none;margin:0;">
+        <img src="/static/materials/icons8-upload-100.png" style="width:25px;height:25px;">
+      </a>
+
+      <div class="right menu" style="background:none;">
+        <a class="item" href="#" style="background:none;margin:0;">
+          <img src="/static/materials/icons8-bookmark-100.png" style="width:25px;height:25px;">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
