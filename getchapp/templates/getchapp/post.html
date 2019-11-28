@@ -114,14 +114,14 @@
       <table class='ui eight column unstackable very compact basic table' style='border:none;'>
         <tbody>
           <tr class='center aligned'>
-            <td><img src="/files/item_images/accessory.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="/files/item_images/bag.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="/files/item_images/bottom.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="/files/item_images/dress.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="/files/item_images/outer.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="/files/item_images/shoe.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="/files/item_images/skirt.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="/files/item_images/top.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/accessory.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/bag.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/bottom.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/dress.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/outer.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/shoe.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/skirt.png" style="width:25px;height:25px;background:none;" /></td>
+            <td><img src="https://storage.googleapis.com/getch-storage/item_images/top.png" style="width:25px;height:25px;background:none;" /></td>
           </tr>
         </tbody>
       </table>
@@ -202,7 +202,7 @@
     // `;
 
     function set_tag(ch, image) {
-      $('.tagger-brand').attr('src', image);
+      $('.tagger-brand').attr('src', 'https://storage.googleapis.com/getch-storage/' + image);
       $('.tagger-brand').css({
         display: 'block'
       })
@@ -226,10 +226,12 @@
         standard: function(response){
           htmls = $.map(response.results, function(item) {
                     var image = item.image.replace('\\', '/');
-                    var onclick = "set_tag(" + item.pk + ", '/files/" + image + "')";
+                    var onclick = "set_tag(" + item.pk + ", '" + image + "')";
+                    // var onclick = "set_tag(" + item.pk + ", '/files/" + image + "')";
                     var html = '<div class="result" style="height:100px" onclick="' + onclick + '">';
                     html += '<div class="image" style="height:80px;width:80px;">'
-                          + '<img src="/files/' + item.image + '" style="object-fit:contain;height:80px;width:80px;">'
+                          // + '<img src="/files/' + item.image + '" style="object-fit:contain;height:80px;width:80px;">'
+                          + '<img src="https://storage.googleapis.com/getch-storage/' + item.image + '" style="object-fit:contain;height:80px;width:80px;">'
                           + '</div>';
                     html += '<div class="content">';
                     html += '<div class="ui header">' + item.fullname_en;
