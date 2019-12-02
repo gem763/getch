@@ -3,9 +3,9 @@
 {% block css %}
   {{ block.super }}
   <style>
-    .button:hover {
+    /* .button:hover {
       opacity: 0.5;
-    }
+    } */
 
     #cursor {
       position: absolute;
@@ -28,37 +28,48 @@
       top: 0;
       left: 10%;
       right: 10%;
-      height: 40px;
-      border: 1px solid black;
+      height: 42px;
       transform: translateY(-60px), scale(0);
       visibility: collapse;
       transition: all 0.1s ease;
     }
 
-    #cursor-checkbox {
+    input[type='checkbox'] {
       display: none;
       visibility: hidden;
     }
 
-    #tagger-checkbox {
-      display: none;
-      visibility: hidden;
-    }
 
-    #cursor-checkbox:checked ~ #cursor {
+    #cursor-shower:checked ~ #cursor {
       visibility: visible;
       transform: translate(-50%, -50%) scale(1);
     }
 
-    #tagger-checkbox:checked ~ #tagger {
+    #tagger-shower:checked ~ #tagger {
       visibility: visible;
       transform: translateY(-60px) scale(1);
+    }
+
+    #tagger-brand-shower:checked ~ #tagger-brand {
+      width: 40px;
+      border-right: 1px solid black;
+    }
+
+    #tagger-brand-shower:checked ~ input.prompt {
+      display: none;
+    }
+
+    #tagger-brand-shower:checked ~ #item-selector {
+      visibility: visible !important;
     }
 
     .results {
       margin-top: 0 !important;
       border-radius: 0 !important;
-      border: 1px solid black !important;
+      border-top: 1px solid transparent !important;
+      border-left: 1px solid black !important;
+      border-right: 1px solid black !important;
+      border-bottom: 1px solid black !important;
       box-shadow: none !important;
     }
 
@@ -67,14 +78,27 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      transform: translateY(-20px);
-      border: 1px solid black;
+      /* transform: translateY(-20px); */
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
       transition: all 0.1s ease;
       visibility: hidden;
     }
 
     #item-selector td {
       padding: 0px;
+    }
+
+    .centered-img {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background:none;
+      width: 0;
+      height: 40px;
+      transition: all 0.1s ease;
+      overflow: hidden;
     }
   </style>
 {% endblock css %}
@@ -85,46 +109,57 @@
 <div class="ui vertical center aligned segment" style="background:none;border:none;padding:0;">
   <div style="background:red;position:relative;">
     <img id="canvas" src="{{post.image.url}}" style="width:100%;height:auto;display:block;" />
-    <!-- <div style="height:30px;background:white;text-align:left;padding-left:15px;border-bottom:0.5px solid rgba(0,0,0,0.5);font-size:12px;padding-top:5px;position:relative;">
-      Show Tags
-      <i class="ui angle right icon" style="position:absolute;top:8px;right:10px;"></i>
-    </div> -->
 
-    <input id="cursor-checkbox" type="checkbox">
+    <input id='cursor-shower' type="checkbox">
     <div id='cursor'></div>
 
-    <input id="tagger-checkbox" type="checkbox">
-    <div id='tagger'>
-      <div class="ui fluid search" style="background:white;height:100%;">
-        <div class="ui fluid left icon transparent input" style="font-size:15px;background:none;height:100%;">
-          <img class='tagger-brand' src="" style="width:38px;height:38px;background:none;display:none;" />
-          <img class='tagger-item' src="" style="width:25px;height:25px;background:none;margin:7.5px;display:none;" />
-          <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;background:none;margin:7.5px;" />
+    <input id="tagger-shower" type="checkbox">
+    <div id='tagger' style='background:none;'>
+      <div class="ui fluid search" style="background:none;height:100%;">
+        <div class="ui fluid transparent input" style="font-size:15px;background:white;height:100%;border:1px solid black;position:relative;">
+
+          <input id="tagger-brand-shower" type="checkbox">
+          <div id='tagger-brand' class='centered-img'>
+            <img src="" style="width:40px;height:40px;background:none;" />
+          </div>
+
+          <input id="tagger-item-shower" type="checkbox">
+          <div id='tagger-item' class='centered-img'>
+            <img src="" style="width:25px;height:25px;background:none;" />
+          </div>
+
+          <div class='centered-img' style='width:40px;'>
+            <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;background:none;" />
+          </div>
+
           <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:0 !important;opacity:1;">
-          <div style='background:none;padding:3px;'>
+          <!-- <div style='background:none;padding:3px;'>
             <div class='ui icon compact button' style='background:none;'><i class='ui undo icon'></i></div>
             <div class='ui icon compact button' style='background:none;'><i class='ui arrow right icon'></i></div>
-          </div>
+          </div> -->
+
+
+          <!-- <div id='item-selector' style="position:absolute;top:80px;left:0;right:0;height:40px;background:white;">
+            <table class='ui eight column unstackable very compact basic table' style='border:none;'>
+              <tbody>
+                <tr class='center aligned'>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/accessory.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/bag.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/bottom.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/dress.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/outer.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/shoe.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/skirt.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td><img src="https://storage.googleapis.com/getch-storage/item_images/top.png" style="width:25px;height:25px;background:none;" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+
         </div>
+
         <div class="results"></div>
       </div>
-    </div>
-
-    <div id='item-selector' style="position:absolute;bottom:20px;left:10%;right:10%;height:40px;background:white;">
-      <table class='ui eight column unstackable very compact basic table' style='border:none;'>
-        <tbody>
-          <tr class='center aligned'>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/accessory.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/bag.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/bottom.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/dress.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/outer.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/shoe.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/skirt.png" style="width:25px;height:25px;background:none;" /></td>
-            <td><img src="https://storage.googleapis.com/getch-storage/item_images/top.png" style="width:25px;height:25px;background:none;" /></td>
-          </tr>
-        </tbody>
-      </table>
     </div>
 
     <div id='tags'></div>
@@ -147,15 +182,15 @@
         pos = get_position(e);
 
         $('#cursor').css({ left: pos.x_in_canvas + '%', top: pos.y_in_canvas + '%' });
-        $('#cursor-checkbox').prop('checked', true);
+        $('#cursor-shower').prop('checked', true);
 
         $('#tagger').css({ top: pos.y_in_canvas + '%' });
-        $('#tagger-checkbox').prop('checked', true);
+        $('#tagger-shower').prop('checked', true);
 
         $('#item-selector').css({ top: pos.y_in_canvas + '%' });
 
         // 요게 안먹히네..
-        $('#tagger input.prompt').focus();
+        // $('#tagger input.prompt').focus();
       },
     });
 
@@ -183,6 +218,7 @@
     }
 
     $('#item-selector td').click(function() {
+      console.log(1);
       var src = $(this).children('img').attr('src');
       $('.tagger-item').attr('src', src);
       $('.tagger-item').css({
@@ -202,17 +238,12 @@
     // `;
 
     function set_tag(ch, image) {
-      $('.tagger-brand').attr('src', 'https://storage.googleapis.com/getch-storage/' + image);
-      $('.tagger-brand').css({
-        display: 'block'
-      })
-      $('#tagger input.prompt').css({
-        opacity: 0
-      });
+      $('#tagger-brand img').attr('src', 'https://storage.googleapis.com/getch-storage/' + image);
+      $('#tagger-brand-shower').prop('checked', true);
 
-      $('#item-selector').css({
-        visibility: 'visible'
-      });
+      // $('#item-selector').css({
+      //   visibility: 'visible'
+      // });
     }
 
     $('#tagger .ui.search').search({
