@@ -60,7 +60,7 @@
     }
 
     #tagger-brand-shower:checked ~ #item-selector {
-      visibility: visible !important;
+      transform: translateY(40px) !important;
     }
 
     .results {
@@ -75,15 +75,21 @@
 
 
     #item-selector {
-      display: flex !important;
+      /* display: flex !important;
       align-items: center !important;
-      justify-content: center !important;
-      /* transform: translateY(-20px); */
+      justify-content: center !important; */
       border-left: 1px solid black;
       border-right: 1px solid black;
       border-bottom: 1px solid black;
       transition: all 0.1s ease;
-      visibility: hidden;
+      /* visibility: hidden; */
+      background:lightyellow;
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:-1;
     }
 
     #item-selector td {
@@ -116,7 +122,7 @@
     <input id="tagger-shower" type="checkbox">
     <div id='tagger' style='background:none;'>
       <div class="ui fluid search" style="background:none;height:100%;">
-        <div class="ui fluid transparent input" style="font-size:15px;background:white;height:100%;border:1px solid black;position:relative;">
+        <div class="ui fluid transparent input" style="font-size:15px;background:orange;height:100%;border:1px solid black;position:relative;">
 
           <input id="tagger-brand-shower" type="checkbox">
           <div id='tagger-brand' class='centered-img'>
@@ -132,14 +138,31 @@
             <img src="/static/materials/icons8-plus-100.png" style="width:25px;height:25px;background:none;" />
           </div>
 
-          <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:0 !important;opacity:1;">
+          <input class="prompt" type="text" placeholder="Search..." oninput="" style="padding-left:0 !important;">
           <!-- <div style='background:none;padding:3px;'>
             <div class='ui icon compact button' style='background:none;'><i class='ui undo icon'></i></div>
             <div class='ui icon compact button' style='background:none;'><i class='ui arrow right icon'></i></div>
           </div> -->
 
+          <div id='item-selector' style=''>
+            <table class='ui eight column unstackable very compact basic celled table' style='border:none;width:100%;height:100%;'>
+              <tbody>
+                <tr class='center aligned'>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/accessory.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/bag.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/bottom.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/dress.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/outer.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/shoe.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/skirt.png" style="width:25px;height:25px;background:none;" /></td>
+                  <td style='padding:0;'><img src="https://storage.googleapis.com/getch-storage/item_images/top.png" style="width:25px;height:25px;background:none;" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <!-- <div id='item-selector' style="position:absolute;top:80px;left:0;right:0;height:40px;background:white;">
+
+          <!-- <div id='item-selector' style="position:absolute;top:0;left:0;right:0;bottom:0;background:white;">
             <table class='ui eight column unstackable very compact basic table' style='border:none;'>
               <tbody>
                 <tr class='center aligned'>
@@ -187,7 +210,7 @@
         $('#tagger').css({ top: pos.y_in_canvas + '%' });
         $('#tagger-shower').prop('checked', true);
 
-        $('#item-selector').css({ top: pos.y_in_canvas + '%' });
+        // $('#item-selector').css({ top: pos.y_in_canvas + '%' });
 
         // 요게 안먹히네..
         // $('#tagger input.prompt').focus();
