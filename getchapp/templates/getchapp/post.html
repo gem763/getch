@@ -34,12 +34,11 @@
       left: 10%;
       right: 10%;
       transform: scale(0);
-      /* transform: translateY(-60px), scale(0); */
       visibility: collapse;
       transition: all 0.1s ease;
     }
 
-    #tagger .main.table {
+    #tagbox {
       background: white;
       width: 100%;
       margin: 0;
@@ -47,62 +46,58 @@
       border: 1px solid black;
     }
 
-    #tagger .main.table tr {
-      height: var(--tagger-imgsize);
-    }
 
-    #tagger .main.table td {
+    #tagger td {
       padding: 0;
-    }
-
-    #tagger .main.table td#tagger-brand,
-    #tagger .main.table td#tagger-item {
-      width: 0;
+      height: var(--tagger-imgsize);
       transition: all 0.1s ease;
-    }
-
-    #tagger .main.table td#plus,
-    #tagger .main.table td#tagger-undo,
-    #tagger-image {
-      width: var(--tagger-imgsize);
-    }
-
-    #tagger .main.table td#finder {
       position: relative;
     }
 
-    #tagger .main.table td#tagger-brand img {
+    #tagger td.iconbutton {
+      width: var(--tagger-imgsize);
+    }
+
+    #tagger td#profiletag {
+      width: var(--tagger-imgsize);
+      border-right: 1px solid black;
+    }
+
+    #tagger td img {
       object-fit: contain;
-      width: 0;
-      height: var(--tagger-imgsize);
       background: none;
       display: block;
+      vertical-align: middle;
+      margin-left: auto;
+      margin-right: auto;
+      width: var(--tagger-imgsize);
+      height: var(--tagger-imgsize);
       transition: all 0.1s ease;
     }
 
-    #tagger .main.table td#tagger-item img {
-      width: 0;
-      height: 25px;
-      background: none;
-      display: block;
-      vertical-align: middle;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #tagger .main.table td#plus img,
-    #tagger .main.table td#tagger-undo img,
-    #tagger-image img {
+    #tagger td.iconbutton img {
       width: 25px;
       height: 25px;
-      background: none;
-      display: block;
-      vertical-align: middle;
-      margin-left: auto;
-      margin-right: auto;
     }
 
-    #tagger .main.table .prompt {
+    #tagger td#brandtag img {
+      width: 0;
+    }
+
+    #tagger td#itemtag img {
+      width: 0;
+      height: 25px;
+    }
+
+    #tagger td#rating img {
+      width: 25px;
+      height: 25px;
+      display: inline-block;
+      opacity: 0.3;
+    }
+
+
+    #tagbox .prompt {
       font-size: 15px;
       height: 100%;
       width: 100%;
@@ -111,16 +106,17 @@
       border-radius: 0;
     }
 
-    #tagger .main.table .select-item-placeholder {
-      position:absolute;
-      top:10px;
-      left:0;
-      background:none;
-      visibility:hidden;
-      color:gray;
+    #tagbox .select-item-placeholder {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      background: none;
+      visibility: hidden;
+      color: gray;
     }
 
-    #item-selector {
+    #itemselector,
+    #editor {
       z-index: -1;
       background: white;
       position: absolute;
@@ -131,89 +127,106 @@
       border-radius: 0;
       border: 1px solid black;
       transition: all 0.1s ease;
+      visibility: hidden;
     }
 
-    #item-selector td {
-      padding: 0;
-      height: 40px;
+    #editor > table {
       border: none;
-    }
-
-    #item-selector td img {
-      width: 25px;
-      height: 25px;
-      background: none;
-      display: block;
-      vertical-align: middle;
-      margin-left: auto;
-      margin-right: auto;
+      width: 100%;
+      margin: 0;
+      border-bottom: 1px solid black;
+      border-radius: 0;
     }
 
 
-    #editor {
-      transition: all 0.1s ease;
-    }
 
-    #cursor-shower:checked ~ #cursor {
+    #cursor-control:checked ~ #cursor {
       visibility: visible;
       transform: translate(-50%, -50%) scale(1);
     }
 
-    #tagger-shower:checked ~ #tagger {
+    #tagger-control:checked ~ #tagger {
       visibility: visible;
       transform: scale(1);
-      /* transform: translateY(-60px) scale(1); */
     }
 
-    #tagger-brand-shower:checked ~ #tagger #tagger-brand {
+
+    #brandtag-control:checked ~ #tagger #brandtag {
       width: var(--tagger-imgsize);
       border-right: 1px solid black;
     }
 
-    #tagger-brand-shower:checked ~ #tagger #tagger-brand img {
+    #brandtag-control:checked ~ #tagger #brandtag img {
       width: var(--tagger-imgsize);
     }
 
-    #tagger-brand-shower:checked ~ #tagger #item-selector {
+    #brandtag-control:checked ~ #tagger #itemselector {
+      visibility: visible;
       top: var(--tagger-imgsize);
     }
 
-    #tagger-brand-shower:checked ~ #tagger input.prompt {
-      /* display: none; */
+    #brandtag-control:checked ~ #tagger input.prompt {
       visibility: hidden;
     }
 
-    #tagger-brand-shower:checked ~ #tagger .select-item-placeholder {
+    #brandtag-control:checked ~ #tagger .select-item-placeholder {
       visibility: visible;
     }
 
-    #tagger-item-shower:checked ~ #tagger #tagger-item {
+
+    #itemtag-control:checked ~ #tagger #itemtag {
       width: var(--tagger-imgsize);
       border-right: 1px solid black;
     }
 
-    #tagger-item-shower:checked ~ #tagger #tagger-item img {
+    #itemtag-control:checked ~ #tagger #itemtag img {
       width: 25px;
     }
 
-    #tagger-item-shower:checked ~ #tagger #item-selector {
+    #itemtag-control:checked ~ #tagger #itemselector {
+      visibility: hidden;
       top: 0;
     }
 
-    #tagger-item-shower:checked ~ #tagger #plus {
+    #itemtag-control:checked ~ #tagger #plus {
       display: none;
     }
 
-    #tagger-item-shower:checked ~ #tagger .select-item-placeholder {
+    #itemtag-control:checked ~ #tagger .select-item-placeholder {
       visibility: hidden;
     }
 
-    #tagger-item-shower:checked ~ #tagger #editor {
+    #itemtag-control:checked ~ #tagger #editor {
       visibility: visible !important;
       top: 40px !important;
     }
 
-    #editor textarea {
+    /* #tagger-save:checked ~ #tagger #editor {
+      visibility: hidden !important;
+      top: 0 !important;
+    }
+
+    #tagger-save:checked ~ #tagger #undo {
+      display: none;
+    }
+
+    #tagger-save:checked ~ #tagger #finder {
+      display: none;
+    }
+
+    #tagger-save:checked ~ #tagbox {
+      width: 83px;
+    }
+
+    #tagger-save:checked ~ #tagger #itemtag {
+      border-right: 0;
+    } */
+
+    #editor #tagtext {
+      padding: 10px;
+    }
+
+    #editor #tagtext textarea {
       resize: none;
       background: none;
       width: 100%;
@@ -225,6 +238,16 @@
       display: block;
     }
 
+    #editor #footbuttons {
+      background: none;
+      padding: 5px;
+    }
+
+    #editor #footbuttons .button {
+      width: 45%;
+      border-radius: 0;
+      margin: 5px;
+    }
 
     .results {
       margin-top: 0 !important;
@@ -267,28 +290,30 @@
   <div style="background:red;position:relative;">
     <img id="canvas" src="{{post.image.url}}" style="width:100%;height:auto;display:block;" />
 
-    <input id='cursor-shower' type="checkbox">
+    <input id='cursor-control' type="checkbox">
     <div id='cursor'></div>
 
-    <input id="tagger-shower" type="checkbox">
-    <input id="tagger-brand-shower" type="checkbox">
-    <input id="tagger-item-shower" type="checkbox">
+    <input id="tagger-control" type="checkbox">
+    <input id="brandtag-control" type="checkbox">
+    <input id="itemtag-control" type="checkbox">
+    <!-- <input id="tagger-save" type="checkbox"> -->
+
     <div id='tagger'>
       <div class="ui fluid search">
         <div class="ui fluid transparent input">
 
-          <table class='main ui unstackable very compact basic table'>
+          <table id='tagbox' class='main ui unstackable very compact basic table'>
             <tbody>
               <tr>
-                <td id='tagger-brand'>
+                <td id='brandtag'>
                   <img/>
                 </td>
 
-                <td id='tagger-item'>
+                <td id='itemtag'>
                   <img/>
                 </td>
 
-                <td id='plus'>
+                <td id='plus' class='iconbutton'>
                   <img src="/static/materials/icons8-plus-100.png" />
                 </td>
 
@@ -297,7 +322,7 @@
                   <div class='select-item-placeholder'>ITEM</div>
                 </td>
 
-                <td id='tagger-undo'>
+                <td id='undo' class='iconbutton'>
                   <img src="/static/materials/icons8-left-96.png" />
                 </td>
               </tr>
@@ -305,55 +330,49 @@
           </table>
 
 
-          <table id='item-selector' class='ui eight column unstackable very compact basic celled table'>
+          <table id='itemselector' class='tagger--bar ui eight column unstackable very compact basic table'>
             <tbody>
               <tr>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/accessory.png" /></td>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/bag.png" /></td>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/bottom.png" /></td>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/dress.png" /></td>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/outer.png" /></td>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/shoe.png" /></td>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/skirt.png" /></td>
-                <td><img src="https://storage.googleapis.com/getch-storage/item_images/top.png" /></td>
+                {% for item in items %}
+                <td class='iconbutton'><img src='https://storage.googleapis.com/getch-storage/{{item.image}}' /></td>
+                {% endfor %}
               </tr>
             </tbody>
           </table>
 
 
-          <div id='editor' style='background:white;;position:absolute;top:0;left:0;width:100%;z-index:-1;border:1px solid black;visibility:hidden;'>
-            <table class='ui unstackable very compact basic table' style='border:none;width:100%;margin:0;border-bottom:1px solid black;border-radius:0;'>
+          <div id='editor'>
+            <table class='ui unstackable very compact basic table'>
               <tbody>
-                <tr style='height:40px;padding:0;'>
-                  <td style='width:40px;padding:0;border-right:1px solid black;'>
+                <tr>
+                  <td id='profiletag'>
                     {% include "getchapp/avatar.html" %}
                   </td>
 
-                  <td style='text-align:center;'>
-                    <img src="/static/materials/icons8-star-96.png" style="width:25px;height:25px;display:block-inline;vertical-align:middle;opacity:0.3;">
-                    <img src="/static/materials/icons8-star-96.png" style="width:25px;height:25px;display:block-inline;vertical-align:middle;opacity:0.3;">
-                    <img src="/static/materials/icons8-star-96.png" style="width:25px;height:25px;display:block-inline;vertical-align:middle;opacity:0.3;">
-                    <img src="/static/materials/icons8-star-96.png" style="width:25px;height:25px;display:block-inline;vertical-align:middle;opacity:0.3;">
-                    <img src="/static/materials/icons8-star-96.png" style="width:25px;height:25px;display:block-inline;vertical-align:middle;opacity:0.3;">
+                  <td id='rating'>
+                    <img src="/static/materials/icons8-star-96.png">
+                    <img src="/static/materials/icons8-star-96.png">
+                    <img src="/static/materials/icons8-star-96.png">
+                    <img src="/static/materials/icons8-star-96.png">
+                    <img src="/static/materials/icons8-star-96.png">
                   </td>
 
-                  <td id='tagger-image'>
+                  <td class='iconbutton'>
                     <img src="/static/materials/icons8-unsplash-96.png">
                   </td>
                 </tr>
               </tbody>
             </table>
 
-            <div style='background:none;padding:10px;'>
+            <div id='tagtext'>
               <textarea placeholder='COMMENT HERE'></textarea>
             </div>
 
-            <div style='background:none;padding:5px;'>
-              <div id="post" class="ui basic black mini button" style="width:45%;border-radius:0;margin:5px;">CANCEL</div>
-              <div id="review" class="ui black mini button" style="width:45%;border-radius:0;margin:5px;">SAVE</div>
+            <div id='footbuttons'>
+              <div class="cancel ui basic black mini button">CANCEL</div>
+              <div class="save ui black mini button">SAVE</div>
             </div>
           </div>
-
 
         </div>
 
@@ -381,11 +400,10 @@
         pos = get_position(e);
 
         $('#cursor').css({ left: pos.x_in_canvas + '%', top: pos.y_in_canvas + '%' });
-        $('#cursor-shower').prop('checked', true);
+        $('#cursor-control').prop('checked', true);
 
-        // $('#tagger').css({ top: pos.y_in_canvas + '%' });
         $('#tagger').css({ top: 'calc(' + pos.y_in_canvas + '% - 60px)' });
-        $('#tagger-shower').prop('checked', true);
+        $('#tagger-control').prop('checked', true);
 
         // 요게 안먹히네..
         // $('#tagger input.prompt').focus();
@@ -416,37 +434,27 @@
     }
 
 
-    // const template_channeltag = ({ch, image, top, left}) => `
-    //   <div class="tag" style="top:${top};left:${left};position:absolute;transform:translate(-50%,-150%);width:40px;height:40px;background:white;border:1px solid black;">
-    //     <div class="tag-brand" style="opacity:1;" ch="${ch}">
-    //       <a href="{% url 'brand' 1 %}">
-    //         <img class="ui image" src="${image}" style="object-fit:contain;width:36px;height:36px;">
-    //       </a>
-    //     </div>
-    //   </div>
-    // `;
-
     function set_brand(ch, image) {
-      $('#tagger-brand img').attr('src', image);
-      $('#tagger-brand-shower').prop('checked', true);
+      $('#brandtag img').attr('src', image);
+      $('#brandtag-control').prop('checked', true);
     }
 
 
-    $('#item-selector td').click(function() {
+    $('#itemselector td').click(function() {
       var src = $(this).children('img').attr('src');
-      $('#tagger-item img').attr('src', src);
-      $('#tagger-item-shower').prop('checked', true);
+      $('#itemtag img').attr('src', src);
+      $('#itemtag-control').prop('checked', true);
     });
 
-    $('#tagger-undo').click(function() {
-      if ($('#tagger-item-shower').prop('checked')) {
-        $('#tagger-item-shower').prop('checked', false);
+    $('#undo').click(function() {
+      if ($('#itemtag-control').prop('checked')) {
+        $('#itemtag-control').prop('checked', false);
 
-      } else if ($('#tagger-brand-shower').prop('checked')) {
-        $('#tagger-brand-shower').prop('checked', false);
+      } else if ($('#brandtag-control').prop('checked')) {
+        $('#brandtag-control').prop('checked', false);
 
       } else {
-        $('#tagger-shower').prop('checked', false);
+        $('#tagger-control').prop('checked', false);
       };
     });
 
@@ -461,14 +469,10 @@
       templates: {
         standard: function(response){
           htmls = $.map(response.results, function(item) {
-                    // var image = item.image.replace('\\', '/');
                     var image = 'https://storage.googleapis.com/getch-storage/' + item.image.replace('\\', '/');
                     var onclick = "set_brand(" + item.pk + ", '" + image + "')";
-                    // var onclick = "set_tag(" + item.pk + ", '/files/" + image + "')";
                     var html = '<div class="result" onclick="' + onclick + '">';
                     html += '<div class="image">'
-                          // + '<img src="/files/' + item.image + '" style="object-fit:contain;height:80px;width:80px;">'
-                          // + '<img src="https://storage.googleapis.com/getch-storage/' + item.image + '">'
                           + '<img src="' + image + '">'
                           + '</div>';
                     html += '<div class="content">';
@@ -501,6 +505,23 @@
         this.style.height = '40px';
         this.style.height = (this.scrollHeight) + 'px';
       }
+    });
+
+
+
+    const template_tag = (tag_id) => `
+      <div class='tag' style='position:absolute;;left:${pos.x_in_canvas}%;top:${pos.y_in_canvas}%;'>
+        1234;
+      </div>
+    `
+
+
+    $('#save').click(function() {
+      // $('#tagger-save').prop('checked', true);
+      // $('#tagger').css({ left: 'calc(' + pos.x_in_canvas + '% - 40px)' });
+
+      let tag = template_tag(0);
+      $('#tags').append($(tag));
     });
   </script>
 {% endblock js %}
