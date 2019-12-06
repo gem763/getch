@@ -13,13 +13,15 @@
     }
 
     #cursor {
+      box-sizing: content-box;
       position: absolute;
       background: white;
       top: 50%;
       left: 50%;
-      width: 10px;
-      height: 10px;
-      border-radius: 10px;
+      width: 8px;
+      height: 8px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
       transform: translate(-50%, -50%) scale(0);
       visibility: collapse;
       transition: all 0.1s ease;
@@ -30,7 +32,7 @@
       z-index: 100;
       position: absolute;
       background: none;
-      top: 0;
+      /* top: 0; */
       left: 10%;
       right: 10%;
       transform: scale(0);
@@ -38,12 +40,54 @@
       transition: all 0.1s ease;
     }
 
-    #tagbox {
+    #tags .tag-at {
+      box-sizing: content-box;
+      position:absolute;
+      width:8px;
+      height:8px;
+      background:white;
+      border-radius: 8px;
+      box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
+      transform: translate(-50%, -50%)
+    }
+
+    #tags .tag {
+      position: absolute;
       background: white;
-      width: 100%;
-      margin: 0;
       border-radius: 0;
+      border-style: hidden;
+      border-collapse: collapse;
       border: 1px solid black;
+      margin: 0;
+      transform: translate(-40px, -60px);
+    }
+
+    #tags td {
+      border: 1px solid black;
+      padding: 0;
+      height: var(--tagger-imgsize);
+      width: var(--tagger-imgsize);
+      transition: all 0.1s ease;
+    }
+
+    #tags td img {
+      object-fit: contain;
+      background: none;
+      display: block;
+      vertical-align: middle;
+      margin-left: auto;
+      margin-right: auto;
+      transition: all 0.1s ease;
+    }
+
+    #tags td:first-child img {
+      width: var(--tagger-imgsize);
+      height: var(--tagger-imgsize);
+    }
+
+    #tags td:last-child img {
+      width: 25px;
+      height: 25px;
     }
 
 
@@ -97,6 +141,14 @@
     }
 
 
+    #tagbox {
+      background: white;
+      width: 100%;
+      margin: 0;
+      border-radius: 0;
+      border: 1px solid black;
+    }
+
     #tagbox .prompt {
       font-size: 15px;
       height: 100%;
@@ -136,6 +188,33 @@
       margin: 0;
       border-bottom: 1px solid black;
       border-radius: 0;
+    }
+
+    #editor #tagtext {
+      padding: 10px;
+    }
+
+    #editor #tagtext textarea {
+      resize: none;
+      background: none;
+      width: 100%;
+      height: 40px;
+      overflow-y: hidden;
+      border: none;
+      line-height: 1.3em;
+      margin: 0;
+      display: block;
+    }
+
+    #editor #footbuttons {
+      background: none;
+      padding: 5px;
+    }
+
+    #editor #footbuttons .button {
+      width: 45%;
+      border-radius: 0;
+      margin: 5px;
     }
 
 
@@ -201,53 +280,7 @@
       top: 40px !important;
     }
 
-    /* #tagger-save:checked ~ #tagger #editor {
-      visibility: hidden !important;
-      top: 0 !important;
-    }
 
-    #tagger-save:checked ~ #tagger #undo {
-      display: none;
-    }
-
-    #tagger-save:checked ~ #tagger #finder {
-      display: none;
-    }
-
-    #tagger-save:checked ~ #tagbox {
-      width: 83px;
-    }
-
-    #tagger-save:checked ~ #tagger #itemtag {
-      border-right: 0;
-    } */
-
-    #editor #tagtext {
-      padding: 10px;
-    }
-
-    #editor #tagtext textarea {
-      resize: none;
-      background: none;
-      width: 100%;
-      height: 40px;
-      overflow-y: hidden;
-      border: none;
-      line-height: 1.3em;
-      margin: 0;
-      display: block;
-    }
-
-    #editor #footbuttons {
-      background: none;
-      padding: 5px;
-    }
-
-    #editor #footbuttons .button {
-      width: 45%;
-      border-radius: 0;
-      margin: 5px;
-    }
 
     .results {
       margin-top: 0 !important;
@@ -286,6 +319,7 @@
 
 {% block mastbody %}
 {% load static %}
+{% load widget_tweaks %}
 <div class="ui vertical center aligned segment" style="background:none;border:none;padding:0;">
   <div style="background:red;position:relative;">
     <img id="canvas" src="{{post.image.url}}" style="width:100%;height:auto;display:block;" />
@@ -296,7 +330,6 @@
     <input id="tagger-control" type="checkbox">
     <input id="brandtag-control" type="checkbox">
     <input id="itemtag-control" type="checkbox">
-    <!-- <input id="tagger-save" type="checkbox"> -->
 
     <div id='tagger'>
       <div class="ui fluid search">
@@ -334,14 +367,24 @@
             <tbody>
               <tr>
                 {% for item in items %}
-                <td class='iconbutton'><img src='https://storage.googleapis.com/getch-storage/{{item.image}}' /></td>
+                {% with "https://storage.googleapis.com/getch-storage/"|add:item.image as item_image %}
+                <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item_image}}")'><img src='{{item_image}}' /></td>
+                {% endwith %}
                 {% endfor %}
               </tr>
             </tbody>
           </table>
 
 
-          <div id='editor'>
+
+          <form id='editor' class="ui form" method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <input type='hidden' value='' name='x'>
+            <input type='hidden' value='' name='y'>
+            <input type='hidden' value='' name='brand_id'>
+            <input type='hidden' value='' name='item_id'>
+
             <table class='ui unstackable very compact basic table'>
               <tbody>
                 <tr>
@@ -358,21 +401,30 @@
                   </td>
 
                   <td class='iconbutton'>
-                    <img src="/static/materials/icons8-unsplash-96.png">
+                    <label for='imageuploader'>
+                      <img src="/static/materials/icons8-unsplash-96.png">
+                    </label>
                   </td>
                 </tr>
               </tbody>
             </table>
 
-            <div id='tagtext'>
-              <textarea placeholder='COMMENT HERE'></textarea>
+            <div id='tagimage' class="field" style='margin:0;'>
+              {% render_field tagform.image onchange="upload_img(this)" id="imageuploader" style="display:none;" %}
+              <div style="margin-top:0;display:none;">
+                <img src="#" alt="image uploaded" style="width:100%;height:auto;display:block;" />
+              </div>
+            </div>
+
+            <div id='tagtext' class="field">
+              {% render_field tagform.text placeholder="COMMENT HERE" %}
             </div>
 
             <div id='footbuttons'>
-              <div class="cancel ui basic black mini button">CANCEL</div>
-              <div class="save ui black mini button">SAVE</div>
+              <button class="cancel ui basic black mini button">CANCEL</button>
+              <button class="save ui black mini button" type='submit'>SAVE</button>
             </div>
-          </div>
+          </form>
 
         </div>
 
@@ -380,7 +432,19 @@
       </div>
     </div>
 
-    <div id='tags'></div>
+    <div id='tags'>
+      {% for tag in post.tag_set.all %}
+      <div class='tag-at' style='left:{{tag.x}}%;top:{{tag.y}}%;'></div>
+      <table class='tag ui unstackable very compact basic collapsing table' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
+        <tbody>
+          <tr>
+            <td><img src="{{tag.brand.image.url}}"/></td>
+            <td><img src="{{tag.item.image.url}}"/></td>
+          </tr>
+        </tbody>
+      </table>
+      {% endfor %}
+    </div>
   </div>
 </div>
 
@@ -393,58 +457,72 @@
 {% block js %}
   {{ block.super }}
   <script>
-    var pos;
+    var pos = {
+      x: 0,
+      y: 0,
+      brand_id: undefined,
+      item_id: undefined
+    };
 
     $('#canvas').on({
       'click': function(e) {
-        pos = get_position(e);
+        set_position(e);
+        init_tagger();
 
-        $('#cursor').css({ left: pos.x_in_canvas + '%', top: pos.y_in_canvas + '%' });
+        $('#cursor').css({ left: pos.x + '%', top: pos.y + '%' });
         $('#cursor-control').prop('checked', true);
 
-        $('#tagger').css({ top: 'calc(' + pos.y_in_canvas + '% - 60px)' });
+        $('#tagger').css({ top: 'calc(' + pos.y + '% - 60px)' });
+        $('#tagger .prompt').val('');
         $('#tagger-control').prop('checked', true);
 
-        // 요게 안먹히네..
-        // $('#tagger input.prompt').focus();
+        // time delay 없이 포커스를 주면 안된다. prompt가 뜨는 시간을 고려해야되는 것 같다
+        setTimeout(function() { $('#tagger .prompt').focus(); }, 100);
       },
     });
 
-    function get_position(e) {
+
+    function init_tagger() {
+      $('#cursor-control').prop('checked', false);
+      $('#tagger-control').prop('checked', false);
+      $('#brandtag-control').prop('checked', false);
+      $('#itemtag-control').prop('checked', false);
+    }
+
+
+    function set_position(e) {
       var canvas_position = $(e.target).offset();
       var canvas_left = canvas_position.left;
       var canvas_top = canvas_position.top;
       var canvas_width = $(e.target).width();
       var canvas_height = $(e.target).height();
 
-      var x = e.pageX;
-      var y = e.pageY;
+      var page_x = e.pageX;
+      var page_y = e.pageY;
 
-      var x_in_canvas = (x - canvas_left) / canvas_width * 100;
-      var y_in_canvas = (y - canvas_top) / canvas_height * 100;
-
-      var pos = {
-        x: x,
-        y: y,
-        x_in_canvas: x_in_canvas,
-        y_in_canvas: y_in_canvas
-      };
-
-      return pos;
+      pos.x = (page_x - canvas_left) / canvas_width * 100;
+      pos.y = (page_y - canvas_top) / canvas_height * 100;
     }
 
 
-    function set_brand(ch, image) {
+    function set_brand(brand_id, image) {
+      pos.brand_id = brand_id;
       $('#brandtag img').attr('src', image);
       $('#brandtag-control').prop('checked', true);
     }
 
 
-    $('#itemselector td').click(function() {
-      var src = $(this).children('img').attr('src');
-      $('#itemtag img').attr('src', src);
+    function set_item(item_id, image) {
+      pos.item_id = item_id;
+      $('#itemtag img').attr('src', image);
       $('#itemtag-control').prop('checked', true);
-    });
+    }
+
+    // $('#itemselector td').click(function() {
+    //   var src = $(this).children('img').attr('src');
+    //   $('#itemtag img').attr('src', src);
+    //   $('#itemtag-control').prop('checked', true);
+    // });
 
     $('#undo').click(function() {
       if ($('#itemtag-control').prop('checked')) {
@@ -468,16 +546,16 @@
       searchFields: ['name', 'category', 'keywords'],
       templates: {
         standard: function(response){
-          htmls = $.map(response.results, function(item) {
-                    var image = 'https://storage.googleapis.com/getch-storage/' + item.image.replace('\\', '/');
-                    var onclick = "set_brand(" + item.pk + ", '" + image + "')";
+          htmls = $.map(response.results, function(brand) {
+                    var image = 'https://storage.googleapis.com/getch-storage/' + brand.image.replace('\\', '/');
+                    var onclick = "set_brand(" + brand.pk + ", '" + image + "')";
                     var html = '<div class="result" onclick="' + onclick + '">';
                     html += '<div class="image">'
                           + '<img src="' + image + '">'
                           + '</div>';
                     html += '<div class="content">';
-                    html += '<div class="ui header">' + item.fullname_en;
-                    html += '<div class="sub header">' + item.fullname_kr + '</div>';
+                    html += '<div class="ui header">' + brand.fullname_en;
+                    html += '<div class="sub header">' + brand.fullname_kr + '</div>';
                     html += '</div></div>';
                     html += '</div>';
                     return html
@@ -510,18 +588,32 @@
 
 
     const template_tag = (tag_id) => `
-      <div class='tag' style='position:absolute;;left:${pos.x_in_canvas}%;top:${pos.y_in_canvas}%;'>
-        1234;
+      <div class='tag' style='position:absolute;;left:${pos.x}%;top:${pos.y}%;'>
       </div>
     `
 
 
-    $('#save').click(function() {
-      // $('#tagger-save').prop('checked', true);
-      // $('#tagger').css({ left: 'calc(' + pos.x_in_canvas + '% - 40px)' });
-
-      let tag = template_tag(0);
-      $('#tags').append($(tag));
+    $('#footbuttons .save').click(function() {
+      init_tagger();
+      $('#editor input[name="x"]').attr('value', pos.x);
+      $('#editor input[name="y"]').attr('value', pos.y);
+      $('#editor input[name="brand_id"]').attr('value', pos.brand_id);
+      $('#editor input[name="item_id"]').attr('value', pos.item_id);
     });
+
+
+
+    function upload_img(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          $("#tagimage img").attr("src", e.target.result);
+          $("#tagimage img").parent().css("display", "block");
+        }
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
   </script>
 {% endblock js %}

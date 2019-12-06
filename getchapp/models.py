@@ -89,24 +89,63 @@ class Item(ChannelBase):
 
 
 def post_image_path(instance, fname):
+    author = instance.author
     now = datetime.now()
     year = now.strftime('%Y')
     month = now.strftime('%m')
     day = now.strftime('%d')
-    return 'post_images/{author}/{year}/{month}/{day}/origin/{fname}'.format(author=instance.author, fname=fname, year=year, month=month, day=day)
+    fname = str(now) + '__' + fname
+    return 'post_images/{author}/{year}/{month}/{day}/{fname}'.format(author=author, fname=fname, year=year, month=month, day=day)
 
 
-# Post도 channel 이다!~~~~~~~~~~~~~~~~~~~~
-class Post(BigIdAbstract):
+class PostBase(BigIdAbstract):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    # image = models.ImageField(upload_to='post_images/%Y/%m/%d/origin')
     image = models.ImageField(upload_to=post_image_path)
     text = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    nlikes = models.IntegerField(default=0)
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
         return '{created_at} {email}'.format(created_at=self.created_at, email=self.author.user.email)
 
+
+
+class Comment(PostBase):
+    limit = models.Q(app_label='getchapp', model='post') | models.Q(app_label='getchapp', model='tag')
+    content_type = models.ForeignKey(ContentType, limit_choices_to=limit, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    on = GenericForeignKey('content_type', 'object_id')
+
+
+class Post(PostBase):
     def get_absolute_url(self):
         url = reverse_lazy('post', kwargs={'pk':self.pk})
         return url
+
+
+class Tag(PostBase):
+    on = models.ForeignKey(Post, on_delete=models.CASCADE)
+    x = models.FloatField(default=0)
+    y = models.FloatField(default=0)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    rates = models.IntegerField(default=0)
+
+
+
+# Post도 channel 이다!~~~~~~~~~~~~~~~~~~~~
+# class Post(BigIdAbstract):
+#     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+#     image = models.ImageField(upload_to=post_image_path)
+#     text = models.TextField(max_length=500, null=True, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return '{created_at} {email}'.format(created_at=self.created_at, email=self.author.user.email)
+#
+#     def get_absolute_url(self):
+#         url = reverse_lazy('post', kwargs={'pk':self.pk})
+#         return url
