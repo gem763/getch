@@ -40,7 +40,11 @@
       transition: all 0.1s ease;
     }
 
-    #tags .tag-at {
+    #tags .tag {
+      position: absolute;
+    }
+
+    #tags .tag-xy {
       box-sizing: content-box;
       position:absolute;
       width:8px;
@@ -48,25 +52,25 @@
       background:white;
       border-radius: 8px;
       box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
-      transform: translate(-50%, -50%)
+      transform: translate(-50%, -50%);
     }
 
-    #tags .tag {
-      position: absolute;
+    #tags .tag-body {
+      /* position: absolute; */
       background: white;
       border-radius: 0;
       border-style: hidden;
       border-collapse: collapse;
       border: 1px solid black;
       margin: 0;
-      transform: translate(-40px, -60px);
+      transform: translate(-42px, -60px);
     }
 
     #tags td {
       border: 1px solid black;
       padding: 0;
       height: var(--tagger-imgsize);
-      width: var(--tagger-imgsize);
+      width: var(--tagger-imgsize) !important;
       transition: all 0.1s ease;
     }
 
@@ -434,15 +438,17 @@
 
     <div id='tags'>
       {% for tag in post.tag_set.all %}
-      <div class='tag-at' style='left:{{tag.x}}%;top:{{tag.y}}%;'></div>
-      <table class='tag ui unstackable very compact basic collapsing table' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
-        <tbody>
-          <tr>
-            <td><img src="{{tag.brand.image.url}}"/></td>
-            <td><img src="{{tag.item.image.url}}"/></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class='tag' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
+        <div class='tag-xy'></div>
+        <table class='tag-body ui unstackable very compact basic collapsing table'>
+          <tbody>
+            <tr>
+              <td><img src="{{tag.brand.image.url}}"/></td>
+              <td><img src="{{tag.item.image.url}}"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       {% endfor %}
     </div>
   </div>
@@ -518,11 +524,6 @@
       $('#itemtag-control').prop('checked', true);
     }
 
-    // $('#itemselector td').click(function() {
-    //   var src = $(this).children('img').attr('src');
-    //   $('#itemtag img').attr('src', src);
-    //   $('#itemtag-control').prop('checked', true);
-    // });
 
     $('#undo').click(function() {
       if ($('#itemtag-control').prop('checked')) {
@@ -587,10 +588,10 @@
 
 
 
-    const template_tag = (tag_id) => `
-      <div class='tag' style='position:absolute;;left:${pos.x}%;top:${pos.y}%;'>
-      </div>
-    `
+    // const template_tag = (tag_id) => `
+    //   <div class='tag' style='position:absolute;;left:${pos.x}%;top:${pos.y}%;'>
+    //   </div>
+    // `
 
 
     $('#footbuttons .save').click(function() {

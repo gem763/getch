@@ -114,6 +114,7 @@ class PostBase(BigIdAbstract):
 
 
 class Comment(PostBase):
+    image = models.ImageField(upload_to=post_image_path, blank=True)
     limit = models.Q(app_label='getchapp', model='post') | models.Q(app_label='getchapp', model='tag')
     content_type = models.ForeignKey(ContentType, limit_choices_to=limit, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -127,6 +128,7 @@ class Post(PostBase):
 
 
 class Tag(PostBase):
+    image = models.ImageField(upload_to=post_image_path, blank=True)
     on = models.ForeignKey(Post, on_delete=models.CASCADE)
     x = models.FloatField(default=0)
     y = models.FloatField(default=0)
