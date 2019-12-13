@@ -56,7 +56,7 @@
     }
 
     #tags .tag-body {
-      /* position: absolute; */
+      position: absolute;
       background: white;
       border-radius: 0;
       border-style: hidden;
@@ -90,7 +90,8 @@
     }
 
     #tags td:last-child img {
-      width: 25px;
+      width: var(--tagger-imgsize); /* 총 width는 td 에서 박아줄라고 했는데, 그게 안되네? */
+      /* width: 25px;  */
       height: 25px;
     }
 
@@ -440,7 +441,8 @@
       {% for tag in post.tag_set.all %}
       <div class='tag' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
         <div class='tag-xy'></div>
-        <table class='tag-body ui unstackable very compact basic collapsing table'>
+        <!-- <table class='tag-body ui unstackable very compact basic collapsing table'> -->
+        <table class='tag-body ui unstackable table'>
           <tbody>
             <tr>
               <td><img src="{{tag.brand.image.url}}"/></td>
