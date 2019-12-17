@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500&display=swap&subset=korean" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/spin/spin.css">
 
   <!-- favicon.ico 404 Not found error -->
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
@@ -46,7 +47,9 @@
 
   {% block js %}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
   <script src="/static/semantic/semantic.min.js"></script>
+  <script src="/static/spin/spin.js"></script>
   <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
   <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.js"></script>
   <!-- <script src="/static/getch/test2.js" type="module"></script> -->
@@ -73,6 +76,26 @@
     $('.signin-modal .dismiss').click(function() {
       $('.signin-checkbox').prop('checked', false);
     });
+
+
+    // https://docs.djangoproject.com/en/2.2/ref/csrf/
+    function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+
+    $(document).ready(function(){
+      var csrftoken = Cookies.get('csrftoken');
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        }
+      });
+    });
+
 
     $(document).click(function(event) {
       if (!$(event.target).closest('.signin-modal, .my.item').length) {

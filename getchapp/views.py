@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 # from django.views.decorators.csrf import csrf_protect
+from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
-from getchapp.models import Post, Brand, Profile, Item
+from getchapp.models import Post, Brand, Profile, Item, Tag, Comment
 from .forms import PostForm, TagForm
 
 
@@ -36,8 +37,45 @@ def my(request):
 
 
 # @csrf_protect
-def update_tags(request, pk):
-    return JsonResponse({'success':False})
+def save_tag(request, pk):
+    resp_fail = JsonResponse({'success':False})
+
+    if request.method=='POST':
+        try:
+            tagform = TagForm(request.POST, request.FILES)
+            if tagform.is_valid():
+                obj = tagform.save(commit=False)
+                obj.on_id = pk
+                obj.x = request.POST['x']
+                obj.y = request.POST['y']
+                obj.brand_id = request.POST['brand_id']
+                obj.item_id = request.POST['item_id']
+                obj.author = get_object_or_404(Profile, user=request.user)
+                obj.save()
+
+                # _tags = serializers.serialize('python', Tag.objects.filter(on__pk=pk), use_natural_foreign_keys=True)
+                # return JsonResponse({'success':True, 'tags':_tags}, safe=False)
+                _tags = Tag.objects.filter(on__pk=pk).values('pk', 'x', 'y', 'brand__image', 'item__image')
+                return JsonResponse({'success':True, 'tags':list(_tags)}, safe=False)
+
+            else:
+                return resp_fail
+
+        except:
+            return resp_fail
+
+    else:
+        return resp_fail
+
+
+def tag_feed(request, pk):
+    resp_fail = JsonResponse({'success':False})
+
+    if request.method=='GET':
+        tag = serializers.serialize('python', Tag.objects.filter(pk=pk), use_natural_foreign_keys=True)[0]
+        comments = Comment.objects.filter(content_type__model='tag', object_id=pk).values()
+        return JsonResponse({'success':True, 'tag':tag, 'comments':list(comments)}, safe=False)
+
 
 
 def post(request, pk):

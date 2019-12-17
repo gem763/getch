@@ -63,9 +63,15 @@ class ChannelBase(models.Model):
         return str(self.name)
 
 
-
 class Profile(BigIdAbstract, ChannelBase):
     user = models.OneToOneField(CustomEmailUser, on_delete=models.CASCADE)
+
+    def natural_key(self):
+        return {'id':self.pk, 'image':self.user.socialaccount_set()[0].get_avatar_url()}
+
+# class BrandManager(models.Manager):
+#     def get_by_natural_key(self, category, fullname_en):
+#         return self.get(category=category, fullname_en=fullname_en)
 
 
 class Brand(ChannelBase):
@@ -77,6 +83,14 @@ class Brand(ChannelBase):
     image = models.ImageField(upload_to='brand_images', default='') # 로고는 필수 (null=True 하면 안됨)
     master = models.ForeignKey(Profile, blank=True, null=True, on_delete=models.SET_NULL)
 
+    # objects = BrandManager()
+
+    # class Meta:
+    #     unique_together = [['category', 'fullname_en']]
+
+    def natural_key(self):
+        return {'id':self.pk, 'image':self.image.url}
+
     # def __str__(self):
     #     return '{fullname_en}'.format(fullname_en=self.fullname_en)
         # return self.fullname_en.capitalize()
@@ -86,6 +100,8 @@ class Item(ChannelBase):
     image = models.ImageField(upload_to='item_images', default='')
     master = models.ForeignKey(Profile, blank=True, null=True, on_delete=models.SET_NULL)
 
+    def natural_key(self):
+        return {'id':self.pk, 'image':self.image.url}
 
 
 def post_image_path(instance, fname):
@@ -135,6 +151,16 @@ class Tag(PostBase):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     rates = models.IntegerField(default=0)
+
+    # def natural_key(self):
+    #     return { 'brand': self.brand, 'item': self.item }
+        #     'image': self.image.url,
+        #     'text': self.text,
+        #     'created_at': self.created_at,
+        #     'nlikes': self.nlikes,
+        #     'rates': self.rates,
+        #     'author': {'id':self.author.pk, 'image':self.author.user.get_avatar_url()},
+        # }
 
 
 

@@ -441,7 +441,7 @@
       {% for tag in post.tag_set.all %}
       <div class='tag' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
         <div class='tag-xy'></div>
-        <table class='tag-body ui unstackable table'>
+        <table class='tag-body ui unstackable table' onclick='load_tag_feed({{tag.pk}})'>
           <tbody>
             <tr>
               <td><img src="{{tag.brand.image.url}}"/></td>
@@ -588,33 +588,83 @@
     });
 
 
+    const template_tag = ({pk, x, y, brand__image, item__image}) => `
+      <div class='tag' style='left:${x}%;top:${y}%;'>
+        <div class='tag-xy'></div>
+        <table class='tag-body ui unstackable table' onclick='load_tag_feed(${pk})'>
+          <tbody>
+            <tr>
+              <td><img src="https://storage.googleapis.com/getch-storage/${brand__image}"/></td>
+              <td><img src="https://storage.googleapis.com/getch-storage/${item__image}"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `
 
-    // const template_tag = (tag_id) => `
-    //   <div class='tag' style='position:absolute;;left:${pos.x}%;top:${pos.y}%;'>
-    //   </div>
-    // `
 
+    function load_tag_feed(tag_id) {
+      var target = document.getElementById('canvas').parentElement;
+      var spinner = new Spinner().spin(target);
 
-    function update_tags() {
       $.ajax({
-        url: '{% url "update_tags" 100 %}',
-        type: 'POST',
-        // data: $('#edit').serialize(),
-        data: {test: 1},
+        url: '{% url "tag_feed" pk=0 %}'.replace('0', tag_id),
+        type: 'GET',
+        data: {},
         dataType:'json',
+        cache: false,
+        contentType: false,
+        processData: false,
         success: function(json) {
-          console.log(json);
+          console.log(json)
+          // if (json.success) {
+          //   $('#tags').html(json.tags.map(template_tag).join(''));
+          // } else {
+          //   console.log('something wrong');
+          // }
+          spinner.stop();
         },
         error: function(xhr, errmsg, err) {
           console.log(xhr.status + ': ' + xhr.responseText);
+          spinner.stop();
         }
-      })
+      });
+    }
+
+
+    function save_tag(formData) {
+      var target = document.getElementById('canvas').parentElement;
+      var spinner = new Spinner().spin(target);
+
+      $.ajax({
+        url: '{% url "save_tag" post.pk %}',
+        type: 'POST',
+        // data: $('#editor').serialize(),
+        data: formData,
+        dataType:'json',
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          if (json.success) {
+            $('#tags').html(json.tags.map(template_tag).join(''));
+          } else {
+            console.log('something wrong');
+          }
+          spinner.stop();
+        },
+        error: function(xhr, errmsg, err) {
+          console.log(xhr.status + ': ' + xhr.responseText);
+          spinner.stop();
+        }
+      });
     }
 
 
     $('#editor').on('submit', function(event) {
       event.preventDefault();
-      update_tags();
+      let formData = new FormData(this);
+      save_tag(formData);
     });
 
 
@@ -642,38 +692,30 @@
     }
 
 
-// https://docs.djangoproject.com/en/2.2/ref/csrf/
+    // var opts = {
+    //   lines: 12, // The number of lines to draw
+    //   length: 0, // The length of each line
+    //   width: 52, // The line thickness
+    //   radius: 25, // The radius of the inner circle
+    //   scale: 1.25, // Scales overall size of the spinner
+    //   corners: 1, // Corner roundness (0..1)
+    //   color: '#ffffff', // CSS color or array of colors
+    //   fadeColor: 'transparent', // CSS color or array of colors
+    //   speed: 0.9, // Rounds per second
+    //   rotate: 61, // The rotation offset
+    //   animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
+    //   direction: 1, // 1: clockwise, -1: counterclockwise
+    //   zIndex: 2e9, // The z-index (defaults to 2000000000)
+    //   className: 'spinner', // The CSS class to assign to the spinner
+    //   top: '49%', // Top position relative to parent
+    //   left: '50%', // Left position relative to parent
+    //   shadow: '0 0 1px transparent', // Box-shadow for the lines
+    //   position: 'absolute' // Element positioning
+    // };
 
-
-    // using jQuery
-      function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-          var cookies = document.cookie.split(';');
-          for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-            }
-          }
-        }
-        return cookieValue;
-      }
-      function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-      }
-      $(document).ready(function() {
-        var csrftoken = getCookie('csrftoken');
-        $.ajaxSetup({
-          beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-              xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-          }
-        });
-      });
+    // $(document).ready(function() {
+    //   var target = document.getElementById('canvas').parentElement;
+    //   var spinner = new Spinner().spin(target);
+    // });
   </script>
 {% endblock js %}
