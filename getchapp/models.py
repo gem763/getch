@@ -67,11 +67,7 @@ class Profile(BigIdAbstract, ChannelBase):
     user = models.OneToOneField(CustomEmailUser, on_delete=models.CASCADE)
 
     def natural_key(self):
-        return {'id':self.pk, 'image':self.user.socialaccount_set()[0].get_avatar_url()}
-
-# class BrandManager(models.Manager):
-#     def get_by_natural_key(self, category, fullname_en):
-#         return self.get(category=category, fullname_en=fullname_en)
+        return {'id':self.pk, 'image':self.user.socialaccount_set.all()[0].get_avatar_url()}
 
 
 class Brand(ChannelBase):
@@ -82,8 +78,6 @@ class Brand(ChannelBase):
     description = models.TextField(max_length=500, blank=True, null=True)
     image = models.ImageField(upload_to='brand_images', default='') # 로고는 필수 (null=True 하면 안됨)
     master = models.ForeignKey(Profile, blank=True, null=True, on_delete=models.SET_NULL)
-
-    # objects = BrandManager()
 
     # class Meta:
     #     unique_together = [['category', 'fullname_en']]

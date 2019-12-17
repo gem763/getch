@@ -63,7 +63,9 @@
       border-collapse: collapse;
       border: 1px solid black;
       margin: 0;
-      transform: translate(-42px, -60px);
+      transform: translate(-42px, -60px) scale(0);
+      visibility: collapse;
+      transition: all 0.1s ease;
     }
 
     #tags td {
@@ -285,6 +287,11 @@
       top: 40px !important;
     }
 
+    .tag-body-control:checked ~ .tag-body {
+      visibility: visible !important;
+      transform: translate(-42px, -60px) scale(1) !important;
+    }
+
 
 
     .results {
@@ -441,6 +448,8 @@
       {% for tag in post.tag_set.all %}
       <div class='tag' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
         <div class='tag-xy'></div>
+
+        <input class="tag-body-control" type="checkbox">
         <table class='tag-body ui unstackable table' onclick='load_tag_feed({{tag.pk}})'>
           <tbody>
             <tr>
@@ -464,6 +473,8 @@
 {% block js %}
   {{ block.super }}
   <script>
+    var state = 0;
+
     var pos = {
       x: 0,
       y: 0,
@@ -473,18 +484,28 @@
 
     $('#canvas').on({
       'click': function(e) {
-        set_position(e);
-        init_tagger();
+        if (state==0) {
+          $('.tag-body-control').prop('checked', true);
+          state = 1;
 
-        $('#cursor').css({ left: pos.x + '%', top: pos.y + '%' });
-        $('#cursor-control').prop('checked', true);
+        } else if (state==1) {
+          $('.tag-body-control').prop('checked', false);
+          state = 0;
 
-        $('#tagger').css({ top: 'calc(' + pos.y + '% - 60px)' });
-        $('#tagger .prompt').val('');
-        $('#tagger-control').prop('checked', true);
+        } else {
+          set_position(e);
+          init_tagger();
 
-        // time delay 없이 포커스를 주면 안된다. prompt가 뜨는 시간을 고려해야되는 것 같다
-        setTimeout(function() { $('#tagger .prompt').focus(); }, 100);
+          $('#cursor').css({ left: pos.x + '%', top: pos.y + '%' });
+          $('#cursor-control').prop('checked', true);
+
+          $('#tagger').css({ top: 'calc(' + pos.y + '% - 60px)' });
+          $('#tagger .prompt').val('');
+          $('#tagger-control').prop('checked', true);
+
+          // time delay 없이 포커스를 주면 안된다. prompt가 뜨는 시간을 고려해야되는 것 같다
+          setTimeout(function() { $('#tagger .prompt').focus(); }, 100);
+        }
       },
     });
 
