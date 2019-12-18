@@ -5,6 +5,22 @@
   <style>
     :root {
       --tagger-imgsize: 40px;
+      --rainbow: linear-gradient(
+        to right,
+        #E7484F,
+        #E7484F 16.65%,
+        #F68B1D 16.65%,
+        #F68B1D 33.3%,
+        #FCED00 33.3%,
+        #FCED00 49.95%,
+        #009E4F 49.95%,
+        #009E4F 66.6%,
+        #00AAC3 66.6%,
+        #00AAC3 83.25%,
+        #732982 83.25%,
+        #732982 100%,
+        #E7484F 100%
+      );
     }
 
     input[type='checkbox'] {
@@ -53,6 +69,8 @@
       border-radius: 8px;
       box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
       transform: translate(-50%, -50%);
+      transition: all 0.1s ease;
+      z-index: 10;
     }
 
     #tags .tag-body {
@@ -66,6 +84,17 @@
       transform: translate(-42px, -60px) scale(0);
       visibility: collapse;
       transition: all 0.1s ease;
+      z-index: 10;
+    }
+
+    #tags .tag-body:hover {
+      box-shadow: 0px 0px 0px 5px rgba(22,187,204,0.5);
+      z-index: 11;
+    }
+
+    #tags .tag-body:hover ~ .tag-xy {
+      box-shadow: 0px 0px 0px 5px rgba(22,187,204,0.5);
+      z-index: 11;
     }
 
     #tags td {
@@ -287,11 +316,20 @@
       top: 40px !important;
     }
 
-    .tag-body-control:checked ~ .tag-body {
-      visibility: visible !important;
-      transform: translate(-42px, -60px) scale(1) !important;
+    #tags-control:checked ~ #tags .tag-body {
+      visibility: visible;
+      transform: translate(-42px, -60px) scale(1);
     }
 
+    #tags-control:checked ~ #tagon {
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    #tagon-control:checked ~ #tagon {
+      background-image: var(--rainbow);
+      animation:slidebg 2s linear infinite;
+    }
 
 
     .results {
@@ -324,7 +362,41 @@
       width: 60px !important;
     }
 
-    .result:hover {}
+    #tagon {
+      position: absolute;
+      color: white;
+      top: 10px;
+      left: 10px;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      border-radius: 50px;
+      background: rgba(22,187,204,1);
+      box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
+      cursor: move;
+      visibility: collapse;
+      /* transition: all 0.1s ease; */
+      transform: scale(0);
+    }
+
+    #tagon:hover {
+      background-image: var(--rainbow);
+      animation:slidebg 2s linear infinite;
+    }
+
+    #tagon img {
+      vertical-align: middle;
+      width: 36px;
+      height: 36px;
+      background: none;
+    }
+
+    @keyframes slidebg {
+      to {
+        background-position:50px;
+      }
+    }
   </style>
 {% endblock css %}
 
@@ -333,7 +405,7 @@
 {% load static %}
 {% load widget_tweaks %}
 <div class="ui vertical center aligned segment" style="background:none;border:none;padding:0;">
-  <div style="background:red;position:relative;">
+  <div style="background:none;position:relative;">
     <img id="canvas" src="{{post.image.url}}" style="width:100%;height:auto;display:block;" />
 
     <input id='cursor-control' type="checkbox">
@@ -444,12 +516,11 @@
       </div>
     </div>
 
+
+    <input id="tags-control" type="checkbox">
     <div id='tags'>
       {% for tag in post.tag_set.all %}
       <div class='tag' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
-        <div class='tag-xy'></div>
-
-        <input class="tag-body-control" type="checkbox">
         <table class='tag-body ui unstackable table' onclick='load_tag_feed({{tag.pk}})'>
           <tbody>
             <tr>
@@ -458,41 +529,46 @@
             </tr>
           </tbody>
         </table>
+        <div class='tag-xy'></div>
       </div>
       {% endfor %}
+    </div>
+
+    <input id="tagon-control" type="checkbox">
+    <div id='tagon'>
+      <img src="/static/materials/icons8-natural-user-interface-2-100.png"/>
     </div>
   </div>
 </div>
 
 
-{% include "getchapp/post-author.html" %}
-{% include "getchapp/post-comment.html" %}
-{% include "getchapp/post-comment.html" %}
+{% include "getchapp/post-feedinit.html" %}
+{% include "getchapp/post-actionbar.html" %}
+{% include "getchapp/post-comments.html" %}
 {% endblock mastbody %}
 
 {% block js %}
   {{ block.super }}
   <script>
-    var state = 0;
-
     var pos = {
       x: 0,
       y: 0,
       brand_id: undefined,
-      item_id: undefined
+      item_id: undefined,
+      state: 'tag-hidden' // tag-watchable, taggable
     };
 
     $('#canvas').on({
       'click': function(e) {
-        if (state==0) {
-          $('.tag-body-control').prop('checked', true);
-          state = 1;
+        if (pos.state=='tag-hidden') {
+          $('#tags-control').prop('checked', true);
+          pos.state = 'tag-watchable';
 
-        } else if (state==1) {
-          $('.tag-body-control').prop('checked', false);
-          state = 0;
+        } else if (pos.state=='tag-watchable') {
+          $('#tags-control').prop('checked', false);
+          pos.state = 'tag-hidden';
 
-        } else {
+        } else if (pos.state=='taggable') {
           set_position(e);
           init_tagger();
 
@@ -515,6 +591,11 @@
       $('#tagger-control').prop('checked', false);
       $('#brandtag-control').prop('checked', false);
       $('#itemtag-control').prop('checked', false);
+    }
+
+    function init_tagon() {
+      $('#tagon-control').prop('checked', false);
+      $('#tags-control').prop('checked', false);
     }
 
 
@@ -623,10 +704,40 @@
       </div>
     `
 
+    const template_feedinit = ({author_id, author_image, author_email, text, created_at, image}) => `
+      <table class='ui unstackable very compact basic table'>
+        <tbody>
+          <tr class='top aligned'>
+            <td>
+              <a href="/channel/profile/${author_id}/">
+                <img src="${author_image}"/>
+              </a>
+            </td>
+
+            <td>
+              <p>${author_email}</p>
+              <p id='feedinit-text'>
+                <span>
+                  ${text}
+                </span>
+              </p>
+              <p id='feedinit-created-at'>
+                ${created_at}
+              </p>
+              <img src="https://storage.googleapis.com/getch-storage/${image}" style='width:100%;height:auto;display:block;'/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `
+
+
 
     function load_tag_feed(tag_id) {
       var target = document.getElementById('canvas').parentElement;
       var spinner = new Spinner().spin(target);
+      var author_id, author_image, author_email, text, created_at;
+      var html;
 
       $.ajax({
         url: '{% url "tag_feed" pk=0 %}'.replace('0', tag_id),
@@ -643,6 +754,16 @@
           // } else {
           //   console.log('something wrong');
           // }
+
+          author_id = json.tag.fields.author.id;
+          author_image = json.tag.fields.author.image;
+          author_email = json.tag.fields.author.email;
+          text = json.tag.fields.text;
+          created_at = json.tag.fields.created_at.slice(0,10);
+          image = json.tag.fields.image
+
+          html = template_feedinit({author_id, author_image, author_email, text, created_at, image});
+          $('#feedinit').html(html);
           spinner.stop();
         },
         error: function(xhr, errmsg, err) {
@@ -684,18 +805,24 @@
 
     $('#editor').on('submit', function(event) {
       event.preventDefault();
-      let formData = new FormData(this);
-      save_tag(formData);
-    });
-
-
-    $('#footbuttons .save').click(function() {
       init_tagger();
       $('#editor input[name="x"]').attr('value', pos.x);
       $('#editor input[name="y"]').attr('value', pos.y);
       $('#editor input[name="brand_id"]').attr('value', pos.brand_id);
       $('#editor input[name="item_id"]').attr('value', pos.item_id);
+
+      let formData = new FormData(this);
+      save_tag(formData);
     });
+
+
+    // $('#footbuttons .save').click(function() {
+    //   init_tagger();
+    //   $('#editor input[name="x"]').attr('value', pos.x);
+    //   $('#editor input[name="y"]').attr('value', pos.y);
+    //   $('#editor input[name="brand_id"]').attr('value', pos.brand_id);
+    //   $('#editor input[name="item_id"]').attr('value', pos.item_id);
+    // });
 
 
 
@@ -713,30 +840,23 @@
     }
 
 
-    // var opts = {
-    //   lines: 12, // The number of lines to draw
-    //   length: 0, // The length of each line
-    //   width: 52, // The line thickness
-    //   radius: 25, // The radius of the inner circle
-    //   scale: 1.25, // Scales overall size of the spinner
-    //   corners: 1, // Corner roundness (0..1)
-    //   color: '#ffffff', // CSS color or array of colors
-    //   fadeColor: 'transparent', // CSS color or array of colors
-    //   speed: 0.9, // Rounds per second
-    //   rotate: 61, // The rotation offset
-    //   animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
-    //   direction: 1, // 1: clockwise, -1: counterclockwise
-    //   zIndex: 2e9, // The z-index (defaults to 2000000000)
-    //   className: 'spinner', // The CSS class to assign to the spinner
-    //   top: '49%', // Top position relative to parent
-    //   left: '50%', // Left position relative to parent
-    //   shadow: '0 0 1px transparent', // Box-shadow for the lines
-    //   position: 'absolute' // Element positioning
-    // };
+    $('#tagon')
+      .draggable({
+        containment: 'parent', // 부모요소 안에 종속
+      })
+      .on({
+        'click': function() {
+          if (pos.state=='taggable') {
+            init_tagger();
+            init_tagon();
+            pos.state = 'tag-hidden';
 
-    // $(document).ready(function() {
-    //   var target = document.getElementById('canvas').parentElement;
-    //   var spinner = new Spinner().spin(target);
-    // });
+          } else {
+            $('#tagon-control').prop('checked', true);
+            pos.state = 'taggable';
+          }
+        }
+      });
+
   </script>
 {% endblock js %}

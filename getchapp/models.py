@@ -67,7 +67,7 @@ class Profile(BigIdAbstract, ChannelBase):
     user = models.OneToOneField(CustomEmailUser, on_delete=models.CASCADE)
 
     def natural_key(self):
-        return {'id':self.pk, 'image':self.user.socialaccount_set.all()[0].get_avatar_url()}
+        return {'id':self.pk, 'image':self.user.socialaccount_set.all()[0].get_avatar_url(), 'email':self.user.email}
 
 
 class Brand(ChannelBase):
@@ -132,6 +132,8 @@ class Comment(PostBase):
 
 
 class Post(PostBase):
+    comments = GenericRelation(Comment, blank=True)
+
     def get_absolute_url(self):
         url = reverse_lazy('post', kwargs={'pk':self.pk})
         return url
@@ -145,6 +147,7 @@ class Tag(PostBase):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     rates = models.IntegerField(default=0)
+    comments = GenericRelation(Comment, blank=True)
 
     # def natural_key(self):
     #     return { 'brand': self.brand, 'item': self.item }

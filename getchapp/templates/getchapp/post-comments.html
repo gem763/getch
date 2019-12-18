@@ -1,0 +1,79 @@
+<style>
+  .comment {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .comment > table {
+    width: 90vw !important;
+    margin-top: 5vw !important;
+    border-radius: 0 !important;
+    border: 1px solid black !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .comment > table td:first-child {
+    background: none !important;
+    padding: 0 !important;
+    width: 40px !important;
+  }
+
+  .comment > table td:first-child img {
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+
+  .comment > table td:last-child {
+    padding: 0 !important;
+    font-size: 12px !important;
+    position: relative !important;
+    background: none !important;
+  }
+
+  .comment > table td:last-child p {
+    margin: 5px;
+  }
+
+  .comment #post-created-at {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+</style>
+
+
+{% for comment in post.comments.all %}
+<div class="comment ui vertical center aligned segment">
+  <table class='ui unstackable very compact basic table'>
+    <tbody>
+      <tr class='top aligned'>
+        <td>
+          <a href="{% url 'profile' comment.author.pk %}">
+            <img src="{{ comment.author.user.socialaccount_set.all.0.get_avatar_url }}"/>
+          </a>
+        </td>
+
+        <td>
+          <p>{{ comment.author.user.email }}</p>
+          <p id='post-text'>
+            <span>
+              {{ comment.text }}
+            </span>
+          </p>
+          <p id='post-created-at'>
+            {{ comment.created_at|date:"Y-m-d"}}
+          </p>
+
+          <img src="{{ comment.image.url }}" style='width:100%;height:auto;display:block;'/>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endfor %}

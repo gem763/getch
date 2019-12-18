@@ -1,0 +1,78 @@
+<style>
+  #feedinit {
+    background: black;
+    border: none;
+    padding: 0;
+  }
+
+  #feedinit > table {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
+
+  #feedinit > table td:first-child {
+    background: none;
+    padding: 0;
+    width: 40px;
+  }
+
+  #feedinit > table td:first-child img {
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+  }
+
+  #feedinit > table td:last-child {
+    padding: 0;
+    color: white;
+    font-size: 12px;
+    position: relative;
+    background: none;
+  }
+
+  #feedinit > table td:last-child p {
+    margin: 5px;
+  }
+
+  #feedinit #feedinit-text > span {
+    background: white;
+    color: black;
+  }
+
+  #feedinit #feedinit-created-at {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+</style>
+
+<div id='feedinit' class="ui vertical center aligned segment">
+
+  <table class='ui unstackable very compact basic table'>
+    <tbody>
+      <tr class='top aligned'>
+        <td>
+          <a href="{% url 'profile' post.author.pk %}">
+            <img src="{{ post.author.user.socialaccount_set.all.0.get_avatar_url }}"/>
+          </a>
+        </td>
+
+        <td>
+          <p>{{ post.author.user.email }}</p>
+          <p id='feedinit-text'>
+            <span>
+              {{ post.text }}
+            </span>
+          </p>
+          <p id='feedinit-created-at'>
+            {{ post.created_at|date:"Y-m-d"}}
+          </p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
