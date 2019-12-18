@@ -724,13 +724,17 @@
               <p id='feedinit-created-at'>
                 ${created_at}
               </p>
-              <img src="https://storage.googleapis.com/getch-storage/${image}" style='width:100%;height:auto;display:block;'/>
+              <img src="https://storage.googleapis.com/getch-storage/${image}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
             </td>
           </tr>
         </tbody>
       </table>
     `
 
+
+    function imgerr(img) {
+      $(img).css('display', 'none');
+    }
 
 
     function load_tag_feed(tag_id) {
@@ -814,15 +818,6 @@
       let formData = new FormData(this);
       save_tag(formData);
     });
-
-
-    // $('#footbuttons .save').click(function() {
-    //   init_tagger();
-    //   $('#editor input[name="x"]').attr('value', pos.x);
-    //   $('#editor input[name="y"]').attr('value', pos.y);
-    //   $('#editor input[name="brand_id"]').attr('value', pos.brand_id);
-    //   $('#editor input[name="item_id"]').attr('value', pos.item_id);
-    // });
 
 
 
