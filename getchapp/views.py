@@ -73,9 +73,23 @@ def tag_feed(request, pk):
 
     if request.method=='GET':
         tag = serializers.serialize('python', Tag.objects.filter(pk=pk), use_natural_foreign_keys=True)[0]
-        comments = Comment.objects.filter(content_type__model='tag', object_id=pk).values()
-        return JsonResponse({'success':True, 'tag':tag, 'comments':list(comments)}, safe=False)
+        comments = serializers.serialize('python', Comment.objects.filter(object_id=pk, content_type__model='tag'), use_natural_foreign_keys=True)
+        return JsonResponse({'success':True, 'tag':tag, 'comments':comments}, safe=False)
 
+
+
+def comment(request, pk):
+    _comment = get_object_or_404(Comment, pk=pk)
+    _tagform = TagForm()
+    ctx = {'post':_comment, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
+    return render(request, 'getchapp/post.html', ctx)
+
+
+def tag(request, pk):
+    _tag = get_object_or_404(Tag, pk=pk)
+    _tagform = TagForm()
+    ctx = {'post':_tag, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
+    return render(request, 'getchapp/post.html', ctx)
 
 
 def post(request, pk):
@@ -83,9 +97,9 @@ def post(request, pk):
     _tagform = TagForm()
     ctx = {'post':_post, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
 
-    if request.method=='POST':
-        print('*******************************')
-        pass
+    # if request.method=='POST':
+    #     print('*******************************')
+    #     pass
         # tagform = TagForm(request.POST, request.FILES)
         # print(request.FILES)
         # if tagform.is_valid():
@@ -99,8 +113,8 @@ def post(request, pk):
         #     obj.save()
         #     return redirect(_post)
 
-    else:
-        return render(request, 'getchapp/post.html', ctx)
+    # else:
+    return render(request, 'getchapp/post.html', ctx)
 
 
 

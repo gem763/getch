@@ -704,31 +704,65 @@
       </div>
     `
 
-    const template_feedinit = ({author_id, author_image, author_email, text, created_at, image}) => `
+    // const template_feedinit = ({author_id, author_image, author_email, text, created_at, image}) => `
+    const template_feedinit = (tag) => `
       <table class='ui unstackable very compact basic table'>
         <tbody>
           <tr class='top aligned'>
             <td>
-              <a href="/channel/profile/${author_id}/">
-                <img src="${author_image}"/>
+              <a href="/channel/profile/${tag.fields.author.id}/">
+                <img src="${tag.fields.author.image}"/>
               </a>
             </td>
 
             <td>
-              <p>${author_email}</p>
+              <p>${tag.fields.author.email}</p>
               <p id='feedinit-text'>
                 <span>
-                  ${text}
+                  ${tag.fields.text}
                 </span>
               </p>
               <p id='feedinit-created-at'>
-                ${created_at}
+                ${tag.fields.created_at.slice(0,10)}
               </p>
-              <img src="https://storage.googleapis.com/getch-storage/${image}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
+              <a href="/tag/${tag.pk}">
+                <img src="https://storage.googleapis.com/getch-storage/${tag.fields.image}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
+              </a>
             </td>
           </tr>
         </tbody>
       </table>
+    `
+
+    const template_comment = (comment) => `
+      <div class="comment ui vertical center aligned segment">
+        <table class='ui unstackable very compact basic table'>
+          <tbody>
+            <tr class='top aligned'>
+              <td>
+                <a href="/channel/profile/${comment.fields.author.id}/">
+                  <img src="${comment.fields.author.image}"/>
+                </a>
+              </td>
+
+              <td>
+                <p>${comment.fields.author.email}</p>
+                <p id='post-text'>
+                  <span>
+                    ${comment.fields.text}
+                  </span>
+                </p>
+                <p id='post-created-at'>
+                  ${comment.fields.created_at.slice(0,10)}
+                </p>
+                <a href='/comment/${comment.pk}'>
+                  <img src="https://storage.googleapis.com/getch-storage/${comment.fields.image}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     `
 
 
@@ -741,7 +775,7 @@
       var target = document.getElementById('canvas').parentElement;
       var spinner = new Spinner().spin(target);
       var author_id, author_image, author_email, text, created_at;
-      var html;
+      var html_feedinit, html_comments;
 
       $.ajax({
         url: '{% url "tag_feed" pk=0 %}'.replace('0', tag_id),
@@ -759,15 +793,18 @@
           //   console.log('something wrong');
           // }
 
-          author_id = json.tag.fields.author.id;
-          author_image = json.tag.fields.author.image;
-          author_email = json.tag.fields.author.email;
-          text = json.tag.fields.text;
-          created_at = json.tag.fields.created_at.slice(0,10);
-          image = json.tag.fields.image
+          // author_id = json.tag.fields.author.id;
+          // author_image = json.tag.fields.author.image;
+          // author_email = json.tag.fields.author.email;
+          // text = json.tag.fields.text;
+          // created_at = json.tag.fields.created_at.slice(0,10);
+          // image = json.tag.fields.image
 
-          html = template_feedinit({author_id, author_image, author_email, text, created_at, image});
-          $('#feedinit').html(html);
+          // html = template_feedinit({author_id, author_image, author_email, text, created_at, image});
+          html_feedinit = template_feedinit(json.tag);
+          html_comments = json.comments.map(template_comment).join('')
+          $('#feedinit').html(html_feedinit);
+          $('#comments').html(html_comments);
           spinner.stop();
         },
         error: function(xhr, errmsg, err) {

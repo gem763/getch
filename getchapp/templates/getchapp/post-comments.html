@@ -47,33 +47,36 @@
   }
 </style>
 
+<div id='comments'>
+  {% for comment in post.comments.all %}
+  <div class="comment ui vertical center aligned segment">
+    <table class='ui unstackable very compact basic table'>
+      <tbody>
+        <tr class='top aligned'>
+          <td>
+            <a href="{% url 'profile' comment.author.pk %}">
+              <img src="{{ comment.author.user.socialaccount_set.all.0.get_avatar_url }}"/>
+            </a>
+          </td>
 
-{% for comment in post.comments.all %}
-<div class="comment ui vertical center aligned segment">
-  <table class='ui unstackable very compact basic table'>
-    <tbody>
-      <tr class='top aligned'>
-        <td>
-          <a href="{% url 'profile' comment.author.pk %}">
-            <img src="{{ comment.author.user.socialaccount_set.all.0.get_avatar_url }}"/>
-          </a>
-        </td>
+          <td>
+            <p>{{ comment.author.user.email }}</p>
+            <p id='post-text'>
+              <span>
+                {{ comment.text }}
+              </span>
+            </p>
+            <p id='post-created-at'>
+              {{ comment.created_at|date:"Y-m-d"}}
+            </p>
 
-        <td>
-          <p>{{ comment.author.user.email }}</p>
-          <p id='post-text'>
-            <span>
-              {{ comment.text }}
-            </span>
-          </p>
-          <p id='post-created-at'>
-            {{ comment.created_at|date:"Y-m-d"}}
-          </p>
-
-          <img src="{{ comment.image.url }}" style='width:100%;height:auto;display:block;'/>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+            <a href='{% url "comment" comment.pk %}'>
+              <img src="{{ comment.image.url }}" style='width:100%;height:auto;display:block;'/>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
 </div>
-{% endfor %}
