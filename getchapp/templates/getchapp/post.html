@@ -378,6 +378,7 @@
       visibility: collapse;
       /* transition: all 0.1s ease; */
       transform: scale(0);
+      z-index: 50;
     }
 
     #tagon:hover {
@@ -535,7 +536,7 @@
     </div>
 
     <input id="tagon-control" type="checkbox">
-    <div id='tagon'>
+    <div id='tagon' class='ui sticky'>
       <img src="/static/materials/icons8-natural-user-interface-2-100.png"/>
     </div>
   </div>
@@ -872,11 +873,22 @@
     }
 
 
+    var tagon_drag_stime;
     $('#tagon')
       .draggable({
         containment: 'parent', // 부모요소 안에 종속
+        opacity: 0.5,
       })
       .on({
+        'dragstart': function(event, ui) {
+          tagon_drag_stime = Date.now();
+        },
+        'dragstop': function(event, ui) {
+          // 터치 click이 drag로 오인되는 경우를 체크
+          if ((Date.now()-tagon_drag_stime) < 200) {
+            $(this).trigger('click');
+          }
+        },
         'click': function() {
           if (pos.state=='taggable') {
             init_tagger();
@@ -887,6 +899,9 @@
             $('#tagon-control').prop('checked', true);
             pos.state = 'taggable';
           }
+        },
+        'touchstart': function() {
+          $(this).trigger('dragstart');
         }
       });
 
