@@ -16,12 +16,17 @@ class BigIdAbstract(models.Model):
         abstract = True
 
 
-def channel_image_path(instance, fname):
+def channel_path(instance, fname, field):
     chtype = instance.__class__.__name__.lower()
+    fname = str(datetime.now()) + '__' + fname
+    return '{chtype}/{name}/{field}/{fname}'.format(chtype=chtype, name=instance.name, field=field, fname=fname)
 
-    if chtype=='user':
-        fname = str(datetime.now()) + '__' + fname
-        return '{chtype}/{name}/{fname}'.format(chtype=chtype, name=instance.name, fname=fname)
+
+def channel_image_path(instance, fname):
+    return channel_path(instance, fname, 'image')
+
+def channel_avatar_path(instance, fname):
+    return channel_path(instance, fname, 'avatar')
 
 
 class ChannelBase(BigIdAbstract):
@@ -46,63 +51,66 @@ class ChannelBase(BigIdAbstract):
         return str(self.name)
 
 
-class Account(AbstractEmailUser, BigIdAbstract):
-    class Meta:
-        verbose_name = 'Account'
-        verbose_name_plural = 'Accounts'
-
-    def save(self, *args, **kwargs):
-        created = not self.pk
-        super().save(*args, **kwargs)
-        if created:
-            User.objects.create(account=self, name=self.email.split('@')[0])
-
-
-class User(ChannelBase):
-    account = models.OneToOneField(Account, on_delete=models.CASCADE)
-
-    def save(self, *args, **kwargs):
-        created = not self.pk
-        super().save(*args, **kwargs)
-
-        if created:
-            self.keywords = self.name
-            self.master = self
-
-            # socialaccounts = self.account.socialaccount_set.all()
-            # # print(self)
-            # # print(self.socialaccount_set)
-            # # print(self.socialaccount_set.all()[0].get_avatar_url())
-            # if len(socialaccounts) == 0:
-            #     self.image = 'user/default/icons8-user-100.png'
-            # else:
-            #     self.image = socialaccounts[0].get_avatar_url()
-
-            super().save(*args, **kwargs)
-
-    def __str__(self):
-        return str(self.account.email)
-
-# class User(AbstractEmailUser, ChannelBase):
+# class Account(AbstractEmailUser, BigIdAbstract):
+#     class Meta:
+#         verbose_name = 'Account'
+#         verbose_name_plural = 'Accounts'
+#
 #     def save(self, *args, **kwargs):
 #         created = not self.pk
 #         super().save(*args, **kwargs)
+#
+#         if created:
+#             user = User()
+#             user.account = self
+#             user.name = self.email.split('@')[0]
+#             user.keywords = user.name
+#             user.save()
+#             user.master = user
+#             user.save()
+#             print(self.socialaccount_set.all())
+#             # User.objects.create(account=self, name=self.email.split('@')[0])
 
-        # if created:
-        #     self.name = self.email
-        #     self.keywords = self.email.split('@')[0]
-        #     self.master = self
-        #
-        #     socialaccounts = self.socialaccount_set.all()
-        #     print(self)
-        #     print(self.socialaccount_set)
-        #     print(self.socialaccount_set.all()[0].get_avatar_url())
-        #     if len(socialaccounts) == 0:
-        #         self.image = 'user/default/icons8-user-100.png'
-        #     else:
-        #         self.image = socialaccounts[0].get_avatar_url()
-        #
-        #     super().save(*args, **kwargs)
+
+# class User(ChannelBase):
+#     account = models.OneToOneField(Account, on_delete=models.CASCADE)
+#
+#     # def save(self, *args, **kwargs):
+#     #     created = not self.pk
+#     #     super().save(*args, **kwargs)
+#     #
+#     #     if created:
+#     #         self.keywords = self.name
+#     #         self.master = self
+#     #
+#     #         # socialaccounts = self.account.socialaccount_set.all()
+#     #         # # print(self)
+#     #         # # print(self.socialaccount_set)
+#     #         # # print(self.socialaccount_set.all()[0].get_avatar_url())
+#     #         # if len(socialaccounts) == 0:
+#     #         #     self.image = 'user/default/icons8-user-100.png'
+#     #         # else:
+#     #         #     self.image = socialaccounts[0].get_avatar_url()
+#     #
+#     #         super().save(*args, **kwargs)
+#
+#     def __str__(self):
+#         return str(self.account.email)
+
+class User(AbstractEmailUser, ChannelBase):
+    nickname = models.CharField(max_length=120, blank=False, null=False)
+    avatar = models.ImageField(upload_to=channel_avatar_path, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        created = not self.pk
+        super().save(*args, **kwargs)
+
+        if created:
+            self.name = self.email
+            self.nickname = self.email.split('@')[0]
+            self.keywords = ', '.join([self.name, self.nickname])
+            self.master = self
+            super().save(*args, **kwargs)
 
     # def natural_key(self):
     #     return {'id':self.pk, 'image':self.user.socialaccount_set.all()[0].get_avatar_url(), 'email':self.user.email}
