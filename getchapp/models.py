@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse_lazy
 from custom_user.models import AbstractEmailUser
+from IPython.core.debugger import set_trace
 
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -45,26 +46,63 @@ class ChannelBase(BigIdAbstract):
         return str(self.name)
 
 
-class User(AbstractEmailUser, ChannelBase):
+class Account(AbstractEmailUser, BigIdAbstract):
+    class Meta:
+        verbose_name = 'Account'
+        verbose_name_plural = 'Accounts'
+
+    def save(self, *args, **kwargs):
+        created = not self.pk
+        super().save(*args, **kwargs)
+        if created:
+            User.objects.create(account=self, name=self.email.split('@')[0])
+
+
+class User(ChannelBase):
+    account = models.OneToOneField(Account, on_delete=models.CASCADE)
+
     def save(self, *args, **kwargs):
         created = not self.pk
         super().save(*args, **kwargs)
 
         if created:
-            self.name = self.email
-            self.keywords = self.email.split('@')[0]
+            self.keywords = self.name
             self.master = self
 
-            socialaccounts = self.socialaccount_set.all()
-            print(self)
-            print(self.socialaccount_set)
-            print(self.socialaccount_set.all()[0].get_avatar_url())
-            if len(socialaccounts) == 0:
-                self.image = 'user/default/icons8-user-100.png'
-            else:
-                self.image = socialaccounts[0].get_avatar_url()
+            # socialaccounts = self.account.socialaccount_set.all()
+            # # print(self)
+            # # print(self.socialaccount_set)
+            # # print(self.socialaccount_set.all()[0].get_avatar_url())
+            # if len(socialaccounts) == 0:
+            #     self.image = 'user/default/icons8-user-100.png'
+            # else:
+            #     self.image = socialaccounts[0].get_avatar_url()
 
             super().save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.account.email)
+
+# class User(AbstractEmailUser, ChannelBase):
+#     def save(self, *args, **kwargs):
+#         created = not self.pk
+#         super().save(*args, **kwargs)
+
+        # if created:
+        #     self.name = self.email
+        #     self.keywords = self.email.split('@')[0]
+        #     self.master = self
+        #
+        #     socialaccounts = self.socialaccount_set.all()
+        #     print(self)
+        #     print(self.socialaccount_set)
+        #     print(self.socialaccount_set.all()[0].get_avatar_url())
+        #     if len(socialaccounts) == 0:
+        #         self.image = 'user/default/icons8-user-100.png'
+        #     else:
+        #         self.image = socialaccounts[0].get_avatar_url()
+        #
+        #     super().save(*args, **kwargs)
 
     # def natural_key(self):
     #     return {'id':self.pk, 'image':self.user.socialaccount_set.all()[0].get_avatar_url(), 'email':self.user.email}

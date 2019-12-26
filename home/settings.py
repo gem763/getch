@@ -97,7 +97,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-AUTH_USER_MODEL = 'getchapp.User'
+AUTH_USER_MODEL = 'getchapp.Account'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend', # Django 기본 유저모델
