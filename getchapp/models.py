@@ -51,27 +51,6 @@ class ChannelBase(BigIdAbstract):
         return str(self.name)
 
 
-# class Account(AbstractEmailUser, BigIdAbstract):
-#     class Meta:
-#         verbose_name = 'Account'
-#         verbose_name_plural = 'Accounts'
-#
-#     def save(self, *args, **kwargs):
-#         created = not self.pk
-#         super().save(*args, **kwargs)
-#
-#         if created:
-#             user = User()
-#             user.account = self
-#             user.name = self.email.split('@')[0]
-#             user.keywords = user.name
-#             user.save()
-#             user.master = user
-#             user.save()
-#             print(self.socialaccount_set.all())
-#             # User.objects.create(account=self, name=self.email.split('@')[0])
-
-
 # class User(ChannelBase):
 #     account = models.OneToOneField(Account, on_delete=models.CASCADE)
 #
@@ -100,17 +79,6 @@ class ChannelBase(BigIdAbstract):
 class User(AbstractEmailUser, ChannelBase):
     nickname = models.CharField(max_length=120, blank=False, null=False)
     avatar = models.ImageField(upload_to=channel_avatar_path, blank=True, null=True)
-
-    def save(self, *args, **kwargs):
-        created = not self.pk
-        super().save(*args, **kwargs)
-
-        if created:
-            self.name = self.email
-            self.nickname = self.email.split('@')[0]
-            self.keywords = ', '.join([self.name, self.nickname])
-            self.master = self
-            super().save(*args, **kwargs)
 
     # def natural_key(self):
     #     return {'id':self.pk, 'image':self.user.socialaccount_set.all()[0].get_avatar_url(), 'email':self.user.email}
