@@ -4,9 +4,13 @@ from django.urls import reverse_lazy
 from custom_user.models import AbstractEmailUser
 from IPython.core.debugger import set_trace
 
+from django.core.files.base import ContentFile
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+
 from datetime import datetime
+import requests
+import urllib
 
 
 class BigIdAbstract(models.Model):
@@ -16,17 +20,19 @@ class BigIdAbstract(models.Model):
         abstract = True
 
 
-def channel_path(instance, fname, field):
-    chtype = instance.__class__.__name__.lower()
-    fname = str(datetime.now()) + '__' + fname
-    return '{chtype}/{name}/{field}/{fname}'.format(chtype=chtype, name=instance.name, field=field, fname=fname)
+def _path(instance, fname, field):
+    chtype = instance.on.__class__.__name__.lower()
+    name = instance.on.name
+    # fname = str(datetime.now()) + '__' + fname
+    fname = str(instance.created_at) + '__' + fname
+    return '{chtype}/{name}/{field}/{fname}'.format(chtype=chtype, name=name, field=field, fname=fname)
 
 
-def channel_image_path(instance, fname):
-    return channel_path(instance, fname, 'image')
+def _image_path(instance, fname):
+    return _path(instance, fname, 'image')
 
-def channel_avatar_path(instance, fname):
-    return channel_path(instance, fname, 'avatar')
+def _avatar_path(instance, fname):
+    return _path(instance, fname, 'avatar')
 
 
 class ChannelBase(BigIdAbstract):
@@ -35,7 +41,7 @@ class ChannelBase(BigIdAbstract):
     created_at = models.DateTimeField(auto_now_add=True)
     nlikes = models.IntegerField(default=0)
     master = models.ForeignKey('User', blank=True, null=True, on_delete=models.SET_NULL)
-    image = models.ImageField(upload_to=channel_image_path, blank=True, null=True)
+    image = models.ImageField(upload_to=_image_path, blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -48,37 +54,60 @@ class ChannelBase(BigIdAbstract):
     #         Channel.objects.create(of=self)
 
     def __str__(self):
-        return str(self.name)
+        return self.name
 
-
-# class User(ChannelBase):
-#     account = models.OneToOneField(Account, on_delete=models.CASCADE)
-#
-#     # def save(self, *args, **kwargs):
-#     #     created = not self.pk
-#     #     super().save(*args, **kwargs)
-#     #
-#     #     if created:
-#     #         self.keywords = self.name
-#     #         self.master = self
-#     #
-#     #         # socialaccounts = self.account.socialaccount_set.all()
-#     #         # # print(self)
-#     #         # # print(self.socialaccount_set)
-#     #         # # print(self.socialaccount_set.all()[0].get_avatar_url())
-#     #         # if len(socialaccounts) == 0:
-#     #         #     self.image = 'user/default/icons8-user-100.png'
-#     #         # else:
-#     #         #     self.image = socialaccounts[0].get_avatar_url()
-#     #
-#     #         super().save(*args, **kwargs)
-#
-#     def __str__(self):
-#         return str(self.account.email)
 
 class User(AbstractEmailUser, ChannelBase):
     nickname = models.CharField(max_length=120, blank=False, null=False)
-    avatar = models.ImageField(upload_to=channel_avatar_path, blank=True, null=True)
 
-    # def natural_key(self):
-    #     return {'id':self.pk, 'image':self.user.socialaccount_set.all()[0].get_avatar_url(), 'email':self.user.email}
+    def set_social_avatar(self):
+        avatar_url = self.socialaccount_set.all()[0].get_avatar_url()
+        resp = requests.get(avatar_url)
+
+        if resp.status_code == 200:
+            try:
+                avatar = UserAvatar.objects.get(on=self, social=True)
+
+            except UserAvatar.DoesNotExist:
+                avatar = UserAvatar.objects.create(on=self, social=True)
+
+            except UserAvatar.MultipleObjectsReturned:
+                print('social avatar duplicated')
+                # social avatar가 여러개 있으면 우선 다 지워라(이럴리가 없긴하다)
+                # 이 경우, 기존 social avatar의 selected는 무시된다
+                UserAvatar.objects.filter(on=self, social=True).delete()
+                avatar = UserAvatar.objects.create(on=self, social=True)
+
+            fname = urllib.parse.quote_plus(avatar_url)
+            avatar.src.save(fname, ContentFile(resp.content), save=True)
+            return avatar
+
+        else:
+            return None
+
+
+class Avatar(BigIdAbstract):
+    selected = models.BooleanField(default=False)
+    src = models.ImageField(upload_to=_avatar_path, blank=False, null=False, max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        _selected = '[v]' if self.selected else '[ ]'
+        return _selected + ' ' + self.on.name
+
+    def select(self):
+        for avatar in self.on.avatar.all():
+            if avatar.id==self.id:
+                avatar.selected = True
+            else:
+                avatar.selected = False
+
+            avatar.save()
+
+
+class UserAvatar(Avatar):
+    social = models.BooleanField(default=False)
+    on = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name='avatar')

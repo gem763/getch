@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # from django.contrib.auth.decorators import login_required
-from getchapp.models import User#Post, Brand, Profile, Item, Tag, Comment
+from getchapp.models import User, UserAvatar #Post, Brand, Profile, Item, Tag, Comment
 # from .forms import PostForm, TagForm
 #
 #
@@ -12,6 +12,11 @@ from getchapp.models import User#Post, Brand, Profile, Item, Tag, Comment
 # items_search = list(items_all.values('pk', 'name', 'image', 'keywords').order_by('name'))
 #
 #
+
+# def intro(request):
+#     avatar = UserAvatar.objects.get(id=6)
+#     return render(request, 'getchapp/intro.html', {'avatar':avatar})
+
 def intro(request):
     # posts = Post.objects.order_by('-created_at')
     posts = None
