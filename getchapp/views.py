@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # from django.contrib.auth.decorators import login_required
-from getchapp.models import User, UserAvatar #Post, Brand, Profile, Item, Tag, Comment
+from getchapp.models import User #Post, Brand, Profile, Item, Tag, Comment
 # from .forms import PostForm, TagForm
 #
 #

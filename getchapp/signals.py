@@ -2,23 +2,21 @@ from allauth.socialaccount.signals import social_account_updated#, pre_social_lo
 from allauth.account.signals import user_signed_up#, user_logged_in
 from django.db.models.signals import post_save#, pre_save, m2m_changed
 from django.dispatch import receiver
-from getchapp.models import User, UserAvatar
+from getchapp.models import User
 
 
 
 @receiver(post_save, sender=User)
 def user_post_save(sender, instance, created, **kwargs):
     if created:
-        instance.name = instance.email
-        instance.nickname = instance.email.split('@')[0]
-        instance.keywords = ', '.join([instance.name, instance.nickname])
-        instance.master = instance
-        instance.save()
+        instance.init_user()
 
 
 @receiver(social_account_updated)
 def allauth_social_account_updated(request, sociallogin, **kwargs):
     # https://github.com/pennersr/django-allauth/blob/master/allauth/socialaccount/models.py
+    # user_signed_up 이후 user_logged_in이 자동호출된다
+    # 따라서 user_logged_in에서 set_social_avatar()를 하면 해당 기능이 두번 실행된다
     sociallogin.user.set_social_avatar()
 
 
@@ -27,4 +25,3 @@ def allauth_user_signed_up(request, user, **kwargs):
     avatar = user.set_social_avatar()
     if avatar is not None:
         avatar.select()
-        print(avatar.selected)
