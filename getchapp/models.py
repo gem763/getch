@@ -20,7 +20,10 @@ class BigIdAbstract(models.Model):
     class Meta:
         abstract = True
 
-
+'''
+https://dgkim5360.tistory.com/entry/django-model-inheritance
+여기서 InheritanceManager를 쓰자!
+'''
 
 # class ChannelBase(BigIdAbstract):
 class Channel(BigIdAbstract):
