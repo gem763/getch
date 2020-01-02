@@ -17,11 +17,11 @@ def allauth_social_account_updated(request, sociallogin, **kwargs):
     # https://github.com/pennersr/django-allauth/blob/master/allauth/socialaccount/models.py
     # user_signed_up 이후 user_logged_in이 자동호출된다
     # 따라서 user_logged_in에서 set_social_avatar()를 하면 해당 기능이 두번 실행된다
-    sociallogin.user.set_social_avatar()
+    sociallogin.user.set_default_avatar()
 
 
 @receiver(user_signed_up)
 def allauth_user_signed_up(request, user, **kwargs):
-    avatar = user.set_social_avatar()
+    avatar = user.set_default_avatar()
     if avatar is not None:
         avatar.select()
