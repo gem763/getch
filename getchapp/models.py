@@ -34,7 +34,9 @@ class Channel(BigIdAbstract):
     keywords = models.TextField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     nlikes = models.IntegerField(default=0)
-    master = models.ForeignKey('User', blank=True, null=True, on_delete=models.SET(default_master))
+    master = models.ForeignKey('User', blank=True, null=True, on_delete=models.SET(default_master), related_name='mastering')
+    on = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL)
+    text = models.TextField(max_length=500, blank=True, null=True)
     objects = InheritanceManager() #https://dgkim5360.tistory.com/entry/django-model-inheritance
 
     def __str__(self):
@@ -63,7 +65,6 @@ class Brand(Channel):
     fullname_kr = models.CharField(max_length=120, blank=True, null=True)
     origin = models.CharField(max_length=50, blank=True, null=True)
     category = models.CharField(max_length=120, blank=True, null=True)
-    description = models.TextField(max_length=500, blank=True, null=True)
 
 
 class Item(Channel):
@@ -104,6 +105,19 @@ class User(AbstractEmailUser, Channel):
 
         else:
             return None
+
+
+
+class Post(Channel):
+    pass
+
+
+class Tag(Channel):
+    target = models.ForeignKey('Pix', on_delete=models.CASCADE)
+    x = models.FloatField(default=0)
+    y = models.FloatField(default=0)
+    with_brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    with_item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
 
 def _image_path(instance, fname):

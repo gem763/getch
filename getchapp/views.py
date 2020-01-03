@@ -2,24 +2,20 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # from django.contrib.auth.decorators import login_required
-from getchapp.models import User #Post, Brand, Profile, Item, Tag, Comment
-# from .forms import PostForm, TagForm
-#
-#
-# brands_all = Brand.objects.all()
-# items_all = Item.objects.all()
+from getchapp.models import User, Brand, Item, Post, Tag
+from .forms import TagForm#, PostForm
+
+
+brands_all = Brand.objects.all()
+items_all = Item.objects.all()
+brands_search = list(brands_all.values('pk', 'name', 'avatar', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name'))
+items_search = list(items_all.values('pk', 'name', 'avatar', 'keywords').order_by('name'))
 # brands_search = list(brands_all.values('pk', 'name', 'image', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name'))
 # items_search = list(items_all.values('pk', 'name', 'image', 'keywords').order_by('name'))
-#
-#
 
-# def intro(request):
-#     avatar = UserAvatar.objects.get(id=6)
-#     return render(request, 'getchapp/intro.html', {'avatar':avatar})
 
 def intro(request):
-    # posts = Post.objects.order_by('-created_at')
-    posts = None
+    posts = Post.objects.order_by('-created_at')
     return render(request, 'getchapp/intro.html', {'posts':posts})
 #
 # # @login_required
@@ -97,34 +93,34 @@ def my(request):
 #     _tagform = TagForm()
 #     ctx = {'post':_tag, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
 #     return render(request, 'getchapp/post.html', ctx)
-#
-#
-# def post(request, pk):
-#     _post = get_object_or_404(Post, pk=pk)
-#     _tagform = TagForm()
-#     ctx = {'post':_post, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
-#
-#     # if request.method=='POST':
-#     #     print('*******************************')
-#     #     pass
-#         # tagform = TagForm(request.POST, request.FILES)
-#         # print(request.FILES)
-#         # if tagform.is_valid():
-#         #     obj = tagform.save(commit=False)
-#         #     obj.on = _post
-#         #     obj.x = request.POST['x']
-#         #     obj.y = request.POST['y']
-#         #     obj.author = get_object_or_404(Profile, user=request.user)
-#         #     obj.brand = get_object_or_404(Brand, pk=request.POST['brand_id'])
-#         #     obj.item = get_object_or_404(Item, pk=request.POST['item_id'])
-#         #     obj.save()
-#         #     return redirect(_post)
-#
-#     # else:
-#     return render(request, 'getchapp/post.html', ctx)
-#
-#
-#
+
+
+def post(request, pk):
+    _post = get_object_or_404(Post, pk=pk)
+    _tagform = TagForm()
+    ctx = {'post':_post, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
+
+    # if request.method=='POST':
+    #     print('*******************************')
+    #     pass
+        # tagform = TagForm(request.POST, request.FILES)
+        # print(request.FILES)
+        # if tagform.is_valid():
+        #     obj = tagform.save(commit=False)
+        #     obj.on = _post
+        #     obj.x = request.POST['x']
+        #     obj.y = request.POST['y']
+        #     obj.author = get_object_or_404(Profile, user=request.user)
+        #     obj.brand = get_object_or_404(Brand, pk=request.POST['brand_id'])
+        #     obj.item = get_object_or_404(Item, pk=request.POST['item_id'])
+        #     obj.save()
+        #     return redirect(_post)
+
+    # else:
+    return render(request, 'getchapp/post.html', ctx)
+
+
+
 # def brand(request, pk):
 #     _brand = get_object_or_404(Brand, pk=pk)
 #     return render(request, 'getchapp/brand.html', {'brand':_brand})

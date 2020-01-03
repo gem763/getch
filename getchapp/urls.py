@@ -8,7 +8,7 @@ urlpatterns = [
     path('posting/', v.posting, name='posting'),
     path('my/', v.my, name='my'),
     #
-    # path('post/<int:pk>/', v.post, name='post'),
+    path('post/<int:pk>/', v.post, name='post'),
     # path('post/<int:pk>/save_tag/', v.save_tag, name='save_tag'),
     # path('feed/tag/<int:pk>/', v.tag_feed, name='tag_feed'),
     #
