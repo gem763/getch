@@ -407,7 +407,7 @@
 {% load widget_tweaks %}
 <div class="ui vertical center aligned segment" style="background:none;border:none;padding:0;">
   <div style="background:none;position:relative;">
-    <img id="canvas" src="{{post.image.url}}" style="width:100%;height:auto;display:block;" />
+    <img id="canvas" src="{{post.pix.src.url}}" style="width:100%;height:auto;display:block;" />
 
     <input id='cursor-control' type="checkbox">
     <div id='cursor'></div>
@@ -452,8 +452,8 @@
             <tbody>
               <tr>
                 {% for item in items %}
-                {% with "https://storage.googleapis.com/getch-storage/"|add:item.image as item_image %}
-                <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item_image}}")'><img src='{{item_image}}' /></td>
+                {% with "https://storage.googleapis.com/getch-storage/"|add:item.avatar__src as item_avatar %}
+                <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item_avatar}}")'><img src='{{item_avatar}}' /></td>
                 {% endwith %}
                 {% endfor %}
               </tr>
@@ -469,6 +469,7 @@
             <input type='hidden' value='' name='y'>
             <input type='hidden' value='' name='brand_id'>
             <input type='hidden' value='' name='item_id'>
+            <input type='hidden' value='{{post.pk}}' name='post_id'>
 
             <table class='ui unstackable very compact basic table'>
               <tbody>
@@ -495,14 +496,16 @@
             </table>
 
             <div id='tagimage' class="field" style='margin:0;'>
-              {% render_field tagform.image onchange="load_img(this)" id="imageuploader" style="display:none;" %}
+              <!-- {% render_field tagform.pix__src onchange="load_img(this)" id="imageuploader" style="display:none;" %} -->
+              <input type="file" name="image" accept="image/*" style="display:none;" id="imageuploader" onchange="load_img(this)">
               <div style="margin-top:0;display:none;">
                 <img src="#" alt="image loaded" style="width:100%;height:auto;display:block;" />
               </div>
             </div>
 
             <div id='tagtext' class="field">
-              {% render_field tagform.text placeholder="COMMENT HERE" %}
+              <!-- {% render_field tagform.text placeholder="COMMENT HERE" %} -->
+              <textarea name="text" cols="40" rows="10" maxlength="500" placeholder="COMMENT HERE" id="id_text"></textarea>
             </div>
 
             <div id='footbuttons'>
@@ -525,8 +528,8 @@
         <table class='tag-body ui unstackable table' onclick='load_tag_feed({{tag.pk}})'>
           <tbody>
             <tr>
-              <td><img src="{{tag.brand.image.url}}"/></td>
-              <td><img src="{{tag.item.image.url}}"/></td>
+              <td><img src="{{tag.with_brand.avatar.src.url}}"/></td>
+              <td><img src="{{tag.with_item.avatar.src.url}}"/></td>
             </tr>
           </tbody>
         </table>
@@ -543,105 +546,16 @@
 </div>
 
 
-{% include "getchapp/post-feedinit.html" %}
+{% include "getchapp/post-posthead.html" %}
 {% include "getchapp/post-actionbar.html" %}
 {% include "getchapp/post-comments.html" %}
 {% endblock mastbody %}
 
 {% block js %}
   {{ block.super }}
+  <script src="/static/getch/tagger.js"></script>
+
   <script>
-    var pos = {
-      x: 0,
-      y: 0,
-      brand_id: undefined,
-      item_id: undefined,
-      state: 'tag-hidden' // tag-watchable, taggable
-    };
-
-    $('#canvas').on({
-      'click': function(e) {
-        if (pos.state=='tag-hidden') {
-          $('#tags-control').prop('checked', true);
-          pos.state = 'tag-watchable';
-
-        } else if (pos.state=='tag-watchable') {
-          $('#tags-control').prop('checked', false);
-          pos.state = 'tag-hidden';
-
-        } else if (pos.state=='taggable') {
-          set_position(e);
-          init_tagger();
-
-          $('#cursor').css({ left: pos.x + '%', top: pos.y + '%' });
-          $('#cursor-control').prop('checked', true);
-
-          $('#tagger').css({ top: 'calc(' + pos.y + '% - 60px)' });
-          $('#tagger .prompt').val('');
-          $('#tagger-control').prop('checked', true);
-
-          // time delay 없이 포커스를 주면 안된다. prompt가 뜨는 시간을 고려해야되는 것 같다
-          setTimeout(function() { $('#tagger .prompt').focus(); }, 100);
-        }
-      },
-    });
-
-
-    function init_tagger() {
-      $('#cursor-control').prop('checked', false);
-      $('#tagger-control').prop('checked', false);
-      $('#brandtag-control').prop('checked', false);
-      $('#itemtag-control').prop('checked', false);
-    }
-
-    function init_tagon() {
-      $('#tagon-control').prop('checked', false);
-      $('#tags-control').prop('checked', false);
-    }
-
-
-    function set_position(e) {
-      var canvas_position = $(e.target).offset();
-      var canvas_left = canvas_position.left;
-      var canvas_top = canvas_position.top;
-      var canvas_width = $(e.target).width();
-      var canvas_height = $(e.target).height();
-
-      var page_x = e.pageX;
-      var page_y = e.pageY;
-
-      pos.x = (page_x - canvas_left) / canvas_width * 100;
-      pos.y = (page_y - canvas_top) / canvas_height * 100;
-    }
-
-
-    function set_brand(brand_id, image) {
-      pos.brand_id = brand_id;
-      $('#brandtag img').attr('src', image);
-      $('#brandtag-control').prop('checked', true);
-    }
-
-
-    function set_item(item_id, image) {
-      pos.item_id = item_id;
-      $('#itemtag img').attr('src', image);
-      $('#itemtag-control').prop('checked', true);
-    }
-
-
-    $('#undo').click(function() {
-      if ($('#itemtag-control').prop('checked')) {
-        $('#itemtag-control').prop('checked', false);
-
-      } else if ($('#brandtag-control').prop('checked')) {
-        $('#brandtag-control').prop('checked', false);
-
-      } else {
-        $('#tagger-control').prop('checked', false);
-      };
-    });
-
-
     $('#tagger .ui.search').search({
       source: {{ brands | safe }},
       fullTextSearch: true,
@@ -652,11 +566,11 @@
       templates: {
         standard: function(response){
           htmls = $.map(response.results, function(brand) {
-                    var image = 'https://storage.googleapis.com/getch-storage/' + brand.image.replace('\\', '/');
-                    var onclick = "set_brand(" + brand.pk + ", '" + image + "')";
+                    var avatar = 'https://storage.googleapis.com/getch-storage/' + brand.avatar__src.replace('\\', '/');
+                    var onclick = "set_brand(" + brand.pk + ", '" + avatar + "')";
                     var html = '<div class="result" onclick="' + onclick + '">';
                     html += '<div class="image">'
-                          + '<img src="' + image + '">'
+                          + '<img src="' + avatar + '">'
                           + '</div>';
                     html += '<div class="content">';
                     html += '<div class="ui header">' + brand.fullname_en;
@@ -672,47 +586,27 @@
     });
 
 
-    $('#editor textarea').on({
-      'focusin': function() {
-        this.style.height = '40px';
-        this.style.height = (this.scrollHeight) + 'px';
-      },
-
-      'focusout': function() {
-        if (this.value=='') {
-          this.style.height = '40px';
-        };
-      },
-
-      'input': function() {
-        this.style.height = '40px';
-        this.style.height = (this.scrollHeight) + 'px';
-      }
-    });
-
-
-    const template_tag = ({pk, x, y, brand__image, item__image}) => `
+    const template_tag = ({pk, x, y, brand, item}) => `
       <div class='tag' style='left:${x}%;top:${y}%;'>
         <div class='tag-xy'></div>
         <table class='tag-body ui unstackable table' onclick='load_tag_feed(${pk})'>
           <tbody>
             <tr>
-              <td><img src="https://storage.googleapis.com/getch-storage/${brand__image}"/></td>
-              <td><img src="https://storage.googleapis.com/getch-storage/${item__image}"/></td>
+              <td><img src="https://storage.googleapis.com/getch-storage/${brand}"/></td>
+              <td><img src="https://storage.googleapis.com/getch-storage/${item}"/></td>
             </tr>
           </tbody>
         </table>
       </div>
     `
 
-    // const template_feedinit = ({author_id, author_image, author_email, text, created_at, image}) => `
     const template_feedinit = (tag) => `
       <table class='ui unstackable very compact basic table'>
         <tbody>
           <tr class='top aligned'>
             <td>
               <a href="/channel/profile/${tag.fields.author.id}/">
-                <img src="${tag.fields.author.image}"/>
+                <img src="${tag.fields.author.avatar}"/>
               </a>
             </td>
 
@@ -727,7 +621,7 @@
                 ${tag.fields.created_at.slice(0,10)}
               </p>
               <a href="/tag/${tag.pk}">
-                <img src="https://storage.googleapis.com/getch-storage/${tag.fields.image}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
+                <img src="https://storage.googleapis.com/getch-storage/${tag.fields.pix}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
               </a>
             </td>
           </tr>
@@ -742,7 +636,7 @@
             <tr class='top aligned'>
               <td>
                 <a href="/channel/profile/${comment.fields.author.id}/">
-                  <img src="${comment.fields.author.image}"/>
+                  <img src="${comment.fields.author.avatar}"/>
                 </a>
               </td>
 
@@ -757,7 +651,7 @@
                   ${comment.fields.created_at.slice(0,10)}
                 </p>
                 <a href='/comment/${comment.pk}'>
-                  <img src="https://storage.googleapis.com/getch-storage/${comment.fields.image}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
+                  <img src="https://storage.googleapis.com/getch-storage/${comment.fields.pix}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
                 </a>
               </td>
             </tr>
@@ -765,11 +659,6 @@
         </table>
       </div>
     `
-
-
-    function imgerr(img) {
-      $(img).css('display', 'none');
-    }
 
 
     function load_tag_feed(tag_id) {
@@ -821,9 +710,9 @@
       var spinner = new Spinner().spin(target);
 
       $.ajax({
-        url: '{% url "save_tag" post.pk %}',
+        // url: '{% url "save_tag" post.pk %}',
+        url: '{% url "tag_save" %}',
         type: 'POST',
-        // data: $('#editor').serialize(),
         data: formData,
         dataType:'json',
         cache: false,
@@ -843,67 +732,5 @@
         }
       });
     }
-
-
-    $('#editor').on('submit', function(event) {
-      event.preventDefault();
-      init_tagger();
-      $('#editor input[name="x"]').attr('value', pos.x);
-      $('#editor input[name="y"]').attr('value', pos.y);
-      $('#editor input[name="brand_id"]').attr('value', pos.brand_id);
-      $('#editor input[name="item_id"]').attr('value', pos.item_id);
-
-      let formData = new FormData(this);
-      save_tag(formData);
-    });
-
-
-
-    function load_img(input) {
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function(e) {
-          $("#tagimage img").attr("src", e.target.result);
-          $("#tagimage img").parent().css("display", "block");
-        }
-
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-
-    var tagon_drag_stime;
-    $('#tagon')
-      .draggable({
-        containment: 'parent', // 부모요소 안에 종속
-        opacity: 0.5,
-      })
-      .on({
-        'dragstart': function(event, ui) {
-          tagon_drag_stime = Date.now();
-        },
-        'dragstop': function(event, ui) {
-          // 터치 click이 drag로 오인되는 경우를 체크
-          if ((Date.now()-tagon_drag_stime) < 200) {
-            $(this).trigger('click');
-          }
-        },
-        'click': function() {
-          if (pos.state=='taggable') {
-            init_tagger();
-            init_tagon();
-            pos.state = 'tag-hidden';
-
-          } else {
-            $('#tagon-control').prop('checked', true);
-            pos.state = 'taggable';
-          }
-        },
-        'touchstart': function() {
-          $(this).trigger('dragstart');
-        }
-      });
-
   </script>
 {% endblock js %}

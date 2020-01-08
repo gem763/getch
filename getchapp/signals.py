@@ -23,5 +23,5 @@ def allauth_social_account_updated(request, sociallogin, **kwargs):
 @receiver(user_signed_up)
 def allauth_user_signed_up(request, user, **kwargs):
     avatar = user.set_default_avatar()
-    if avatar is not None:
-        avatar.select()
+    # if avatar is not None:
+    #     avatar.select()

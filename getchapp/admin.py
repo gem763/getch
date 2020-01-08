@@ -1,8 +1,7 @@
 from django.contrib import admin
-from getchapp.models import Channel, User, Brand, Item, Post, Tag, Avatar, Pix
-# Register your models here.
-#
-#
+from getchapp.models import Channel, User, Avatar, Pix, Brand, Item, Post, Tag
+
+
 admin.site.register(Channel)
 admin.site.register(Brand)
 admin.site.register(User)

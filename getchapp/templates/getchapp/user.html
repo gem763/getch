@@ -22,13 +22,13 @@
           </div>
         </div>
       </div>
-      <img id="canvas" class="ui centered image" src="{{ profile.user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:150px;height:150px;"/>
+      <img id="canvas" class="ui centered image" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:150px;height:150px;"/>
     </div>
 
 
-    <h1>{{ profile.user.socialaccount_set.all.0.extra_data.name }}</h1>
+    <h1>{{ user.socialaccount_set.all.0.extra_data.name }}</h1>
     <p>
-      {{ profile.user.email }} <br>
+      {{ user.email }} <br>
     </p>
 
     <br>
