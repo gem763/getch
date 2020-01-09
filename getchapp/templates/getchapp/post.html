@@ -49,8 +49,8 @@
       position: absolute;
       background: none;
       /* top: 0; */
-      left: 10%;
-      right: 10%;
+      left: 5%;
+      right: 5%;
       transform: scale(0);
       visibility: collapse;
       transition: all 0.1s ease;
@@ -252,7 +252,6 @@
       border-radius: 0;
       margin: 5px;
     }
-
 
 
     #cursor-control:checked ~ #cursor {
@@ -505,11 +504,11 @@
 
             <div id='tagtext' class="field">
               <!-- {% render_field tagform.text placeholder="COMMENT HERE" %} -->
-              <textarea name="text" cols="40" rows="10" maxlength="500" placeholder="COMMENT HERE" id="id_text"></textarea>
+              <textarea name="text" cols="40" rows="10" maxlength="500" placeholder="COMMENT HERE"></textarea>
             </div>
 
             <div id='footbuttons'>
-              <button class="cancel ui basic black mini button">CANCEL</button>
+              <div class="cancel ui basic black mini button">CANCEL</div>
               <button class="save ui black mini button" type='submit'>SAVE</button>
             </div>
           </form>
@@ -523,9 +522,9 @@
 
     <input id="tags-control" type="checkbox">
     <div id='tags'>
-      {% for tag in post.tag_set.all %}
+      {% for tag in post.on_tags %}
       <div class='tag' style='left:{{tag.x}}%;top:{{tag.y}}%;'>
-        <table class='tag-body ui unstackable table' onclick='load_tag_feed({{tag.pk}})'>
+        <table class='tag-body ui unstackable table' onclick='load_tagfeeds({{tag.pk}})'>
           <tbody>
             <tr>
               <td><img src="{{tag.with_brand.avatar.src.url}}"/></td>
@@ -548,6 +547,7 @@
 
 {% include "getchapp/post-posthead.html" %}
 {% include "getchapp/post-actionbar.html" %}
+{% include "getchapp/post-feeder.html" %}
 {% include "getchapp/post-comments.html" %}
 {% endblock mastbody %}
 
@@ -586,42 +586,51 @@
     });
 
 
-    const template_tag = ({pk, x, y, brand, item}) => `
-      <div class='tag' style='left:${x}%;top:${y}%;'>
+    const template_tag = (tag) => `
+      <div class='tag' style='left:${tag.fields.x}%;top:${tag.fields.y}%;'>
         <div class='tag-xy'></div>
-        <table class='tag-body ui unstackable table' onclick='load_tag_feed(${pk})'>
+        <table class='tag-body ui unstackable table' onclick='load_tagfeeds(${tag.pk})'>
           <tbody>
             <tr>
-              <td><img src="https://storage.googleapis.com/getch-storage/${brand}"/></td>
-              <td><img src="https://storage.googleapis.com/getch-storage/${item}"/></td>
+              <td><img src="${tag.fields.with_brand.avatar}"/></td>
+              <td><img src="${tag.fields.with_item.avatar}"/></td>
             </tr>
           </tbody>
         </table>
       </div>
     `
 
-    const template_feedinit = (tag) => `
+    const template_posthead = (tag) => `
+      <table class='ui unstackable table' style='background:white;border-radius:0;border-style:hidden;border-collapse:collapse;border:1px solid black;margin:0;width:83px;'>
+        <tbody>
+          <tr>
+            <td style='border:1px solid black;padding:0;height:40px;width:40px !important'><img src="https://storage.googleapis.com/getch-storage/${tag.with_brand__avatar__src}" style='object-fit:contain;background:none;display:block;vertical-align:middle;margin-left:auto;margin-right:auto;width:40px;height:40px;'/></td>
+            <td style='border:1px solid black;padding:0;height:40px;width:40px !important'><img src="https://storage.googleapis.com/getch-storage/${tag.with_item__avatar__src}" style='object-fit:contain;background:none;display:block;vertical-align:middle;margin-left:auto;margin-right:auto;width:40px;height:25px;'/></td>
+          </tr>
+        </tbody>
+      </table>
+
       <table class='ui unstackable very compact basic table'>
         <tbody>
           <tr class='top aligned'>
             <td>
-              <a href="/channel/profile/${tag.fields.author.id}/">
-                <img src="${tag.fields.author.avatar}"/>
+              <a href="/channel/user/${tag.master}/">
+                <img src="https://storage.googleapis.com/getch-storage/${tag.master__avatar__src}"/>
               </a>
             </td>
 
             <td>
-              <p>${tag.fields.author.email}</p>
+              <p>${tag.master__email}</p>
               <p id='feedinit-text'>
                 <span>
-                  ${tag.fields.text}
+                  ${tag.text}
                 </span>
               </p>
               <p id='feedinit-created-at'>
-                ${tag.fields.created_at.slice(0,10)}
+                ${tag.created_at.slice(0,10)}
               </p>
-              <a href="/tag/${tag.pk}">
-                <img src="https://storage.googleapis.com/getch-storage/${tag.fields.pix}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
+              <a href="/channel/tag/${tag.pk}">
+                <img src="https://storage.googleapis.com/getch-storage/${tag.pix__src}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
               </a>
             </td>
           </tr>
@@ -629,29 +638,29 @@
       </table>
     `
 
-    const template_comment = (comment) => `
+    const template_tagfeed = (tagfeed) => `
       <div class="comment ui vertical center aligned segment">
         <table class='ui unstackable very compact basic table'>
           <tbody>
             <tr class='top aligned'>
               <td>
-                <a href="/channel/profile/${comment.fields.author.id}/">
-                  <img src="${comment.fields.author.avatar}"/>
+                <a href="/channel/user/${tagfeed.fields.master.id}/">
+                  <img src="${tagfeed.fields.master.avatar}"/>
                 </a>
               </td>
 
               <td>
-                <p>${comment.fields.author.email}</p>
+                <p>${tagfeed.fields.master.email}</p>
                 <p id='post-text'>
                   <span>
-                    ${comment.fields.text}
+                    ${tagfeed.fields.text}
                   </span>
                 </p>
                 <p id='post-created-at'>
-                  ${comment.fields.created_at.slice(0,10)}
+                  ${tagfeed.fields.created_at.slice(0,10)}
                 </p>
-                <a href='/comment/${comment.pk}'>
-                  <img src="https://storage.googleapis.com/getch-storage/${comment.fields.pix}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
+                <a href='/channel/tag/${tagfeed.pk}'>
+                  <img src="${tagfeed.fields.pix}" onerror="imgerr(this)" style='width:100%;height:auto;display:block;'/>
                 </a>
               </td>
             </tr>
@@ -661,14 +670,15 @@
     `
 
 
-    function load_tag_feed(tag_id) {
+    function load_tagfeeds(tag_id) {
       var target = document.getElementById('canvas').parentElement;
       var spinner = new Spinner().spin(target);
       var author_id, author_image, author_email, text, created_at;
       var html_feedinit, html_comments;
 
       $.ajax({
-        url: '{% url "tag_feed" pk=0 %}'.replace('0', tag_id),
+        // url: '{% url "tagfeeds" pk=0 %}'.replace('0', tag_id),
+        url: '/channel/tag/' + tag_id + '/feeds/',
         type: 'GET',
         data: {},
         dataType:'json',
@@ -677,24 +687,10 @@
         processData: false,
         success: function(json) {
           console.log(json)
-          // if (json.success) {
-          //   $('#tags').html(json.tags.map(template_tag).join(''));
-          // } else {
-          //   console.log('something wrong');
-          // }
-
-          // author_id = json.tag.fields.author.id;
-          // author_image = json.tag.fields.author.image;
-          // author_email = json.tag.fields.author.email;
-          // text = json.tag.fields.text;
-          // created_at = json.tag.fields.created_at.slice(0,10);
-          // image = json.tag.fields.image
-
-          // html = template_feedinit({author_id, author_image, author_email, text, created_at, image});
-          html_feedinit = template_feedinit(json.tag);
-          html_comments = json.comments.map(template_comment).join('')
-          $('#feedinit').html(html_feedinit);
-          $('#comments').html(html_comments);
+          html_posthead = template_posthead(json.tag);
+          html_tagfeeds = json.feeds.map(template_tagfeed).join('')
+          $('#posthead').html(html_posthead);
+          $('#comments').html(html_tagfeeds);
           spinner.stop();
         },
         error: function(xhr, errmsg, err) {
@@ -705,32 +701,16 @@
     }
 
 
-    function save_tag(formData) {
-      var target = document.getElementById('canvas').parentElement;
-      var spinner = new Spinner().spin(target);
+    $('#comment').click(function() {
+      const commenting = $('#feeder-control').prop('checked');
+      if (commenting) {
+        $('#feeder-control').prop('checked', false);
+        // $('#feeder').css('display', 'none');
 
-      $.ajax({
-        // url: '{% url "save_tag" post.pk %}',
-        url: '{% url "tag_save" %}',
-        type: 'POST',
-        data: formData,
-        dataType:'json',
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          if (json.success) {
-            $('#tags').html(json.tags.map(template_tag).join(''));
-          } else {
-            console.log('something wrong');
-          }
-          spinner.stop();
-        },
-        error: function(xhr, errmsg, err) {
-          console.log(xhr.status + ': ' + xhr.responseText);
-          spinner.stop();
-        }
-      });
-    }
+      } else {
+        // $('#feeder').css('display', 'block');
+        $('#feeder-control').prop('checked', true);
+      }
+    })
   </script>
 {% endblock js %}

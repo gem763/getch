@@ -58,10 +58,50 @@ class Channel(BigIdAbstract):
 
         return self
 
+    def on_channels(self):
+        # if chtype is None:
+        return self.channel_set.select_subclasses()
+
+        # else:
+        #     return self.channel_set.select_subclasses(chtype)
+
+    def on_tags(self):
+        return self.channel_set.exclude(tag__isnull=True).select_subclasses()
+
+    # def on_brands(self):
+    #     return self.on_channels(chtype='brand')
+    #
+    # def on_items(self):
+    #     return self.on_channels(chtype='item')
+    #
+    def on_posts(self):
+        return self.channel_set.exclude(post__isnull=True).select_subclasses()
+    #
+    # def on_users(self):
+    #     return self.on_channels(chtype='user')
+
     @property
     def typeof(self):
         return self.cast().__class__.__name__.lower()
 
+    # def natural_key(self):
+    #     nk = {
+    #         'id': self.pk,
+    #         'name': self.name,
+    #         'created_at': self.created_at,
+    #         'text': self.text,
+    #         'master': {
+    #             'id': self.master.pk,
+    #             'avatar': self.master.avatar.src.url}
+    #     }
+    #
+    #     if self.pix is not None:
+    #         nk['pix'] = self.pix.src.url
+    #
+    #     if self.avatar is not None:
+    #         nk['avatar'] = self.avatar.src.url
+    #
+    #     return nk
 
 
 class Brand(Channel):
@@ -70,9 +110,13 @@ class Brand(Channel):
     origin = models.CharField(max_length=50, blank=True, null=True)
     category = models.CharField(max_length=120, blank=True, null=True)
 
+    def natural_key(self):
+        return {'id':self.pk, 'avatar':self.avatar.src.url}
+
 
 class Item(Channel):
-    pass
+    def natural_key(self):
+        return {'id':self.pk, 'avatar':self.avatar.src.url}
 
 
 class User(AbstractEmailUser, Channel):
@@ -110,6 +154,8 @@ class User(AbstractEmailUser, Channel):
                 self.avatar = avatar
                 self.save()
 
+    def natural_key(self):
+        return {'id':self.pk, 'email':self.email, 'avatar':self.avatar.src.url}
 
 
 class Post(Channel):
@@ -122,6 +168,8 @@ class Tag(Channel):
     with_brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     with_item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
+    # def natural_key(self):
+    #     return {'id':self.pk, 'x':self.x, 'y':self.y, 'brand':self.with_brand.avatar.src, 'item':self.with_item.avatar.src}
 
 
 def _image_path(instance, fname):
@@ -155,6 +203,9 @@ class Image(BigIdAbstract):
     @property
     def typeof(self):
         return self.__class__.__name__.lower()
+
+    def natural_key(self):
+        return self.src.url
 
 
 class Pix(Image):

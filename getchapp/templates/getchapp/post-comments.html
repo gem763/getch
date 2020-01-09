@@ -48,19 +48,19 @@
 </style>
 
 <div id='comments'>
-  {% for comment in post.comments.all %}
+  {% for comment in post.on_posts %}
   <div class="comment ui vertical center aligned segment">
     <table class='ui unstackable very compact basic table'>
       <tbody>
         <tr class='top aligned'>
           <td>
-            <a href="{% url 'profile' comment.author.pk %}">
-              <img src="{{ comment.author.user.socialaccount_set.all.0.get_avatar_url }}"/>
+            <a href="{% url 'user' comment.master.pk %}">
+              <img src="{{ comment.master.avatar.src.url }}"/>
             </a>
           </td>
 
           <td>
-            <p>{{ comment.author.user.email }}</p>
+            <p>{{ comment.master.email }}</p>
             <p id='post-text'>
               <span>
                 {{ comment.text }}
@@ -70,8 +70,8 @@
               {{ comment.created_at|date:"Y-m-d"}}
             </p>
 
-            <a href='{% url "comment" comment.pk %}'>
-              <img src="{{ comment.image.url }}" style='width:100%;height:auto;display:block;'/>
+            <a href='{% url "post" comment.pk %}'>
+              <img src="{{ comment.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
             </a>
           </td>
         </tr>

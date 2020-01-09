@@ -169,5 +169,36 @@ $('#editor').on('submit', function(event) {
   $('#editor input[name="item_id"]').attr('value', pos.item_id);
 
   let formData = new FormData(this);
-  save_tag(formData);
+  tag_save(formData);
 });
+
+$('#editor .cancel.button').click(function() {
+  init_tagger();
+})
+
+function tag_save(formData) {
+  var target = document.getElementById('canvas').parentElement;
+  var spinner = new Spinner().spin(target);
+
+  $.ajax({
+    url: '/channel/tag/save/',
+    type: 'POST',
+    data: formData,
+    dataType:'json',
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function(json) {
+      if (json.success) {
+        $('#tags').html(json.tags.map(template_tag).join(''));
+      } else {
+        console.log('something wrong');
+      }
+      spinner.stop();
+    },
+    error: function(xhr, errmsg, err) {
+      console.log(xhr.status + ': ' + xhr.responseText);
+      spinner.stop();
+    }
+  });
+}
