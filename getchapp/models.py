@@ -68,6 +68,10 @@ class Channel(BigIdAbstract):
         return self.channel_set.exclude(post__isnull=True)#.select_subclasses()
 
     @property
+    def channel_pk(self):
+        return super().pk
+
+    @property
     def typeof(self):
         return self.cast().__class__.__name__.lower()
 

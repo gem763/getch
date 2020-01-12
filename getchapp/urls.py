@@ -7,22 +7,13 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('posting/', v.posting, name='posting'),
     path('my/', v.my, name='my'),
-    #
-    # path('post/<int:pk>/', v.post, name='post'),
-    # path('post/<int:pk>/save_tag/', v.save_tag, name='save_tag'),
-    # path('feed/tag/<int:pk>/', v.tag_feed, name='tag_feed'),
-    #
-    # path('comment/<int:pk>/', v.comment, name='comment'),
-    # path('tag/<int:pk>/', v.tag, name='tag'),
-    #
     # path('channel/brand/<int:pk>/', v.brand, name='brand'),
     # path('channel/item/<int:pk>/', v.item, name='item'),
-    path('channel/user/<int:pk>/', v.user, name='user'),
+    # path('channel/user/<int:pk>/', v.user, name='user'),
 
 
     path('channel/<int:pk>/', v.channel, name='channel'),
     path('channel/tag/save/', v.tag_save, name='tag_save'),
     # path('channel/tag/<int:pk>/', v.tag, name='tag'),
-    # path('channel/tag/<int:pk>/feeds/', v.tagfeeds, name='tagfeeds'),
     path('channel/<int:pk>/feeds/', v.feeds, name='feeds'),
 ]

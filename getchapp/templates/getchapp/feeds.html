@@ -68,15 +68,12 @@
   #feeder {
     z-index: -1;
     background: none;
-    /* position: absolute; */
-    /* top: 0; */
-    /* left: 5%; */
-    /* right: 5%; */
     width: 100%;
-    transition: all 0.1s ease;
-    /* transform: scale(0); */
-    /* visibility: collapse; */
-    display: none;
+    height: 0;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    opacity: 0;
+    /* display: none; */
   }
 
   #feeder form {
@@ -163,9 +160,9 @@
   }
 
   #feeder-control:checked ~ #feeder {
-    /* visibility: visible; */
-    /* transform: scale(1); */
-    display: block;
+    height: 180px;
+    opacity: 1;
+    /* display: block; */
   }
 
 
@@ -223,7 +220,7 @@
     <tbody>
       <tr class='top aligned'>
         <td>
-          <a href="{% url 'user' ch.master.pk %}">
+          <a href="{% url 'channel' ch.master.channel_pk %}">
             <img src="{{ ch.master.avatar.src.url }}"/>
           </a>
         </td>
@@ -241,7 +238,7 @@
 
           {% if without_opening_pix %}
           {% else %}
-          <a href='{% url "post" ch.pk %}'>
+          <a href='{% url "channel" ch.pk %}'>
             <img src="{{ ch.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
           </a>
           {% endif %}
@@ -327,7 +324,7 @@
     <tbody>
       <tr class='top aligned'>
         <td>
-          <a href="{% url 'user' feed.master.pk %}">
+          <a href="{% url 'channel' feed.master.channel_pk %}">
             <img src="{{ feed.master.avatar.src.url }}"/>
           </a>
         </td>

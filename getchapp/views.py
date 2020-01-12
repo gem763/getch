@@ -15,7 +15,7 @@ items_search = list(items_all.values('pk', 'name', 'avatar__src', 'keywords').or
 
 def intro(request):
     # posts = Post.objects.order_by('-created_at')
-    channels = Channel.objects.order_by('-created_at')
+    channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')
     return render(request, 'getchapp/intro.html', {'channels':channels})
 #
 # # @login_required
@@ -59,18 +59,6 @@ def _create_tag(request):
 
     tag.save()
     return tag
-
-
-# def tag_save(request):
-#     if request.method=='POST':
-#         try:
-#             tag = _create_tag(request)
-#             # tags = Tag.objects.filter(on__pk=tag.on_id).values('pk', 'x', 'y', 'with_brand__avatar__src', 'with_item__avatar__src')
-#             tags = serializers.serialize('python', Tag.objects.filter(on__pk=tag.on_id), use_natural_foreign_keys=True)
-#             return JsonResponse({'success':True, 'tags':tags}, safe=False)
-#
-#         except:
-#             return JsonResponse({'success':False}, safe=False)
 
 
 def tag_save(request):
@@ -123,18 +111,6 @@ def tag_save(request):
 #         return JsonResponse({'success':True, 'tag':tag, 'feeds':feeds}, safe=False)
 
 
-# def tagfeeds(request, pk):
-#     if request.method=='GET':
-#         tag = Tag.objects.get(pk=pk)
-#         return render(request, 'getchapp/post-feeds.html', {'post':tag})
-#
-#
-# def tag(request, pk):
-#     _post = Tag.objects.get(pk=pk)
-#     ctx = {'post':_post, 'brands':brands_search, 'items':items_search}
-#     return render(request, 'getchapp/post.html', ctx)
-
-
 def feeds(request, pk):
     ch = Channel.objects.get(pk=pk)
     return render(request, 'getchapp/feeds.html', {'ch':ch})
@@ -146,12 +122,6 @@ def channel(request, pk):
     return render(request, 'getchapp/channel.html', ctx)
 
 
-# def post(request, pk):
-#     _post = get_object_or_404(Post, pk=pk)
-#     ctx = {'post':_post, 'brands':brands_search, 'items':items_search}
-#     return render(request, 'getchapp/post.html', ctx)
-
-
-def user(request, pk):
-    _user = get_object_or_404(User, pk=pk)
-    return render(request, 'getchapp/user.html', {'user':_user})
+# def user(request, pk):
+#     _user = get_object_or_404(User, pk=pk)
+#     return render(request, 'getchapp/user.html', {'user':_user})

@@ -205,7 +205,6 @@ function tag_save(formData) {
 
 function load_feeds(ch_id) {
   var spinner = new Spinner().spin(document.body);
-  var html_feedinit, html_comments;
 
   $.ajax({
     url: '/channel/' + ch_id + '/feeds/',
