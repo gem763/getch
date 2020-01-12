@@ -1,0 +1,354 @@
+<style>
+  #feedopening {
+    background: black;
+    border: none;
+    padding: 0;
+  }
+
+  #feedopening > table {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
+
+  #feedopening > table td:first-child {
+    background: none;
+    padding: 0;
+    width: 40px;
+  }
+
+  #feedopening > table td:first-child img {
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+  }
+
+  #feedopening > table td:last-child {
+    padding: 0;
+    color: white;
+    font-size: 12px;
+    position: relative;
+    background: none;
+  }
+
+  #feedopening > table td:last-child p {
+    margin: 5px;
+  }
+
+  #feedopening #feedopening-text > span {
+    background: white;
+    color: black;
+  }
+
+  #feedopening #feedopening-created-at {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  #actionbar {
+    background: none;
+    border: none;
+    padding: 0px;
+  }
+
+  #actionbar .item {
+    background: none;
+    margin: 0;
+  }
+
+  #actionbar .item > img {
+    width: 25px;
+    height: 25px;
+  }
+
+
+  #feeder {
+    z-index: -1;
+    background: none;
+    /* position: absolute; */
+    /* top: 0; */
+    /* left: 5%; */
+    /* right: 5%; */
+    width: 100%;
+    transition: all 0.1s ease;
+    /* transform: scale(0); */
+    /* visibility: collapse; */
+    display: none;
+  }
+
+  #feeder form {
+    margin-left: 5%;
+    margin-right: 5%;
+    border-radius: 0;
+    border: 1px solid black;
+  }
+
+  #feeder form > table {
+    border: none;
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid black;
+    border-radius: 0;
+  }
+
+  #feeder #comment-tagtext {
+    padding: 10px;
+    background: none;
+  }
+
+  #feeder #comment-tagtext textarea {
+    resize: none;
+    background: none;
+    width: 100%;
+    height: 40px;
+    overflow-y: hidden;
+    border: none;
+    line-height: 1.3em;
+    margin: 0;
+    display: block;
+  }
+
+  #feeder #comment-footbuttons {
+    background: none;
+    padding: 5px;
+  }
+
+  #feeder #comment-footbuttons .button {
+    width: 45%;
+    border-radius: 0;
+    margin: 5px;
+  }
+
+  #feeder td {
+    padding: 0;
+    height: var(--tagger-imgsize);
+    transition: all 0.1s ease;
+    position: relative;
+  }
+
+  #feeder td.iconbutton {
+    width: var(--tagger-imgsize);
+  }
+
+  #feeder td#comment-profiletag {
+    width: var(--tagger-imgsize);
+    border-right: 1px solid black;
+  }
+
+  #feeder td img {
+    object-fit: contain;
+    background: none;
+    display: block;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--tagger-imgsize);
+    height: var(--tagger-imgsize);
+    transition: all 0.1s ease;
+  }
+
+  #feeder td.iconbutton img {
+    width: 25px;
+    height: 25px;
+  }
+
+  #feeder td#comment-rating img {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    opacity: 0.3;
+  }
+
+  #feeder-control:checked ~ #feeder {
+    /* visibility: visible; */
+    /* transform: scale(1); */
+    display: block;
+  }
+
+
+  .feed {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .feed > table {
+    width: 90vw !important;
+    margin-top: 5vw !important;
+    border-radius: 0 !important;
+    border: 1px solid black !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .feed > table td:first-child {
+    background: none !important;
+    padding: 0 !important;
+    width: 40px !important;
+  }
+
+  .feed > table td:first-child img {
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+
+  .feed > table td:last-child {
+    padding: 0 !important;
+    font-size: 12px !important;
+    position: relative !important;
+    background: none !important;
+  }
+
+  .feed > table td:last-child p {
+    margin: 5px;
+  }
+
+  .feed #post-created-at {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+</style>
+
+
+<div id='feedopening' class="ui vertical center aligned segment">
+  <table class='ui unstackable very compact basic table'>
+    <tbody>
+      <tr class='top aligned'>
+        <td>
+          <a href="{% url 'user' ch.master.pk %}">
+            <img src="{{ ch.master.avatar.src.url }}"/>
+          </a>
+        </td>
+
+        <td>
+          <p>{{ ch.master.email }}</p>
+          <p id='feedopening-text'>
+            <span>
+              {{ ch.text }}
+            </span>
+          </p>
+          <p id='feedopening-created-at'>
+            {{ ch.created_at|date:"Y-m-d"}}
+          </p>
+
+          {% if without_opening_pix %}
+          {% else %}
+          <a href='{% url "post" ch.pk %}'>
+            <img src="{{ ch.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div id='actionbar' class="ui vertical center aligned segment">
+  <div class="ui text container">
+    <div class="ui icon secondary menu">
+      <a class="item" href="#">
+        <img src="/static/materials/icons8-heart-100.png">
+      </a>
+      <div id='comment' class="item" href="#" onclick='show_feeder()'>
+        <img src="/static/materials/icons8-topic-100.png" style="width:20px;height:20px;">
+      </div>
+      <a class="item" href="#">
+        <img src="/static/materials/icons8-upload-100.png">
+      </a>
+
+      <div class="right menu">
+        <a class="item" href="#">
+          <img src="/static/materials/icons8-bookmark-100.png">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<input id="feeder-control" type="checkbox">
+<div id='feeder'>
+  <form class="ui form" method="post" enctype="multipart/form-data">
+    <table class='ui unstackable very compact basic table'>
+      <tbody>
+        <tr>
+          <td id='comment-profiletag'>
+            {% include "getchapp/avatar.html" %}
+          </td>
+
+          <td id='comment-rating'>
+            <img src="/static/materials/icons8-star-96.png">
+            <img src="/static/materials/icons8-star-96.png">
+            <img src="/static/materials/icons8-star-96.png">
+            <img src="/static/materials/icons8-star-96.png">
+            <img src="/static/materials/icons8-star-96.png">
+          </td>
+
+          <td class='iconbutton'>
+            <label for='comment-imageuploader'>
+              <img src="/static/materials/icons8-unsplash-96.png">
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id='comment-tagimage' class="field" style='margin:0;'>
+      <input type="file" name="image" accept="image/*" style="display:none;" id="comment-imageuploader" onchange="load_img(this)">
+      <div style="margin-top:0;display:none;">
+        <img src="#" alt="image loaded" style="width:100%;height:auto;display:block;" />
+      </div>
+    </div>
+
+    <div id='comment-tagtext' class="field">
+      <textarea name="text" cols="40" rows="10" maxlength="500" placeholder="COMMENT HERE"></textarea>
+    </div>
+
+    <div id='comment-footbuttons'>
+      <div class="cancel ui basic black mini button">CANCEL</div>
+      <button class="save ui black mini button" type='submit'>SAVE</button>
+    </div>
+  </form>
+</div>
+
+
+{% for feed in ch.on_posts %}
+<div class="feed ui vertical center aligned segment">
+  <table class='ui unstackable very compact basic table'>
+    <tbody>
+      <tr class='top aligned'>
+        <td>
+          <a href="{% url 'user' feed.master.pk %}">
+            <img src="{{ feed.master.avatar.src.url }}"/>
+          </a>
+        </td>
+
+        <td>
+          <p>{{ feed.master.email }}</p>
+          <p id='post-text'>
+            <span>
+              {{ feed.text }}
+            </span>
+          </p>
+          <p id='post-created-at'>
+            {{ feed.created_at|date:"Y-m-d"}}
+          </p>
+
+          <a href='{% url "channel" feed.pk %}'>
+            <img src="{{ feed.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endfor %}

@@ -40,11 +40,11 @@
   <div class="ui container">
     <div class="grid">
 
-      {% for post in posts %}
+      {% for ch in channels %}
       <div class="grid-item">
         <div>
-          <a href="/post/{{post.id}}">
-            <img class="ui image" src="{{post.pix.src.url}}"/>
+          <a href="/channel/{{ch.id}}">
+            <img class="ui image" src="{{ch.pix.src.url}}"/>
           </a>
 
           {% include "getchapp/barcode.html" %}

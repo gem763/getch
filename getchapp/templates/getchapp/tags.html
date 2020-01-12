@@ -1,0 +1,13 @@
+{% for tagch in ch.on_tags %}
+<div class='tag' style='left:{{tagch.tag.x}}%;top:{{tagch.tag.y}}%;'>
+  <table class='tag-body ui unstackable table' onclick='load_feeds({{tagch.pk}})'>
+    <tbody>
+      <tr>
+        <td><img src="{{tagch.tag.with_brand.avatar.src.url}}"/></td>
+        <td><img src="{{tagch.tag.with_item.avatar.src.url}}"/></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class='tag-xy'></div>
+</div>
+{% endfor %}

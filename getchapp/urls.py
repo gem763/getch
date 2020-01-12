@@ -8,7 +8,7 @@ urlpatterns = [
     path('posting/', v.posting, name='posting'),
     path('my/', v.my, name='my'),
     #
-    path('post/<int:pk>/', v.post, name='post'),
+    # path('post/<int:pk>/', v.post, name='post'),
     # path('post/<int:pk>/save_tag/', v.save_tag, name='save_tag'),
     # path('feed/tag/<int:pk>/', v.tag_feed, name='tag_feed'),
     #
@@ -20,7 +20,9 @@ urlpatterns = [
     path('channel/user/<int:pk>/', v.user, name='user'),
 
 
+    path('channel/<int:pk>/', v.channel, name='channel'),
     path('channel/tag/save/', v.tag_save, name='tag_save'),
-    path('channel/tag/<int:pk>/', v.tag, name='tag'),
-    path('channel/tag/<int:pk>/feeds/', v.tagfeeds, name='tagfeeds'),
+    # path('channel/tag/<int:pk>/', v.tag, name='tag'),
+    # path('channel/tag/<int:pk>/feeds/', v.tagfeeds, name='tagfeeds'),
+    path('channel/<int:pk>/feeds/', v.feeds, name='feeds'),
 ]

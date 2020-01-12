@@ -176,29 +176,63 @@ $('#editor .cancel.button').click(function() {
   init_tagger();
 })
 
+
+
 function tag_save(formData) {
-  var target = document.getElementById('canvas').parentElement;
-  var spinner = new Spinner().spin(target);
+  // var target = document.getElementById('canvas').parentElement;
+  var spinner = new Spinner().spin(document.body);
 
   $.ajax({
     url: '/channel/tag/save/',
     type: 'POST',
     data: formData,
-    dataType:'json',
+    // dataType:'json',
     cache: false,
     contentType: false,
     processData: false,
-    success: function(json) {
-      if (json.success) {
-        $('#tags').html(json.tags.map(template_tag).join(''));
-      } else {
-        console.log('something wrong');
-      }
-      spinner.stop();
+    success: function(data) {
+      $('#tags').html(data);
     },
     error: function(xhr, errmsg, err) {
       console.log(xhr.status + ': ' + xhr.responseText);
+    },
+    complete: function() {
       spinner.stop();
     }
   });
+}
+
+
+function load_feeds(ch_id) {
+  var spinner = new Spinner().spin(document.body);
+  var html_feedinit, html_comments;
+
+  $.ajax({
+    url: '/channel/' + ch_id + '/feeds/',
+    type: 'GET',
+    data: {},
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function(data) {
+      $('#feeds').html(data);
+    },
+    error: function(xhr, errmsg, err) {
+      console.log(xhr.status + ': ' + xhr.responseText);
+    },
+    complete: function() {
+      spinner.stop();
+    }
+  });
+}
+
+
+function show_feeder() {
+  const commenting = $('#feeder-control').prop('checked');
+  if (commenting) {
+    $('#feeder-control').prop('checked', false);
+
+  } else {
+    $('#feeder-control').prop('checked', true);
+  }
 }

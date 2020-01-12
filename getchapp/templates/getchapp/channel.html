@@ -1,0 +1,84 @@
+{% extends "getchapp/layout.html" %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .results {
+      margin-top: 0 !important;
+      border-radius: 0 !important;
+      border-top: 0px solid transparent !important;
+      border-left: 1px solid black !important;
+      border-right: 1px solid black !important;
+      border-bottom: 1px solid black !important;
+      box-shadow: none !important;
+    }
+
+    .result {
+      padding: 10px !important;
+      border-radius: 0 !important;
+      background: none !important;
+      border-bottom: 1px solid black !important;
+      height: 80px !important;
+    }
+
+    .result > .image {
+      height: 60px !important;
+      width: 60px !important;
+      border-radius: 0 !important;
+    }
+
+    .result > .image > img {
+      object-fit: contain !important;
+      height: 60px !important;
+      width: 60px !important;
+    }
+  </style>
+{% endblock css %}
+
+
+{% block mastbody %}
+<div id='pix'>
+  {% include 'getchapp/pix.html' with ch=ch %}
+</div>
+
+<div id='feeds'>
+  {% include 'getchapp/feeds.html' with ch=ch without_opening_pix=True %}
+</div>
+{% endblock mastbody %}
+
+
+{% block js %}
+  {{ block.super }}
+  <script src="/static/getch/tagger.js"></script>
+
+  <script>
+    $('#tagger .ui.search').search({
+      source: {{ brands | safe }},
+      fullTextSearch: true,
+      showNoResults: false,
+      maxResults: 5,
+      minCharacters: 1,
+      searchFields: ['name', 'category', 'keywords'],
+      templates: {
+        standard: function(response){
+          htmls = $.map(response.results, function(brand) {
+                    var avatar = 'https://storage.googleapis.com/getch-storage/' + brand.avatar__src.replace('\\', '/');
+                    var onclick = "set_brand(" + brand.pk + ", '" + avatar + "')";
+                    var html = '<div class="result" onclick="' + onclick + '">';
+                    html += '<div class="image">'
+                          + '<img src="' + avatar + '">'
+                          + '</div>';
+                    html += '<div class="content">';
+                    html += '<div class="ui header">' + brand.fullname_en;
+                    html += '<div class="sub header">' + brand.fullname_kr + '</div>';
+                    html += '</div></div>';
+                    html += '</div>';
+                    return html
+                  });
+
+          return htmls
+        },
+      },
+    });
+  </script>
+{% endblock js %}

@@ -58,50 +58,18 @@ class Channel(BigIdAbstract):
 
         return self
 
-    def on_channels(self):
-        # if chtype is None:
-        return self.channel_set.select_subclasses()
-
-        # else:
-        #     return self.channel_set.select_subclasses(chtype)
+    # def on_channels(self):
+    #     return self.channel_set.select_subclasses()
 
     def on_tags(self):
-        return self.channel_set.exclude(tag__isnull=True).select_subclasses()
+        return self.channel_set.exclude(tag__isnull=True)#.select_subclasses()
 
-    # def on_brands(self):
-    #     return self.on_channels(chtype='brand')
-    #
-    # def on_items(self):
-    #     return self.on_channels(chtype='item')
-    #
     def on_posts(self):
-        return self.channel_set.exclude(post__isnull=True).select_subclasses()
-    #
-    # def on_users(self):
-    #     return self.on_channels(chtype='user')
+        return self.channel_set.exclude(post__isnull=True)#.select_subclasses()
 
     @property
     def typeof(self):
         return self.cast().__class__.__name__.lower()
-
-    # def natural_key(self):
-    #     nk = {
-    #         'id': self.pk,
-    #         'name': self.name,
-    #         'created_at': self.created_at,
-    #         'text': self.text,
-    #         'master': {
-    #             'id': self.master.pk,
-    #             'avatar': self.master.avatar.src.url}
-    #     }
-    #
-    #     if self.pix is not None:
-    #         nk['pix'] = self.pix.src.url
-    #
-    #     if self.avatar is not None:
-    #         nk['avatar'] = self.avatar.src.url
-    #
-    #     return nk
 
 
 class Brand(Channel):

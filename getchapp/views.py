@@ -12,13 +12,11 @@ items_all = Item.objects.all()
 brands_search = list(brands_all.values('pk', 'name', 'avatar__src', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name'))
 items_search = list(items_all.values('pk', 'name', 'avatar__src', 'keywords').order_by('name'))
 
-# brands_search = list(brands_all.values('pk', 'name', 'image', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name'))
-# items_search = list(items_all.values('pk', 'name', 'image', 'keywords').order_by('name'))
-
 
 def intro(request):
-    posts = Post.objects.order_by('-created_at')
-    return render(request, 'getchapp/intro.html', {'posts':posts})
+    # posts = Post.objects.order_by('-created_at')
+    channels = Channel.objects.order_by('-created_at')
+    return render(request, 'getchapp/intro.html', {'channels':channels})
 #
 # # @login_required
 def posting(request):
@@ -49,7 +47,7 @@ def _create_tag(request):
     tag.name = request.user.name + '__' + str(datetime.now())
     tag.keywords = ''
     tag.master = request.user
-    tag.on_id = request.POST['post_id']
+    tag.on_id = request.POST['ch_id']
     tag.text = request.POST['text']
     tag.x = request.POST['x']
     tag.y = request.POST['y']
@@ -63,17 +61,22 @@ def _create_tag(request):
     return tag
 
 
+# def tag_save(request):
+#     if request.method=='POST':
+#         try:
+#             tag = _create_tag(request)
+#             # tags = Tag.objects.filter(on__pk=tag.on_id).values('pk', 'x', 'y', 'with_brand__avatar__src', 'with_item__avatar__src')
+#             tags = serializers.serialize('python', Tag.objects.filter(on__pk=tag.on_id), use_natural_foreign_keys=True)
+#             return JsonResponse({'success':True, 'tags':tags}, safe=False)
+#
+#         except:
+#             return JsonResponse({'success':False}, safe=False)
+
+
 def tag_save(request):
     if request.method=='POST':
-        try:
-            tag = _create_tag(request)
-            # tags = Tag.objects.filter(on__pk=tag.on_id).values('pk', 'x', 'y', 'with_brand__avatar__src', 'with_item__avatar__src')
-            tags = serializers.serialize('python', Tag.objects.filter(on__pk=tag.on_id), use_natural_foreign_keys=True)
-            return JsonResponse({'success':True, 'tags':tags}, safe=False)
-
-        except:
-            return JsonResponse({'success':False}, safe=False)
-
+        tag = _create_tag(request)
+        return render(request, 'getchapp/post-tags.html', {'post':tag.on})
 
 
 # def save_tag(request, pk):
@@ -107,85 +110,48 @@ def tag_save(request):
 #         return resp_fail
 
 
-def tagfeeds(request, pk):
-    if request.method=='GET':
-        # tags = Tag.objects.filter(pk=pk)
-        # tags = Channel.objects.filter(tag__isnull=False, tag__pk=pk)
-        # tag = serializers.serialize('python', tags, use_natural_foreign_keys=True)[0]
-        # feeds = serializers.serialize('python', tags[0].on_posts(), use_natural_foreign_keys=True)
-
-        tags = Tag.objects.filter(pk=pk)
-        tag = tags.values('pk', 'master', 'master__avatar__src', 'master__email', 'text', 'created_at', 'pix__src', 'with_brand__avatar__src', 'with_item__avatar__src')[0]
-        feeds = serializers.serialize('python', tags[0].channel_set.all(), use_natural_foreign_keys=True)
-        return JsonResponse({'success':True, 'tag':tag, 'feeds':feeds}, safe=False)
-
-
-# def tag_feed(request, pk):
-#     resp_fail = JsonResponse({'success':False})
-#
+# def tagfeeds(request, pk):
 #     if request.method=='GET':
-#         tag = serializers.serialize('python', Tag.objects.filter(pk=pk), use_natural_foreign_keys=True)[0]
-#         comments = serializers.serialize('python', Comment.objects.filter(object_id=pk, content_type__model='tag'), use_natural_foreign_keys=True)
-#         return JsonResponse({'success':True, 'tag':tag, 'comments':comments}, safe=False)
+#         # tags = Tag.objects.filter(pk=pk)
+#         # tags = Channel.objects.filter(tag__isnull=False, tag__pk=pk)
+#         # tag = serializers.serialize('python', tags, use_natural_foreign_keys=True)[0]
+#         # feeds = serializers.serialize('python', tags[0].on_posts(), use_natural_foreign_keys=True)
 #
-#
-#
-# def comment(request, pk):
-#     _comment = get_object_or_404(Comment, pk=pk)
-#     _tagform = TagForm()
-#     ctx = {'post':_comment, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
-#     return render(request, 'getchapp/post.html', ctx)
+#         tags = Tag.objects.filter(pk=pk)
+#         tag = tags.values('pk', 'master', 'master__avatar__src', 'master__email', 'text', 'created_at', 'pix__src', 'with_brand__avatar__src', 'with_item__avatar__src')[0]
+#         feeds = serializers.serialize('python', tags[0].channel_set.all(), use_natural_foreign_keys=True)
+#         return JsonResponse({'success':True, 'tag':tag, 'feeds':feeds}, safe=False)
+
+
+# def tagfeeds(request, pk):
+#     if request.method=='GET':
+#         tag = Tag.objects.get(pk=pk)
+#         return render(request, 'getchapp/post-feeds.html', {'post':tag})
 #
 #
 # def tag(request, pk):
-#     _tag = get_object_or_404(Tag, pk=pk)
-#     _tagform = TagForm()
-#     ctx = {'post':_tag, 'brands':brands_search, 'items':items_search, 'tagform':_tagform}
+#     _post = Tag.objects.get(pk=pk)
+#     ctx = {'post':_post, 'brands':brands_search, 'items':items_search}
 #     return render(request, 'getchapp/post.html', ctx)
 
 
-def tag(request, pk):
-    _post = Tag.objects.get(pk=pk)
-    ctx = {'post':_post, 'brands':brands_search, 'items':items_search}
-    return render(request, 'getchapp/post.html', ctx)
+def feeds(request, pk):
+    ch = Channel.objects.get(pk=pk)
+    return render(request, 'getchapp/feeds.html', {'ch':ch})
 
 
-def post(request, pk):
-    _post = get_object_or_404(Post, pk=pk)
-    # _tagform = TagForm()
-    ctx = {'post':_post, 'brands':brands_search, 'items':items_search}#, 'tagform':_tagform}
-
-    # if request.method=='POST':
-    #     print('*******************************')
-    #     pass
-        # tagform = TagForm(request.POST, request.FILES)
-        # print(request.FILES)
-        # if tagform.is_valid():
-        #     obj = tagform.save(commit=False)
-        #     obj.on = _post
-        #     obj.x = request.POST['x']
-        #     obj.y = request.POST['y']
-        #     obj.author = get_object_or_404(Profile, user=request.user)
-        #     obj.brand = get_object_or_404(Brand, pk=request.POST['brand_id'])
-        #     obj.item = get_object_or_404(Item, pk=request.POST['item_id'])
-        #     obj.save()
-        #     return redirect(_post)
-
-    # else:
-    return render(request, 'getchapp/post.html', ctx)
+def channel(request, pk):
+    ch = Channel.objects.get(pk=pk)
+    ctx = {'ch':ch, 'brands':brands_search, 'items':items_search}
+    return render(request, 'getchapp/channel.html', ctx)
 
 
+# def post(request, pk):
+#     _post = get_object_or_404(Post, pk=pk)
+#     ctx = {'post':_post, 'brands':brands_search, 'items':items_search}
+#     return render(request, 'getchapp/post.html', ctx)
 
-# def brand(request, pk):
-#     _brand = get_object_or_404(Brand, pk=pk)
-#     return render(request, 'getchapp/brand.html', {'brand':_brand})
-#
-#
-# def item(request, pk):
-#     _item = get_object_or_404(Item, pk=pk)
-#     return render(request, 'getchapp/item.html', {'item':_item})
-#
-#
+
 def user(request, pk):
     _user = get_object_or_404(User, pk=pk)
     return render(request, 'getchapp/user.html', {'user':_user})
