@@ -160,7 +160,7 @@
   }
 
   #feeder-control:checked ~ #feeder {
-    height: 180px;
+    height: auto;
     opacity: 1;
     /* display: block; */
   }
@@ -215,12 +215,13 @@
 </style>
 
 
+{% load static %}
 <div id='feedopening' class="ui vertical center aligned segment">
   <table class='ui unstackable very compact basic table'>
     <tbody>
       <tr class='top aligned'>
         <td>
-          <a href="{% url 'channel' ch.master.channel_pk %}">
+          <a href="{{ ch.master.get_absolute_url }}">
             <img src="{{ ch.master.avatar.src.url }}"/>
           </a>
         </td>
@@ -238,7 +239,7 @@
 
           {% if without_opening_pix %}
           {% else %}
-          <a href='{% url "channel" ch.pk %}'>
+          <a href='{{ ch.get_absolute_url }}'>
             <img src="{{ ch.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
           </a>
           {% endif %}
@@ -253,18 +254,18 @@
   <div class="ui text container">
     <div class="ui icon secondary menu">
       <a class="item" href="#">
-        <img src="/static/materials/icons8-heart-100.png">
+        <img src="{% static 'materials/icons8-heart-100.png' %}">
       </a>
       <div id='comment' class="item" href="#" onclick='show_feeder()'>
-        <img src="/static/materials/icons8-topic-100.png" style="width:20px;height:20px;">
+        <img src="{% static 'materials/icons8-topic-100.png' %}" style="width:20px;height:20px;">
       </div>
       <a class="item" href="#">
-        <img src="/static/materials/icons8-upload-100.png">
+        <img src="{% static 'materials/icons8-upload-100.png' %}">
       </a>
 
       <div class="right menu">
         <a class="item" href="#">
-          <img src="/static/materials/icons8-bookmark-100.png">
+          <img src="{% static 'materials/icons8-bookmark-100.png' %}">
         </a>
       </div>
     </div>
@@ -274,25 +275,29 @@
 
 <input id="feeder-control" type="checkbox">
 <div id='feeder'>
-  <form class="ui form" method="post" enctype="multipart/form-data">
+  <form class="ui form" method="post" enctype="multipart/form-data" onsubmit='submit_feed_save(event)'>
+    {% csrf_token %}
+
+    <input type='hidden' value='{{ch.pk}}' name='on_id'>
+
     <table class='ui unstackable very compact basic table'>
       <tbody>
         <tr>
           <td id='comment-profiletag'>
-            {% include "getchapp/avatar.html" %}
+            <img src="{{ user.avatar.src.url }}"/>
           </td>
 
           <td id='comment-rating'>
-            <img src="/static/materials/icons8-star-96.png">
-            <img src="/static/materials/icons8-star-96.png">
-            <img src="/static/materials/icons8-star-96.png">
-            <img src="/static/materials/icons8-star-96.png">
-            <img src="/static/materials/icons8-star-96.png">
+            <img src="{% static 'materials/icons8-star-96.png' %}">
+            <img src="{% static 'materials/icons8-star-96.png' %}">
+            <img src="{% static 'materials/icons8-star-96.png' %}">
+            <img src="{% static 'materials/icons8-star-96.png' %}">
+            <img src="{% static 'materials/icons8-star-96.png' %}">
           </td>
 
           <td class='iconbutton'>
             <label for='comment-imageuploader'>
-              <img src="/static/materials/icons8-unsplash-96.png">
+              <img src="{% static 'materials/icons8-unsplash-96.png' %}">
             </label>
           </td>
         </tr>
@@ -302,7 +307,7 @@
     <div id='comment-tagimage' class="field" style='margin:0;'>
       <input type="file" name="image" accept="image/*" style="display:none;" id="comment-imageuploader" onchange="load_img(this)">
       <div style="margin-top:0;display:none;">
-        <img src="#" alt="image loaded" style="width:100%;height:auto;display:block;" />
+        <img alt="image loaded" style="width:100%;height:auto;display:block;" />
       </div>
     </div>
 
@@ -324,7 +329,7 @@
     <tbody>
       <tr class='top aligned'>
         <td>
-          <a href="{% url 'channel' feed.master.channel_pk %}">
+          <a href="{{ feed.master.get_absolute_url }}">
             <img src="{{ feed.master.avatar.src.url }}"/>
           </a>
         </td>
@@ -340,7 +345,7 @@
             {{ feed.created_at|date:"Y-m-d"}}
           </p>
 
-          <a href='{% url "channel" feed.pk %}'>
+          <a href='{{ feed.get_absolute_url }}'>
             <img src="{{ feed.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
           </a>
         </td>

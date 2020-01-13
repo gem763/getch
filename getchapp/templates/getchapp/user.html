@@ -1,47 +1,12 @@
-{% extends "getchapp/layout.html" %}
-
-{% block css %}
-  {{ block.super }}
-  <style>
-    #signout:hover {
-      opacity: 0.5;
-    }
-  </style>
-{% endblock css %}
-
-
-{% block mastbody %}
 <div class="ui center aligned vertical segment" style="background:none;height:500px;margin-top:120px">
   <div class="ui container">
-
-    <div class="ui centered dimmable image" id="image">
-      <div class="ui dimmer" style="border-radius:10px;">
-        <div class="content">
-          <div class="center">
-            <div class="ui inverted button">edit</div>
-          </div>
-        </div>
-      </div>
-      <img id="canvas" class="ui centered image" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:150px;height:150px;"/>
+    <div class="ui centered image" id="image">
+      <img id="canvas" class="ui centered image" src="{{ user.avatar.src.url }}" style="object-fit:cover;width:150px;height:150px;"/>
     </div>
 
-
-    <h1>{{ user.socialaccount_set.all.0.extra_data.name }}</h1>
+    <h1>{{ user.nickname }}</h1>
     <p>
       {{ user.email }} <br>
     </p>
-
-    <br>
-    <a id="signout" class="ui black button" href="{% url 'account_logout' %}" style="border-radius:0;">Sign-out</a>
   </div>
 </div>
-{% endblock mastbody %}
-
-{% block js %}
-  {{ block.super }}
-  <script>
-    $('#image').dimmer({
-      on: 'hover'
-    });
-  </script>
-{% endblock js %}

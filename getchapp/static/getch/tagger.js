@@ -115,11 +115,12 @@ function imgerr(img) {
 
 function load_img(input) {
   if (input.files && input.files[0]) {
-    var reader = new FileReader();
+    let reader = new FileReader();
 
     reader.onload = function(e) {
-      $("#tagimage img").attr("src", e.target.result);
-      $("#tagimage img").parent().css("display", "block");
+      let img = $(input).next().children('img');
+      img.attr("src", e.target.result);
+      img.parent().css("display", "block");
     }
 
     reader.readAsDataURL(input.files[0]);
@@ -174,12 +175,27 @@ $('#editor').on('submit', function(event) {
 
 $('#editor .cancel.button').click(function() {
   init_tagger();
+});
+
+
+// $('#feeder form').on('submit', function(event) {
+//   event.preventDefault();
+//   let formData = new FormData(this);
+//   feed_save(formData);
+// });
+
+function submit_feed_save(event) {
+  event.preventDefault();
+  console.log(this);
+}
+
+
+$('#feeder .cancel.button').click(function() {
+  $('#feeder-control').prop('checked', false);
 })
 
 
-
 function tag_save(formData) {
-  // var target = document.getElementById('canvas').parentElement;
   var spinner = new Spinner().spin(document.body);
 
   $.ajax({
@@ -234,4 +250,28 @@ function show_feeder() {
   } else {
     $('#feeder-control').prop('checked', true);
   }
+}
+
+
+function feed_save(formData) {
+  var spinner = new Spinner().spin(document.body);
+
+  $.ajax({
+    url: '/channel/post/save/',
+    type: 'POST',
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function(data) {
+      console.log(data);
+      $('#feeds').html(data);
+    },
+    error: function(xhr, errmsg, err) {
+      console.log(xhr.status + ': ' + xhr.responseText);
+    },
+    complete: function() {
+      spinner.stop();
+    }
+  });
 }

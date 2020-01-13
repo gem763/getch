@@ -1,15 +1,17 @@
 from django.db import models
 from django.conf import settings
-from django.urls import reverse_lazy
-from custom_user.models import AbstractEmailUser
-from IPython.core.debugger import set_trace
+# from django.urls import reverse_lazy
+from django.shortcuts import resolve_url
 
 from django.db.models import Q
 from django.core.files.base import ContentFile
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from model_utils.managers import InheritanceManager
 
+from model_utils.managers import InheritanceManager
+from custom_user.models import AbstractEmailUser
+
+from IPython.core.debugger import set_trace
 from datetime import datetime
 import requests
 import urllib
@@ -67,13 +69,17 @@ class Channel(BigIdAbstract):
     def on_posts(self):
         return self.channel_set.exclude(post__isnull=True)#.select_subclasses()
 
-    @property
-    def channel_pk(self):
-        return super().pk
+    # @property
+    # def channel_pk(self):
+    #     return super().pk
 
     @property
     def typeof(self):
         return self.cast().__class__.__name__.lower()
+
+    def get_absolute_url(self):
+        # print('*******************', super().pk, self.pk)
+        return resolve_url('channel', pk=self.pk)
 
 
 class Brand(Channel):

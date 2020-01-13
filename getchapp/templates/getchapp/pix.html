@@ -413,9 +413,10 @@
             <tbody>
               <tr>
                 {% for item in items %}
-                {% with "https://storage.googleapis.com/getch-storage/"|add:item.avatar__src as item_avatar %}
-                <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item_avatar}}")'><img src='{{item_avatar}}' /></td>
-                {% endwith %}
+                <!-- {# {% with "https://storage.googleapis.com/getch-storage/"|add:item.avatar__src as item_avatar %} #} -->
+                <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item.avatar.src.url}}")'><img src='{{item.avatar.src.url}}' /></td>
+                <!-- <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item_avatar}}")'><img src='{{item_avatar}}' /></td> -->
+                <!-- {# {% endwith %} #} -->
                 {% endfor %}
               </tr>
             </tbody>
@@ -430,13 +431,13 @@
             <input type='hidden' value='' name='y'>
             <input type='hidden' value='' name='brand_id'>
             <input type='hidden' value='' name='item_id'>
-            <input type='hidden' value='{{ch.pk}}' name='ch_id'>
+            <input type='hidden' value='{{ch.pk}}' name='on_id'>
 
             <table class='ui unstackable very compact basic table'>
               <tbody>
                 <tr>
                   <td id='profiletag'>
-                    {% include "getchapp/avatar.html" %}
+                    <img src="{{ user.avatar.src.url }}"/>
                   </td>
 
                   <td id='rating'>
@@ -459,7 +460,7 @@
             <div id='tagimage' class="field" style='margin:0;'>
               <input type="file" name="image" accept="image/*" style="display:none;" id="imageuploader" onchange="load_img(this)">
               <div style="margin-top:0;display:none;">
-                <img src="#" alt="image loaded" style="width:100%;height:auto;display:block;" />
+                <img alt="image loaded" style="width:100%;height:auto;display:block;" />
               </div>
             </div>
 

@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="ko">
+
+{% load static %}
 <head>
   <title>GET.CH</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   {% block css %}
-  {% load static %}
   <!-- <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,800" rel="stylesheet"> -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500&display=swap&subset=korean">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -40,7 +41,6 @@
     {% endblock mastheader %}
   </div>
 
-  <!-- <div id="mastbody" style="margin-top:-5px;"> -->
   <div id="mastbody" style="margin-top:70px;">
     {% block mastbody %}{% endblock mastbody %}
   </div>
@@ -48,14 +48,14 @@
 
   {% block js %}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="/static/jquery-ui/jquery-ui.min.js"></script>
-  <script src="/static/jquery-ui/jquery.ui.touch-punch.min.js"></script>
+  <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'jquery-ui/jquery.ui.touch-punch.min.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
-  <script src="/static/semantic/semantic.min.js"></script>
-  <script src="/static/spin/spin.js"></script>
+  <script src="{% static 'semantic/semantic.min.js' %}"></script>
+  <script src="{% static 'spin/spin.js' %}"></script>
+  <script src="{% static 'getch/tagger.js' %}"></script>
   <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
   <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.js"></script>
-  <!-- <script src="/static/getch/test2.js" type="module"></script> -->
 
 
   <script>
@@ -69,8 +69,6 @@
       }
     });
 
-
-    // $('#topheader .item, #topbanner .item').popup({position: 'bottom center'});
 
     $('.my.signin.item').click(function() {
       $('.signin-checkbox').prop('checked', true);

@@ -6,15 +6,11 @@ from getchapp.models import Channel, User, Brand, Item, Post, Tag, Pix, Avatar
 from .forms import TagForm, PostForm
 from datetime import datetime
 
-
-brands_all = Brand.objects.all()
-items_all = Item.objects.all()
-brands_search = list(brands_all.values('pk', 'name', 'avatar__src', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name'))
-items_search = list(items_all.values('pk', 'name', 'avatar__src', 'keywords').order_by('name'))
+brands_search = list(Brand.objects.all().values('pk', 'name', 'avatar__src', 'category', 'fullname_kr', 'fullname_en', 'keywords').order_by('name'))
+items_search = Item.objects.order_by('name')
 
 
 def intro(request):
-    # posts = Post.objects.order_by('-created_at')
     channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')
     return render(request, 'getchapp/intro.html', {'channels':channels})
 #
@@ -47,7 +43,7 @@ def _create_tag(request):
     tag.name = request.user.name + '__' + str(datetime.now())
     tag.keywords = ''
     tag.master = request.user
-    tag.on_id = request.POST['ch_id']
+    tag.on_id = request.POST['on_id']
     tag.text = request.POST['text']
     tag.x = request.POST['x']
     tag.y = request.POST['y']
@@ -60,11 +56,43 @@ def _create_tag(request):
     tag.save()
     return tag
 
+def _create_post(request):
+    post = Post()
+    post.name = request.user.name + '__' + str(datetime.now())
+    post.keywords = ''
+    post.master = request.user
+    post.on_id = request.POST['on_id']
+    post.text = request.POST['text']
+
+    if 'image' in request.FILES:
+        post.pix = _create_pix(request)
+
+    post.save()
+    return post
+
 
 def tag_save(request):
     if request.method=='POST':
         tag = _create_tag(request)
-        return render(request, 'getchapp/post-tags.html', {'post':tag.on})
+        return render(request, 'getchapp/tags.html', {'ch':tag.on})
+
+
+def feed_save(request):
+    if request.method=='POST':
+        print('******************')
+        post = _create_post(request)
+        print(post)
+        return render(request, 'getchapp/feeds.html', {'ch':post.on})
+
+def feeds(request, pk):
+    ch = Channel.objects.get(pk=pk)
+    return render(request, 'getchapp/feeds.html', {'ch':ch})
+
+
+def channel(request, pk):
+    ch = Channel.objects.get(pk=pk)
+    ctx = {'ch':ch, 'chtype':ch.typeof, 'brands':brands_search, 'items':items_search}
+    return render(request, 'getchapp/channel.html', ctx)
 
 
 # def save_tag(request, pk):
@@ -96,32 +124,3 @@ def tag_save(request):
 #
 #     else:
 #         return resp_fail
-
-
-# def tagfeeds(request, pk):
-#     if request.method=='GET':
-#         # tags = Tag.objects.filter(pk=pk)
-#         # tags = Channel.objects.filter(tag__isnull=False, tag__pk=pk)
-#         # tag = serializers.serialize('python', tags, use_natural_foreign_keys=True)[0]
-#         # feeds = serializers.serialize('python', tags[0].on_posts(), use_natural_foreign_keys=True)
-#
-#         tags = Tag.objects.filter(pk=pk)
-#         tag = tags.values('pk', 'master', 'master__avatar__src', 'master__email', 'text', 'created_at', 'pix__src', 'with_brand__avatar__src', 'with_item__avatar__src')[0]
-#         feeds = serializers.serialize('python', tags[0].channel_set.all(), use_natural_foreign_keys=True)
-#         return JsonResponse({'success':True, 'tag':tag, 'feeds':feeds}, safe=False)
-
-
-def feeds(request, pk):
-    ch = Channel.objects.get(pk=pk)
-    return render(request, 'getchapp/feeds.html', {'ch':ch})
-
-
-def channel(request, pk):
-    ch = Channel.objects.get(pk=pk)
-    ctx = {'ch':ch, 'brands':brands_search, 'items':items_search}
-    return render(request, 'getchapp/channel.html', ctx)
-
-
-# def user(request, pk):
-#     _user = get_object_or_404(User, pk=pk)
-#     return render(request, 'getchapp/user.html', {'user':_user})
