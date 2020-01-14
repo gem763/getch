@@ -1,0 +1,85 @@
+<style>
+  #channelheader {
+    background: black;
+    border: none;
+    padding: 0;
+  }
+
+  #channelheader > table {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
+
+  #channelheader > table td:first-child {
+    background: none;
+    padding: 0;
+    width: 40px;
+  }
+
+  #channelheader > table td:first-child img {
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+  }
+
+  #channelheader > table td:last-child {
+    padding: 0;
+    color: white;
+    font-size: 12px;
+    position: relative;
+    background: none;
+  }
+
+  #channelheader > table td:last-child p {
+    margin: 5px;
+  }
+
+  #channelheader .text > span {
+    background: white;
+    color: black;
+  }
+
+  #channelheader .created-at {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+</style>
+
+
+{% load static %}
+<div id='channelheader' class="ui vertical center aligned segment">
+  <table class='ui unstackable very compact basic table'>
+    <tbody>
+      <tr class='top aligned'>
+        <td>
+          <a href="{{ ch.master.get_absolute_url }}">
+            <img src="{{ ch.master.avatar.src.url }}"/>
+          </a>
+        </td>
+
+        <td>
+          <p>{{ ch.master.email }}</p>
+          <p class='text'>
+            <span>
+              {{ ch.text }}
+            </span>
+          </p>
+          <p class='created-at'>
+            {{ ch.created_at|date:"Y-m-d"}}
+          </p>
+
+          {% if without_pix %}
+          {% else %}
+          <a href='{{ ch.get_absolute_url }}'>
+            <img src="{{ ch.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

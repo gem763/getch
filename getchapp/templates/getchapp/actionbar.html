@@ -1,0 +1,43 @@
+<style>
+  #actionbar {
+    background: none;
+    border: none;
+    padding: 0px;
+  }
+
+  #actionbar .item {
+    background: none;
+    margin: 0;
+  }
+
+  #actionbar .item > img {
+    width: 25px;
+    height: 25px;
+  }
+</style>
+
+
+<div id='actionbar'>
+  {% load static %}
+  <div class="ui vertical center aligned segment">
+    <div class="ui text container">
+      <div class="ui icon secondary menu">
+        <a class="item" href="#">
+          <img src="{% static 'materials/icons8-heart-100.png' %}">
+        </a>
+        <div id='comment' class="item" href="#" onclick='show_feeder()'>
+          <img src="{% static 'materials/icons8-topic-100.png' %}" style="width:20px;height:20px;">
+        </div>
+        <a class="item" href="#">
+          <img src="{% static 'materials/icons8-upload-100.png' %}">
+        </a>
+
+        <div class="right menu">
+          <a class="item" href="#">
+            <img src="{% static 'materials/icons8-bookmark-100.png' %}">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,13 +1,147 @@
-{% for tagch in ch.on_tags %}
-<div class='tag' style='left:{{tagch.tag.x}}%;top:{{tagch.tag.y}}%;'>
-  <table class='tag-body ui unstackable table' onclick='load_feeds({{tagch.pk}})'>
-    <tbody>
-      <tr>
-        <td><img src="{{tagch.tag.with_brand.avatar.src.url}}"/></td>
-        <td><img src="{{tagch.tag.with_item.avatar.src.url}}"/></td>
-      </tr>
-    </tbody>
-  </table>
-  <div class='tag-xy'></div>
+<style>
+  #tags .tag {
+    position: absolute;
+  }
+
+  #tags .tag-xy {
+    box-sizing: content-box;
+    position:absolute;
+    width:4px;
+    height:4px;
+    background:white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 0px 7px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%);
+    transition: all 0.1s ease;
+    z-index: 10;
+  }
+
+  #tags .tag-body {
+    position: absolute;
+    background: white;
+    border-radius: 0;
+    border-style: hidden;
+    border-collapse: collapse;
+    border: 1px solid black;
+    margin: 0;
+    transform: translate(-42px, -60px) scale(0);
+    visibility: collapse;
+    transition: all 0.1s ease;
+    z-index: 10;
+  }
+
+  #tags .tag-body:hover {
+    box-shadow: 0px 0px 0px 5px rgba(22,187,204,0.5);
+    z-index: 11;
+  }
+
+  #tags .tag-body:hover ~ .tag-xy {
+    box-shadow: 0px 0px 0px 5px rgba(22,187,204,0.5);
+    z-index: 11;
+  }
+
+  #tags td {
+    border: 1px solid black;
+    padding: 0;
+    height: var(--tagger-imgsize);
+    width: var(--tagger-imgsize) !important;
+    transition: all 0.1s ease;
+  }
+
+  #tags td img {
+    object-fit: contain;
+    background: none;
+    display: block;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all 0.1s ease;
+  }
+
+  #tags td:first-child img {
+    width: var(--tagger-imgsize);
+    height: var(--tagger-imgsize);
+  }
+
+  #tags td:last-child img {
+    width: var(--tagger-imgsize); /* 총 width는 td 에서 박아줄라고 했는데, 그게 안되네? */
+    /* width: 25px;  */
+    height: 25px;
+  }
+
+  #tags-control:checked ~ #tags .tag-body {
+    visibility: visible;
+    transform: translate(-42px, -60px) scale(1);
+  }
+
+  #tags-control:checked ~ #tagon {
+    visibility: visible;
+    transform: scale(1);
+  }
+
+  #tagon-control:checked ~ #tagon {
+    background-image: var(--rainbow);
+    animation:slidebg 2s linear infinite;
+  }
+
+  #tagon {
+    position: absolute;
+    color: white;
+    top: 10px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    border-radius: 50px;
+    background: rgba(22,187,204,1);
+    box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
+    cursor: move;
+    visibility: collapse;
+    /* transition: all 0.1s ease; */
+    transform: scale(0);
+    z-index: 50;
+  }
+
+  #tagon:hover {
+    background-image: var(--rainbow);
+    animation:slidebg 2s linear infinite;
+  }
+
+  #tagon img {
+    vertical-align: middle;
+    width: 36px;
+    height: 36px;
+    background: none;
+  }
+
+  @keyframes slidebg {
+    to {
+      background-position:50px;
+    }
+  }
+</style>
+
+
+{% load static %}
+<input id="tags-control" type="checkbox">
+<div id='tags'>
+  {% for tagch in ch.on_tags %}
+  <div class='tag' style='left:{{tagch.tag.x}}%;top:{{tagch.tag.y}}%;'>
+    <table class='tag-body ui unstackable table' onclick='load_feeds({{tagch.pk}})'>
+      <tbody>
+        <tr>
+          <td><img src="{{tagch.tag.with_brand.avatar.src.url}}"/></td>
+          <td><img src="{{tagch.tag.with_item.avatar.src.url}}"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class='tag-xy'></div>
+  </div>
+  {% endfor %}
 </div>
-{% endfor %}
+
+<input id="tagon-control" type="checkbox">
+<div id='tagon' class='ui sticky'>
+  <img src="{% static 'materials/icons8-natural-user-interface-2-100.png' %}"/>
+</div>

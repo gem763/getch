@@ -1,0 +1,334 @@
+<style>
+  #publisher {
+    z-index: 100;
+    position: absolute;
+    background: none;
+    left: 5%;
+    right: 5%;
+    transform: scale(0);
+    visibility: collapse;
+    transition: all 0.1s ease;
+  }
+
+
+  #publisher td {
+    padding: 0;
+    height: var(--tagger-imgsize);
+    transition: all 0.1s ease;
+    position: relative;
+  }
+
+  #publisher td.iconbutton {
+    width: var(--tagger-imgsize);
+  }
+
+  #publisher td#profiletag {
+    width: var(--tagger-imgsize);
+    border-right: 1px solid black;
+  }
+
+  #publisher td img {
+    object-fit: contain;
+    background: none;
+    display: block;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--tagger-imgsize);
+    height: var(--tagger-imgsize);
+    transition: all 0.1s ease;
+  }
+
+  #publisher td.iconbutton img {
+    width: 25px;
+    height: 25px;
+  }
+
+  #publisher td#brandtag img {
+    width: 0;
+  }
+
+  #publisher td#itemtag img {
+    width: 0;
+    height: 25px;
+  }
+
+  #publisher td#rating img {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    opacity: 0.3;
+  }
+
+
+  #tagbox {
+    background: white;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: 1px solid black;
+  }
+
+  #tagbox .prompt {
+    font-size: 15px;
+    height: 100%;
+    width: 100%;
+    border: none;
+    background: none;
+    border-radius: 0;
+  }
+
+  #tagbox .select-item-placeholder {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    background: none;
+    visibility: hidden;
+    color: gray;
+  }
+
+  #itemselector,
+  #editor {
+    z-index: -1;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: 1px solid black;
+    transition: all 0.1s ease;
+    visibility: hidden;
+  }
+
+  #editor > table {
+    border: none;
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid black;
+    border-radius: 0;
+  }
+
+  #editor #tagtext {
+    padding: 10px;
+  }
+
+  #editor #tagtext textarea {
+    resize: none;
+    background: none;
+    width: 100%;
+    height: 40px;
+    overflow-y: hidden;
+    border: none;
+    line-height: 1.3em;
+    margin: 0;
+    display: block;
+  }
+
+  #editor #footbuttons {
+    background: none;
+    padding: 5px;
+  }
+
+  #editor #footbuttons .button {
+    width: 45%;
+    border-radius: 0;
+    margin: 5px;
+  }
+
+  #publisher-control:checked ~ #publisher {
+    visibility: visible;
+    transform: scale(1);
+  }
+
+
+  #brandtag-control:checked ~ #publisher #brandtag {
+    width: var(--tagger-imgsize);
+    border-right: 1px solid black;
+  }
+
+  #brandtag-control:checked ~ #publisher #brandtag img {
+    width: var(--tagger-imgsize);
+  }
+
+  #brandtag-control:checked ~ #publisher #itemselector {
+    visibility: visible;
+    top: var(--tagger-imgsize);
+  }
+
+  #brandtag-control:checked ~ #publisher input.prompt {
+    visibility: hidden;
+  }
+
+  #brandtag-control:checked ~ #publisher .select-item-placeholder {
+    visibility: visible;
+  }
+
+
+  #itemtag-control:checked ~ #publisher #itemtag {
+    width: var(--tagger-imgsize);
+    border-right: 1px solid black;
+  }
+
+  #itemtag-control:checked ~ #publisher #itemtag img {
+    width: 25px;
+  }
+
+  #itemtag-control:checked ~ #publisher #itemselector {
+    visibility: hidden;
+    top: 0;
+  }
+
+  #itemtag-control:checked ~ #publisher #plus {
+    display: none;
+  }
+
+  #itemtag-control:checked ~ #publisher .select-item-placeholder {
+    visibility: hidden;
+  }
+
+  #itemtag-control:checked ~ #publisher #editor {
+    visibility: visible !important;
+    top: 40px !important;
+  }
+
+  .results {
+    margin-top: 0 !important;
+    border-radius: 0 !important;
+    border-top: 0px solid transparent !important;
+    border-left: 1px solid black !important;
+    border-right: 1px solid black !important;
+    border-bottom: 1px solid black !important;
+    box-shadow: none !important;
+  }
+
+  .result {
+    padding: 10px !important;
+    border-radius: 0 !important;
+    background: none !important;
+    border-bottom: 1px solid black !important;
+    height: 80px !important;
+  }
+
+  .result > .image {
+    height: 60px !important;
+    width: 60px !important;
+    border-radius: 0 !important;
+  }
+
+  .result > .image > img {
+    object-fit: contain !important;
+    height: 60px !important;
+    width: 60px !important;
+  }
+</style>
+
+
+{% load static %}
+<input id="publisher-control" type="checkbox">
+<input id="brandtag-control" type="checkbox">
+<input id="itemtag-control" type="checkbox">
+
+<div id='publisher'>
+  <div class="ui fluid search">
+    <div class="ui fluid transparent input">
+
+      <table id='tagbox' class='main ui unstackable very compact basic table'>
+        <tbody>
+          <tr>
+            <td id='brandtag'>
+              <img/>
+            </td>
+
+            <td id='itemtag'>
+              <img/>
+            </td>
+
+            <td id='plus' class='iconbutton'>
+              <img src="{% static 'materials/icons8-plus-100.png' %}" />
+            </td>
+
+            <td id='finder'>
+              <input class="prompt" type="text" placeholder="BRAND" oninput="">
+              <div class='select-item-placeholder'>ITEM</div>
+            </td>
+
+            <td id='undo' class='iconbutton'>
+              <img src="{% static 'materials/icons8-left-96.png' %}" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <table id='itemselector' class='tagger--bar ui eight column unstackable very compact basic table'>
+        <tbody>
+          <tr>
+            {% for item in items %}
+            <!-- {# {% with "https://storage.googleapis.com/getch-storage/"|add:item.avatar__src as item_avatar %} #} -->
+            <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item.avatar.src.url}}")'><img src='{{item.avatar.src.url}}' /></td>
+            <!-- <td class='iconbutton' onclick='set_item({{item.pk}}, "{{item_avatar}}")'><img src='{{item_avatar}}' /></td> -->
+            <!-- {# {% endwith %} #} -->
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+
+
+
+      <form id='editor' class="ui form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type='hidden' value='' name='x'>
+        <input type='hidden' value='' name='y'>
+        <input type='hidden' value='' name='brand_id'>
+        <input type='hidden' value='' name='item_id'>
+        <input type='hidden' value='{{ch.pk}}' name='on_id'>
+
+        <table class='ui unstackable very compact basic table'>
+          <tbody>
+            <tr>
+              <td id='profiletag'>
+                <img src="{{ user.avatar.src.url }}"/>
+              </td>
+
+              <td id='rating'>
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+              </td>
+
+              <td class='iconbutton'>
+                <label for='imageuploader'>
+                  <img src="{% static 'materials/icons8-unsplash-96.png' %}">
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div id='tagimage' class="field" style='margin:0;'>
+          <input type="file" name="image" accept="image/*" style="display:none;" id="imageuploader" onchange="load_img(this)">
+          <div style="margin-top:0;display:none;">
+            <img alt="image loaded" style="width:100%;height:auto;display:block;" />
+          </div>
+        </div>
+
+        <div id='tagtext' class="field">
+          <textarea name="text" cols="40" rows="10" maxlength="500" placeholder="COMMENT HERE"></textarea>
+        </div>
+
+        <div id='footbuttons'>
+          <div class="cancel ui basic black mini button">CANCEL</div>
+          <button class="save ui black mini button" type='submit'>SAVE</button>
+        </div>
+      </form>
+
+    </div>
+
+    <div class="results"></div>
+  </div>
+</div>

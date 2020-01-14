@@ -23,12 +23,12 @@ $('#canvas').on({
       $('#cursor').css({ left: pos.x + '%', top: pos.y + '%' });
       $('#cursor-control').prop('checked', true);
 
-      $('#tagger').css({ top: 'calc(' + pos.y + '% - 60px)' });
-      $('#tagger .prompt').val('');
-      $('#tagger-control').prop('checked', true);
+      $('#publisher').css({ top: 'calc(' + pos.y + '% - 60px)' });
+      $('#publisher .prompt').val('');
+      $('#publisher-control').prop('checked', true);
 
       // time delay 없이 포커스를 주면 안된다. prompt가 뜨는 시간을 고려해야되는 것 같다
-      setTimeout(function() { $('#tagger .prompt').focus(); }, 100);
+      setTimeout(function() { $('#publisher .prompt').focus(); }, 100);
     }
   },
 });
@@ -36,7 +36,7 @@ $('#canvas').on({
 
 function init_tagger() {
   $('#cursor-control').prop('checked', false);
-  $('#tagger-control').prop('checked', false);
+  $('#publisher-control').prop('checked', false);
   $('#brandtag-control').prop('checked', false);
   $('#itemtag-control').prop('checked', false);
 }
@@ -84,7 +84,7 @@ $('#undo').click(function() {
     $('#brandtag-control').prop('checked', false);
 
   } else {
-    $('#tagger-control').prop('checked', false);
+    $('#publisher-control').prop('checked', false);
   };
 });
 
@@ -178,18 +178,6 @@ $('#editor .cancel.button').click(function() {
 });
 
 
-// $('#feeder form').on('submit', function(event) {
-//   event.preventDefault();
-//   let formData = new FormData(this);
-//   feed_save(formData);
-// });
-
-function submit_feed_save(event) {
-  event.preventDefault();
-  console.log(this);
-}
-
-
 $('#feeder .cancel.button').click(function() {
   $('#feeder-control').prop('checked', false);
 })
@@ -253,8 +241,9 @@ function show_feeder() {
 }
 
 
-function feed_save(formData) {
+function post_save(save_button) {
   var spinner = new Spinner().spin(document.body);
+  let formData = new FormData($(save_button).closest('form')[0]);
 
   $.ajax({
     url: '/channel/post/save/',
@@ -265,7 +254,7 @@ function feed_save(formData) {
     processData: false,
     success: function(data) {
       console.log(data);
-      $('#feeds').html(data);
+      $('#posts').html(data);
     },
     error: function(xhr, errmsg, err) {
       console.log(xhr.status + ': ' + xhr.responseText);

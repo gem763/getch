@@ -1,0 +1,83 @@
+<style>
+  .post {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .post > table {
+    width: 90vw !important;
+    margin-top: 5vw !important;
+    border-radius: 0 !important;
+    border: 1px solid black !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .post > table td:first-child {
+    background: none !important;
+    padding: 0 !important;
+    width: 40px !important;
+  }
+
+  .post > table td:first-child img {
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+
+  .post > table td:last-child {
+    padding: 0 !important;
+    font-size: 12px !important;
+    position: relative !important;
+    background: none !important;
+  }
+
+  .post > table td:last-child p {
+    margin: 5px;
+  }
+
+  .post .created-at {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+</style>
+
+
+<div id='posts'>
+  {% for post in ch.on_posts %}
+  <div class="post ui vertical center aligned segment">
+    <table class='ui unstackable very compact basic table'>
+      <tbody>
+        <tr class='top aligned'>
+          <td>
+            <a href="{{ post.master.get_absolute_url }}">
+              <img src="{{ post.master.avatar.src.url }}"/>
+            </a>
+          </td>
+
+          <td>
+            <p>{{ post.master.email }}</p>
+            <p class='text'>
+              <span>
+                {{ post.text }}
+              </span>
+            </p>
+            <p class='created-at'>
+              {{ post.created_at|date:"Y-m-d"}}
+            </p>
+
+            <a href='{{ post.get_absolute_url }}'>
+              <img src="{{ post.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+</div>

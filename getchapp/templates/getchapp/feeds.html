@@ -1,70 +1,4 @@
 <style>
-  #feedopening {
-    background: black;
-    border: none;
-    padding: 0;
-  }
-
-  #feedopening > table {
-    width: 100%;
-    margin: 0;
-    border-radius: 0;
-    border: none;
-  }
-
-  #feedopening > table td:first-child {
-    background: none;
-    padding: 0;
-    width: 40px;
-  }
-
-  #feedopening > table td:first-child img {
-    object-fit: cover;
-    width: 40px;
-    height: 40px;
-    border: 1px solid black;
-  }
-
-  #feedopening > table td:last-child {
-    padding: 0;
-    color: white;
-    font-size: 12px;
-    position: relative;
-    background: none;
-  }
-
-  #feedopening > table td:last-child p {
-    margin: 5px;
-  }
-
-  #feedopening #feedopening-text > span {
-    background: white;
-    color: black;
-  }
-
-  #feedopening #feedopening-created-at {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-
-  #actionbar {
-    background: none;
-    border: none;
-    padding: 0px;
-  }
-
-  #actionbar .item {
-    background: none;
-    margin: 0;
-  }
-
-  #actionbar .item > img {
-    width: 25px;
-    height: 25px;
-  }
-
-
   #feeder {
     z-index: -1;
     background: none;
@@ -162,121 +96,14 @@
   #feeder-control:checked ~ #feeder {
     height: auto;
     opacity: 1;
-    /* display: block; */
-  }
-
-
-  .feed {
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    margin-bottom: 20px !important;
-  }
-
-  .feed > table {
-    width: 90vw !important;
-    margin-top: 5vw !important;
-    border-radius: 0 !important;
-    border: 1px solid black !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  .feed > table td:first-child {
-    background: none !important;
-    padding: 0 !important;
-    width: 40px !important;
-  }
-
-  .feed > table td:first-child img {
-    object-fit: cover;
-    width: 40px;
-    height: 40px;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
-  }
-
-  .feed > table td:last-child {
-    padding: 0 !important;
-    font-size: 12px !important;
-    position: relative !important;
-    background: none !important;
-  }
-
-  .feed > table td:last-child p {
-    margin: 5px;
-  }
-
-  .feed #post-created-at {
-    position: absolute;
-    top: 0;
-    right: 0;
   }
 </style>
 
 
 {% load static %}
-<div id='feedopening' class="ui vertical center aligned segment">
-  <table class='ui unstackable very compact basic table'>
-    <tbody>
-      <tr class='top aligned'>
-        <td>
-          <a href="{{ ch.master.get_absolute_url }}">
-            <img src="{{ ch.master.avatar.src.url }}"/>
-          </a>
-        </td>
-
-        <td>
-          <p>{{ ch.master.email }}</p>
-          <p id='feedopening-text'>
-            <span>
-              {{ ch.text }}
-            </span>
-          </p>
-          <p id='feedopening-created-at'>
-            {{ ch.created_at|date:"Y-m-d"}}
-          </p>
-
-          {% if without_opening_pix %}
-          {% else %}
-          <a href='{{ ch.get_absolute_url }}'>
-            <img src="{{ ch.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
-          </a>
-          {% endif %}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
-<div id='actionbar' class="ui vertical center aligned segment">
-  <div class="ui text container">
-    <div class="ui icon secondary menu">
-      <a class="item" href="#">
-        <img src="{% static 'materials/icons8-heart-100.png' %}">
-      </a>
-      <div id='comment' class="item" href="#" onclick='show_feeder()'>
-        <img src="{% static 'materials/icons8-topic-100.png' %}" style="width:20px;height:20px;">
-      </div>
-      <a class="item" href="#">
-        <img src="{% static 'materials/icons8-upload-100.png' %}">
-      </a>
-
-      <div class="right menu">
-        <a class="item" href="#">
-          <img src="{% static 'materials/icons8-bookmark-100.png' %}">
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 <input id="feeder-control" type="checkbox">
 <div id='feeder'>
-  <form class="ui form" method="post" enctype="multipart/form-data" onsubmit='submit_feed_save(event)'>
-    {% csrf_token %}
+  <form class="ui form" method="post" enctype="multipart/form-data">
 
     <input type='hidden' value='{{ch.pk}}' name='on_id'>
 
@@ -317,40 +144,7 @@
 
     <div id='comment-footbuttons'>
       <div class="cancel ui basic black mini button">CANCEL</div>
-      <button class="save ui black mini button" type='submit'>SAVE</button>
+      <div class="save ui black mini button" onclick='post_save(this)'>SAVE</div>
     </div>
   </form>
 </div>
-
-
-{% for feed in ch.on_posts %}
-<div class="feed ui vertical center aligned segment">
-  <table class='ui unstackable very compact basic table'>
-    <tbody>
-      <tr class='top aligned'>
-        <td>
-          <a href="{{ feed.master.get_absolute_url }}">
-            <img src="{{ feed.master.avatar.src.url }}"/>
-          </a>
-        </td>
-
-        <td>
-          <p>{{ feed.master.email }}</p>
-          <p id='post-text'>
-            <span>
-              {{ feed.text }}
-            </span>
-          </p>
-          <p id='post-created-at'>
-            {{ feed.created_at|date:"Y-m-d"}}
-          </p>
-
-          <a href='{{ feed.get_absolute_url }}'>
-            <img src="{{ feed.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
-          </a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-{% endfor %}

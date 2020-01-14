@@ -77,12 +77,10 @@ def tag_save(request):
         return render(request, 'getchapp/tags.html', {'ch':tag.on})
 
 
-def feed_save(request):
+def post_save(request):
     if request.method=='POST':
-        print('******************')
         post = _create_post(request)
-        print(post)
-        return render(request, 'getchapp/feeds.html', {'ch':post.on})
+        return render(request, 'getchapp/posts.html', {'ch':post.on})
 
 def feeds(request, pk):
     ch = Channel.objects.get(pk=pk)
