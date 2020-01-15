@@ -74,7 +74,7 @@ def _create_post(request):
 def tag_save(request):
     if request.method=='POST':
         tag = _create_tag(request)
-        return render(request, 'getchapp/tags.html', {'ch':tag.on})
+        return render(request, 'getchapp/tags.html', {'ch':tag.on, 'saved':tag.pk})
 
 
 def post_save(request):
@@ -82,9 +82,9 @@ def post_save(request):
         post = _create_post(request)
         return render(request, 'getchapp/posts.html', {'ch':post.on})
 
-def feeds(request, pk):
+def tagfeeds(request, pk):
     ch = Channel.objects.get(pk=pk)
-    return render(request, 'getchapp/feeds.html', {'ch':ch})
+    return render(request, 'getchapp/tagfeeds.html', {'ch':ch})
 
 
 def channel(request, pk):

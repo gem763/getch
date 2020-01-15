@@ -8,109 +8,83 @@ var pos = {
 
 $('#canvas').on({
   'click': function(e) {
-    set_position(e);
-    publisher('hide');
-    brandtag('hide');
-    itemtag('hide')
-
     if (pos.state=='tag-hidden') {
-      tagon('show');
-      tags('show');
+      $('#tags-control').prop('checked', true);
       pos.state = 'tag-watchable';
 
     } else if (pos.state=='tag-watchable') {
-      tagon('hide');
-      tags('hide');
+      $('#tags-control').prop('checked', false);
       pos.state = 'tag-hidden';
+
+    } else if (pos.state=='taggable') {
+      set_position(e);
+      init_tagger();
+
+      $('#cursor').css({ left: pos.x + '%', top: pos.y + '%' });
+      $('#cursor-control').prop('checked', true);
+
+      $('#publisher').css({ top: 'calc(' + pos.y + '% - 60px)' });
+      $('#publisher .prompt').val('');
+      $('#publisher-control').prop('checked', true);
+
+      // time delay 없이 포커스를 주면 안된다. prompt가 뜨는 시간을 고려해야되는 것 같다
+      setTimeout(function() { $('#publisher .prompt').focus(); }, 100);
     }
   },
 });
 
 
-function set_position(e) {
-  let canvas = $('#canvas');
-  let canvas_position = canvas.offset();
-  let canvas_left = canvas_position.left;
-  let canvas_top = canvas_position.top;
-  let canvas_width = canvas.width();
-  let canvas_height = canvas.height();
+function init_tagger() {
+  $('#cursor-control').prop('checked', false);
+  $('#publisher-control').prop('checked', false);
+  $('#brandtag-control').prop('checked', false);
+  $('#itemtag-control').prop('checked', false);
+}
 
-  let page_x = e.pageX;
-  let page_y = e.pageY;
+function init_tagon() {
+  $('#tagon-control').prop('checked', false);
+  $('#tags-control').prop('checked', false);
+}
+
+
+function set_position(e) {
+  var canvas_position = $(e.target).offset();
+  var canvas_left = canvas_position.left;
+  var canvas_top = canvas_position.top;
+  var canvas_width = $(e.target).width();
+  var canvas_height = $(e.target).height();
+
+  var page_x = e.pageX;
+  var page_y = e.pageY;
 
   pos.x = (page_x - canvas_left) / canvas_width * 100;
   pos.y = (page_y - canvas_top) / canvas_height * 100;
 }
 
 
-function publisher(mode) {
-  if (mode=='hide') {
-    $('#publisher-show').prop('checked', false);
-  } else if (mode=='show') {
-    $('#publisher .prompt').val('');
-    $('#publisher-show').prop('checked', true);
-  }
-}
-
-function brandtag(mode) {
-  if (mode=='hide') {
-    $('#brandtag-show').prop('checked', false);
-  } else if (mode=='show') {
-    $('#brandtag-show').prop('checked', true);
-  }
-}
-
-function itemtag(mode) {
-  if (mode=='hide') {
-    $('#itemtag-show').prop('checked', false);
-  } else if (mode=='show') {
-    $('#itemtag-show').prop('checked', true);
-  }
-}
-
-function tags(mode) {
-  if (mode=='hide') {
-    $('#tags-show').prop('checked', false);
-  } else if (mode=='show') {
-    $('#tags-show').prop('checked', true);
-  }
-}
-
-function tagon(mode) {
-  if (mode=='hide') {
-    $('#tagon-show').prop('checked', false);
-    $('#tagon-running').prop('checked', false);
-  } else if (mode=='show') {
-    $('#tagon').css({ left: 'calc(' + pos.x + '% - 25px)', top: 'calc(' + pos.y + '% - 25px)' });
-    $('#tagon-show').prop('checked', true);
-    $('#tagon-running').prop('checked', false);
-  } else if (mode='running') {
-    $('#tagon-show').prop('checked', true);
-    $('#tagon-running').prop('checked', true);
-  }
-}
-
 function set_brand(brand_id, image) {
   pos.brand_id = brand_id;
   $('#brandtag img').attr('src', image);
-  brandtag('show');
+  $('#brandtag-control').prop('checked', true);
 }
+
 
 function set_item(item_id, image) {
   pos.item_id = item_id;
   $('#itemtag img').attr('src', image);
-  itemtag('show');
+  $('#itemtag-control').prop('checked', true);
 }
 
 
 $('#undo').click(function() {
-  if ($('#itemtag-show').prop('checked')) {
-    itemtag('hide');
-  } else if ($('#brandtag-show').prop('checked')) {
-    brandtag('hide');
+  if ($('#itemtag-control').prop('checked')) {
+    $('#itemtag-control').prop('checked', false);
+
+  } else if ($('#brandtag-control').prop('checked')) {
+    $('#brandtag-control').prop('checked', false);
+
   } else {
-    publisher('hide');
-    tagon('hide');
+    $('#publisher-control').prop('checked', false);
   };
 });
 
@@ -170,13 +144,16 @@ $('#tagon')
         $(this).trigger('click');
       }
     },
-    'click': function(e) {
-      set_position(e);
-      tagon('running');
-      publisher('show');
+    'click': function() {
+      if (pos.state=='taggable') {
+        init_tagger();
+        init_tagon();
+        pos.state = 'tag-hidden';
 
-      // time delay 없이 포커스를 주면 안된다. prompt가 뜨는 시간을 고려해야되는 것 같다
-      setTimeout(function() { $('#publisher .prompt').focus(); }, 100);
+      } else {
+        $('#tagon-control').prop('checked', true);
+        pos.state = 'taggable';
+      }
     },
     'touchstart': function() {
       $(this).trigger('dragstart');
@@ -185,9 +162,7 @@ $('#tagon')
 
 
 $('#editor .cancel.button').click(function() {
-  publisher('hide');
-  brandtag('hide');
-  itemtag('hide');
+  init_tagger();
 });
 
 
@@ -210,13 +185,8 @@ function tag_save(save_button) {
     contentType: false,
     processData: false,
     success: function(data) {
-      // console.log(data)
-      publisher('hide');
-      brandtag('hide');
-      itemtag('hide');
-      tagon('hide');
       $('#tags').html(data);
-      $('#tags .selected.tag .tag-body').trigger('click');
+      init_tagger();
     },
     error: function(xhr, errmsg, err) {
       console.log(xhr.status + ': ' + xhr.responseText);

@@ -1,5 +1,5 @@
 <style>
-  #cursor {
+  /* #cursor {
     box-sizing: content-box;
     position: absolute;
     background: white;
@@ -18,7 +18,7 @@
   #cursor-control:checked ~ #cursor {
     visibility: visible;
     transform: translate(-50%, -50%) scale(1);
-  }
+  } */
 </style>
 
 
@@ -27,10 +27,11 @@
   <div style="background:none;position:relative;">
     <img id="canvas" src="{{ch.pix.src.url}}" style="width:100%;height:auto;display:block;" />
 
-    <input id='cursor-control' type="checkbox">
-    <div id='cursor'></div>
+    <!-- <input id='cursor-control' type="checkbox">
+    <div id='cursor'></div> -->
 
-    {% include 'getchapp/publisher.html' with ch=ch %}
     {% include 'getchapp/tags.html' with ch=ch %}
+    {% include 'getchapp/tagon.html' %}
+
   </div>
 </div>

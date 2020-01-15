@@ -1,0 +1,56 @@
+<style>
+  #tagon-show:checked ~ #tagon {
+    visibility: visible;
+    transform: scale(1);
+  }
+
+  #tagon-running:checked ~ #tagon {
+    background-image: var(--rainbow);
+    animation:slidebg 2s linear infinite;
+  }
+
+  #tagon {
+    position: absolute;
+    color: white;
+    top: 10px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    border-radius: 50px;
+    background: rgba(22,187,204,1);
+    box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
+    cursor: move;
+    visibility: collapse;
+    transform: scale(0);
+    z-index: 40;
+  }
+
+
+  #tagon:hover {
+    background-image: var(--rainbow);
+    animation:slidebg 2s linear infinite;
+  }
+
+  #tagon img {
+    vertical-align: middle;
+    width: 35px;
+    height: 35px;
+    background: none;
+  }
+
+  @keyframes slidebg {
+    to {
+      background-position:50px;
+    }
+  }
+</style>
+
+
+{% load static %}
+<input id="tagon-show" type="checkbox">
+<input id="tagon-running" type="checkbox">
+<div id='tagon'>
+  <img src="{% static 'materials/icons8-plus-white-100.png' %}"/>
+</div>

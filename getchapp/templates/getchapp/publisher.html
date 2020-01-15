@@ -1,11 +1,12 @@
 <style>
   #publisher {
-    z-index: 100;
-    position: absolute;
+    z-index: 50;
+    position: fixed;
     background: none;
-    left: 5%;
-    right: 5%;
-    transform: scale(0);
+    left: 20px;
+    right: 20px;
+    top: -100px;
+    /* transform: scale(0); */
     visibility: collapse;
     transition: all 0.1s ease;
   }
@@ -89,7 +90,6 @@
 
   #itemselector,
   #editor {
-    z-index: -1;
     background: white;
     position: absolute;
     top: 0;
@@ -99,7 +99,17 @@
     border-radius: 0;
     border: 1px solid black;
     transition: all 0.1s ease;
+    z-index: -1;
     visibility: hidden;
+
+    /* {% if posting-mode %}
+    z-index: 100;
+
+    {% else %}
+    z-index: -1;
+    visibility: hidden;
+
+    {% endif %} */
   }
 
   #editor > table {
@@ -137,58 +147,59 @@
     margin: 5px;
   }
 
-  #publisher-control:checked ~ #publisher {
+  #publisher-show:checked ~ #publisher {
     visibility: visible;
-    transform: scale(1);
+    top: 90px;
+    /* transform: scale(1); */
   }
 
 
-  #brandtag-control:checked ~ #publisher #brandtag {
+  #brandtag-show:checked ~ #publisher #brandtag {
     width: var(--tagger-imgsize);
     border-right: 1px solid black;
   }
 
-  #brandtag-control:checked ~ #publisher #brandtag img {
+  #brandtag-show:checked ~ #publisher #brandtag img {
     width: var(--tagger-imgsize);
   }
 
-  #brandtag-control:checked ~ #publisher #itemselector {
+  #brandtag-show:checked ~ #publisher #itemselector {
     visibility: visible;
     top: var(--tagger-imgsize);
   }
 
-  #brandtag-control:checked ~ #publisher input.prompt {
+  #brandtag-show:checked ~ #publisher input.prompt {
     visibility: hidden;
   }
 
-  #brandtag-control:checked ~ #publisher .select-item-placeholder {
+  #brandtag-show:checked ~ #publisher .select-item-placeholder {
     visibility: visible;
   }
 
 
-  #itemtag-control:checked ~ #publisher #itemtag {
+  #itemtag-show:checked ~ #publisher #itemtag {
     width: var(--tagger-imgsize);
     border-right: 1px solid black;
   }
 
-  #itemtag-control:checked ~ #publisher #itemtag img {
+  #itemtag-show:checked ~ #publisher #itemtag img {
     width: 25px;
   }
 
-  #itemtag-control:checked ~ #publisher #itemselector {
+  #itemtag-show:checked ~ #publisher #itemselector {
     visibility: hidden;
     top: 0;
   }
 
-  #itemtag-control:checked ~ #publisher #plus {
+  #itemtag-show:checked ~ #publisher #plus {
     display: none;
   }
 
-  #itemtag-control:checked ~ #publisher .select-item-placeholder {
+  #itemtag-show:checked ~ #publisher .select-item-placeholder {
     visibility: hidden;
   }
 
-  #itemtag-control:checked ~ #publisher #editor {
+  #itemtag-show:checked ~ #publisher #editor {
     visibility: visible !important;
     top: 40px !important;
   }
@@ -226,9 +237,9 @@
 
 
 {% load static %}
-<input id="publisher-control" type="checkbox">
-<input id="brandtag-control" type="checkbox">
-<input id="itemtag-control" type="checkbox">
+<input id="publisher-show" type="checkbox">
+<input id="brandtag-show" type="checkbox">
+<input id="itemtag-show" type="checkbox">
 
 <div id='publisher'>
   <div class="ui fluid search">
@@ -278,8 +289,6 @@
 
 
       <form id='editor' class="ui form" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
         <input type='hidden' value='' name='x'>
         <input type='hidden' value='' name='y'>
         <input type='hidden' value='' name='brand_id'>
@@ -323,7 +332,7 @@
 
         <div id='footbuttons'>
           <div class="cancel ui basic black mini button">CANCEL</div>
-          <button class="save ui black mini button" type='submit'>SAVE</button>
+          <div class="save ui black mini button" onclick='tag_save(this)'>SAVE</div>
         </div>
       </form>
 

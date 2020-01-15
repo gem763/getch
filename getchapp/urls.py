@@ -16,5 +16,5 @@ urlpatterns = [
     path('channel/tag/save/', v.tag_save, name='tag_save'),
     path('channel/post/save/', v.post_save, name='post_save'),
     # path('channel/tag/<int:pk>/', v.tag, name='tag'),
-    path('channel/<int:pk>/feeds/', v.feeds, name='feeds'),
+    path('channel/<int:pk>/tagfeeds/', v.tagfeeds, name='tagfeeds'),
 ]

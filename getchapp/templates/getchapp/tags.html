@@ -69,66 +69,20 @@
     height: 25px;
   }
 
-  #tags-control:checked ~ #tags .tag-body {
+  #tags-show:checked ~ #tags .tag-body {
     visibility: visible;
     transform: translate(-42px, -60px) scale(1);
-  }
-
-  #tags-control:checked ~ #tagon {
-    visibility: visible;
-    transform: scale(1);
-  }
-
-  #tagon-control:checked ~ #tagon {
-    background-image: var(--rainbow);
-    animation:slidebg 2s linear infinite;
-  }
-
-  #tagon {
-    position: absolute;
-    color: white;
-    top: 10px;
-    left: 10px;
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    line-height: 50px;
-    border-radius: 50px;
-    background: rgba(22,187,204,1);
-    box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
-    cursor: move;
-    visibility: collapse;
-    /* transition: all 0.1s ease; */
-    transform: scale(0);
-    z-index: 50;
-  }
-
-  #tagon:hover {
-    background-image: var(--rainbow);
-    animation:slidebg 2s linear infinite;
-  }
-
-  #tagon img {
-    vertical-align: middle;
-    width: 36px;
-    height: 36px;
-    background: none;
-  }
-
-  @keyframes slidebg {
-    to {
-      background-position:50px;
-    }
   }
 </style>
 
 
 {% load static %}
-<input id="tags-control" type="checkbox">
+<input id="tags-show" type="checkbox">
 <div id='tags'>
   {% for tagch in ch.on_tags %}
-  <div class='tag' style='left:{{tagch.tag.x}}%;top:{{tagch.tag.y}}%;'>
-    <table class='tag-body ui unstackable table' onclick='load_feeds({{tagch.pk}})'>
+  <div class='{% if tagch.pk == saved %}selected {% endif %}tag' style='left:{{tagch.tag.x}}%;top:{{tagch.tag.y}}%;'>
+  <!-- <div class='tag' style='left:{{tagch.tag.x}}%;top:{{tagch.tag.y}}%;'>   -->
+    <table class='tag-body ui unstackable table' onclick='load_tagfeeds({{tagch.pk}})'>
       <tbody>
         <tr>
           <td><img src="{{tagch.tag.with_brand.avatar.src.url}}"/></td>
@@ -139,9 +93,4 @@
     <div class='tag-xy'></div>
   </div>
   {% endfor %}
-</div>
-
-<input id="tagon-control" type="checkbox">
-<div id='tagon' class='ui sticky'>
-  <img src="{% static 'materials/icons8-natural-user-interface-2-100.png' %}"/>
 </div>

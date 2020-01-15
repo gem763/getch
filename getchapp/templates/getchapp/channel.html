@@ -38,10 +38,7 @@
 
 {% else %}
   {% include 'getchapp/pix.html' with ch=ch %}
-  {% include 'getchapp/channelheader.html' with ch=ch without_pix=True %}
-  {% include 'getchapp/actionbar.html' %}
-  {% include 'getchapp/feeds.html' with ch=ch %}
-  {% include 'getchapp/posts.html' with ch=ch %}
+  {% include 'getchapp/tagfeeds.html' with ch=ch without_pix=True %}
 
 {% endif %}
 {% endblock mastbody %}
