@@ -63,9 +63,9 @@
       <a class="search item" href="#">
         <img src="/static/materials/icons8-search-100.png">
       </a>
-      <a class="posting item" href="{% url 'posting' %}">
+      <div class="posting item" onclick='poster("show")'>
         <img src="/static/materials/icons8-plus-100.png">
-      </a>
+      </div>
 
       {% if user.is_authenticated %}
       <a class="my signed item" href="{% url 'my' %}">

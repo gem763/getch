@@ -5,9 +5,10 @@
     background: none;
     left: 20px;
     right: 20px;
-    top: -100px;
+    top: 0px;
     /* transform: scale(0); */
     visibility: collapse;
+    opacity: 0;
     transition: all 0.1s ease;
   }
 
@@ -23,7 +24,7 @@
     width: var(--tagger-imgsize);
   }
 
-  #publisher td#profiletag {
+  #publisher td.profiletag {
     width: var(--tagger-imgsize);
     border-right: 1px solid black;
   }
@@ -45,16 +46,16 @@
     height: 25px;
   }
 
-  #publisher td#brandtag img {
+  #publisher td.brandtag img {
     width: 0;
   }
 
-  #publisher td#itemtag img {
+  #publisher td.itemtag img {
     width: 0;
     height: 25px;
   }
 
-  #publisher td#rating img {
+  #publisher td.rating img {
     width: 25px;
     height: 25px;
     display: inline-block;
@@ -62,7 +63,7 @@
   }
 
 
-  #tagbox {
+  #publisher .tagbox {
     background: white;
     width: 100%;
     margin: 0;
@@ -70,7 +71,7 @@
     border: 1px solid black;
   }
 
-  #tagbox .prompt {
+  #publisher .tagbox .prompt {
     font-size: 15px;
     height: 100%;
     width: 100%;
@@ -79,7 +80,7 @@
     border-radius: 0;
   }
 
-  #tagbox .select-item-placeholder {
+  #publisher .tagbox .select-item-placeholder {
     position: absolute;
     top: 10px;
     left: 0;
@@ -88,8 +89,8 @@
     color: gray;
   }
 
-  #itemselector,
-  #editor {
+  #publisher .itemselector,
+  #publisher .editor {
     background: white;
     position: absolute;
     top: 0;
@@ -101,18 +102,9 @@
     transition: all 0.1s ease;
     z-index: -1;
     visibility: hidden;
-
-    /* {% if posting-mode %}
-    z-index: 100;
-
-    {% else %}
-    z-index: -1;
-    visibility: hidden;
-
-    {% endif %} */
   }
 
-  #editor > table {
+  #publisher .editor > table {
     border: none;
     width: 100%;
     margin: 0;
@@ -120,11 +112,11 @@
     border-radius: 0;
   }
 
-  #editor #tagtext {
+  #publisher .editor .tagtext {
     padding: 10px;
   }
 
-  #editor #tagtext textarea {
+  #publisher .editor .tagtext textarea {
     resize: none;
     background: none;
     width: 100%;
@@ -136,12 +128,12 @@
     display: block;
   }
 
-  #editor #footbuttons {
+  #publisher .editor .footbuttons {
     background: none;
     padding: 5px;
   }
 
-  #editor #footbuttons .button {
+  #publisher .editor .footbuttons .button {
     width: 45%;
     border-radius: 0;
     margin: 5px;
@@ -149,21 +141,22 @@
 
   #publisher-show:checked ~ #publisher {
     visibility: visible;
+    opacity: 1;
     top: 90px;
     /* transform: scale(1); */
   }
 
 
-  #brandtag-show:checked ~ #publisher #brandtag {
+  #brandtag-show:checked ~ #publisher .brandtag {
     width: var(--tagger-imgsize);
     border-right: 1px solid black;
   }
 
-  #brandtag-show:checked ~ #publisher #brandtag img {
+  #brandtag-show:checked ~ #publisher .brandtag img {
     width: var(--tagger-imgsize);
   }
 
-  #brandtag-show:checked ~ #publisher #itemselector {
+  #brandtag-show:checked ~ #publisher .itemselector {
     visibility: visible;
     top: var(--tagger-imgsize);
   }
@@ -177,21 +170,21 @@
   }
 
 
-  #itemtag-show:checked ~ #publisher #itemtag {
+  #itemtag-show:checked ~ #publisher .itemtag {
     width: var(--tagger-imgsize);
     border-right: 1px solid black;
   }
 
-  #itemtag-show:checked ~ #publisher #itemtag img {
+  #itemtag-show:checked ~ #publisher .itemtag img {
     width: 25px;
   }
 
-  #itemtag-show:checked ~ #publisher #itemselector {
+  #itemtag-show:checked ~ #publisher .itemselector {
     visibility: hidden;
     top: 0;
   }
 
-  #itemtag-show:checked ~ #publisher #plus {
+  #itemtag-show:checked ~ #publisher .plus {
     display: none;
   }
 
@@ -199,7 +192,7 @@
     visibility: hidden;
   }
 
-  #itemtag-show:checked ~ #publisher #editor {
+  #itemtag-show:checked ~ #publisher .editor {
     visibility: visible !important;
     top: 40px !important;
   }
@@ -241,31 +234,31 @@
 <input id="brandtag-show" type="checkbox">
 <input id="itemtag-show" type="checkbox">
 
-<div id='publisher'>
+<div id='publisher' on_id='{{ch.pk}}'>
   <div class="ui fluid search">
     <div class="ui fluid transparent input">
 
-      <table id='tagbox' class='main ui unstackable very compact basic table'>
+      <table class='tagbox ui unstackable very compact basic table'>
         <tbody>
           <tr>
-            <td id='brandtag'>
+            <td class='brandtag'>
               <img/>
             </td>
 
-            <td id='itemtag'>
+            <td class='itemtag'>
               <img/>
             </td>
 
-            <td id='plus' class='iconbutton'>
+            <td class='plus iconbutton'>
               <img src="{% static 'materials/icons8-plus-100.png' %}" />
             </td>
 
-            <td id='finder'>
+            <td>
               <input class="prompt" type="text" placeholder="BRAND" oninput="">
               <div class='select-item-placeholder'>ITEM</div>
             </td>
 
-            <td id='undo' class='iconbutton'>
+            <td class='undo iconbutton'>
               <img src="{% static 'materials/icons8-left-96.png' %}" />
             </td>
           </tr>
@@ -273,7 +266,7 @@
       </table>
 
 
-      <table id='itemselector' class='tagger--bar ui eight column unstackable very compact basic table'>
+      <table class='itemselector ui eight column unstackable very compact basic table'>
         <tbody>
           <tr>
             {% for item in items %}
@@ -288,21 +281,21 @@
 
 
 
-      <form id='editor' class="ui form" method="post" enctype="multipart/form-data">
-        <input type='hidden' value='' name='x'>
+      <form class="editor ui form" method="post" enctype="multipart/form-data">
+        <!-- <input type='hidden' value='' name='x'>
         <input type='hidden' value='' name='y'>
         <input type='hidden' value='' name='brand_id'>
         <input type='hidden' value='' name='item_id'>
-        <input type='hidden' value='{{ch.pk}}' name='on_id'>
+        <input type='hidden' value='{{ch.pk}}' name='on_id'> -->
 
         <table class='ui unstackable very compact basic table'>
           <tbody>
             <tr>
-              <td id='profiletag'>
+              <td class='profiletag'>
                 <img src="{{ user.avatar.src.url }}"/>
               </td>
 
-              <td id='rating'>
+              <td class='rating'>
                 <img src="{% static 'materials/icons8-star-96.png' %}">
                 <img src="{% static 'materials/icons8-star-96.png' %}">
                 <img src="{% static 'materials/icons8-star-96.png' %}">
@@ -311,7 +304,7 @@
               </td>
 
               <td class='iconbutton'>
-                <label for='imageuploader'>
+                <label for='imageuploader0'>
                   <img src="{% static 'materials/icons8-unsplash-96.png' %}">
                 </label>
               </td>
@@ -319,18 +312,18 @@
           </tbody>
         </table>
 
-        <div id='tagimage' class="field" style='margin:0;'>
-          <input type="file" name="image" accept="image/*" style="display:none;" id="imageuploader" onchange="load_img(this)">
+        <div class="tagimage field" style='margin:0;'>
+          <input type="file" name="image" accept="image/*" style="display:none;" id="imageuploader0" onchange="load_img(this)">
           <div style="margin-top:0;display:none;">
             <img alt="image loaded" style="width:100%;height:auto;display:block;" />
           </div>
         </div>
 
-        <div id='tagtext' class="field">
+        <div class="tagtext field">
           <textarea name="text" cols="40" rows="10" maxlength="500" placeholder="COMMENT HERE"></textarea>
         </div>
 
-        <div id='footbuttons'>
+        <div class='footbuttons'>
           <div class="cancel ui basic black mini button">CANCEL</div>
           <div class="save ui black mini button" onclick='tag_save(this)'>SAVE</div>
         </div>

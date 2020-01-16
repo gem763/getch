@@ -1,0 +1,166 @@
+<style>
+  #poster {
+    z-index: 50;
+    position: fixed;
+    background: none;
+    left: 20px;
+    right: 20px;
+    top: 0px;
+    /* transform: scale(0); */
+    visibility: collapse;
+    opacity: 0;
+    transition: all 0.1s ease;
+  }
+
+
+  #poster td {
+    padding: 0;
+    height: var(--tagger-imgsize);
+    transition: all 0.1s ease;
+    position: relative;
+  }
+
+  #poster td.iconbutton {
+    width: var(--tagger-imgsize);
+  }
+
+  #poster td.profiletag {
+    width: var(--tagger-imgsize);
+    border-right: 1px solid black;
+  }
+
+  #poster td img {
+    object-fit: contain;
+    background: none;
+    display: block;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--tagger-imgsize);
+    height: var(--tagger-imgsize);
+    transition: all 0.1s ease;
+  }
+
+  #poster td.iconbutton img {
+    width: 25px;
+    height: 25px;
+  }
+
+  #poster td.rating img {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    opacity: 0.3;
+  }
+
+
+  #poster .editor {
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: 1px solid black;
+    transition: all 0.1s ease;
+    z-index: -1;
+    /* visibility: hidden; */
+  }
+
+  #poster .editor > table {
+    border: none;
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid black;
+    border-radius: 0;
+  }
+
+  #poster .editor .tagtext {
+    padding: 10px;
+  }
+
+  #poster .editor .tagtext textarea {
+    resize: none;
+    background: none;
+    width: 100%;
+    height: 40px;
+    overflow-y: hidden;
+    border: none;
+    line-height: 1.3em;
+    margin: 0;
+    display: block;
+  }
+
+  #poster .editor .footbuttons {
+    background: none;
+    padding: 5px;
+  }
+
+  #poster .editor .footbuttons .button {
+    width: 45%;
+    border-radius: 0;
+    margin: 5px;
+  }
+
+  #poster-show:checked ~ #poster {
+    visibility: visible;
+    opacity: 1;
+    top: 90px;
+    /* transform: scale(1); */
+  }
+</style>
+
+
+{% load static %}
+<input id="poster-show" type="checkbox">
+
+<div id='poster' on_id=''>
+  <div class="ui fluid search">
+    <div class="ui fluid transparent input">
+
+      <form class="editor ui form" method="post" enctype="multipart/form-data">
+        <table class='ui unstackable very compact basic table'>
+          <tbody>
+            <tr>
+              <td class='profiletag'>
+                <img src="{{ user.avatar.src.url }}"/>
+              </td>
+
+              <td class='rating'>
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+                <img src="{% static 'materials/icons8-star-96.png' %}">
+              </td>
+
+              <td class='iconbutton'>
+                <label for='imageuploader1'>
+                  <img src="{% static 'materials/icons8-unsplash-96.png' %}">
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tagimage field" style='margin:0;'>
+          <input type="file" name="image" accept="image/*" style="display:none;" id="imageuploader1" onchange="load_img(this)">
+          <div style="margin-top:0;display:none;">
+            <img alt="image loaded" style="width:100%;height:auto;display:block;" />
+          </div>
+        </div>
+
+        <div class="tagtext field">
+          <textarea name="text" cols="40" rows="10" maxlength="500" placeholder="COMMENT HERE"></textarea>
+        </div>
+
+        <div class='footbuttons'>
+          <div class="cancel ui basic black mini button" onclick='poster("hide")'>CANCEL</div>
+          <div class="save ui black mini button" onclick='post_save(this)'>SAVE</div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

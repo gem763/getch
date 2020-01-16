@@ -61,8 +61,10 @@ def _create_post(request):
     post.name = request.user.name + '__' + str(datetime.now())
     post.keywords = ''
     post.master = request.user
-    post.on_id = request.POST['on_id']
     post.text = request.POST['text']
+
+    if request.POST['on_id'] != 'none':
+        post.on_id = request.POST['on_id']
 
     if 'image' in request.FILES:
         post.pix = _create_pix(request)
@@ -80,7 +82,12 @@ def tag_save(request):
 def post_save(request):
     if request.method=='POST':
         post = _create_post(request)
-        return render(request, 'getchapp/posts.html', {'ch':post.on})
+
+        if request.POST['on_id'] != 'none':
+            return render(request, 'getchapp/posts.html', {'ch':post.on})
+        else:
+            return JsonResponse({'ch_id':post.pk}, safe=False)
+            
 
 def tagfeeds(request, pk):
     ch = Channel.objects.get(pk=pk)
