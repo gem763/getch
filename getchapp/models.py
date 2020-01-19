@@ -16,8 +16,28 @@ from datetime import datetime
 import requests
 import urllib
 
+# https://github.com/shanbay/django-vote
+from vote.models import VoteModel
+from vote.managers import VotableManager
+
 
 GETCH_MASTER = 'get.ch@getch.com'
+
+
+class LikeModel(models.Model):
+    nlikes = models.IntegerField(default=0, db_index=True)
+    votes = VotableManager()
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        self.vote_score = self.calculate_vote_score
+        super(VoteModel, self).save(*args, **kwargs)
+
+    @property
+    def calculate_vote_score(self):
+        return self.num_vote_up - self.num_vote_down
 
 
 class BigIdAbstract(models.Model):
@@ -31,7 +51,7 @@ def _default_master():
     return User.objects.get(email=GETCH_MASTER)
 
 
-class Channel(BigIdAbstract):
+class Channel(BigIdAbstract, VoteModel):
     name = models.CharField(max_length=120, blank=False, null=False)
     keywords = models.TextField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

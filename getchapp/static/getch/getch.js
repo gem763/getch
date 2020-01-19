@@ -337,3 +337,8 @@ function channel_delete() {
   var url = '/channel/' + ch_id + '/delete/'
   window.location.assign(url);
 }
+
+
+function like(ch_id) {
+  console.log(ch_id);
+}

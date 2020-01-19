@@ -22,13 +22,21 @@
   <div class="ui vertical center aligned segment">
     <div class="ui text container">
       <div class="ui icon secondary menu">
+
+        {% if ch.on %}
+        <a class="item" href='{% url "channel" ch.on.pk %}'>
+          <img src="{% static 'materials/icons8-left-100.png' %}">
+        </a>
+
+        {% else %}
         <div class="item" onclick='window.history.back()'>
           <img src="{% static 'materials/icons8-left-100.png' %}">
         </div>
+        {% endif %}
 
-        <a class="item" href="#">
+        <div class="item" onclick='like({{ch.pk}})'>
           <img src="{% static 'materials/icons8-heart-100.png' %}">
-        </a>
+        </div>
 
         <div id='comment' class="item" href="#" onclick='poster("show", {{ch.pk}})'>
           <img src="{% static 'materials/icons8-topic-100.png' %}" style="width:20px;height:20px;">
