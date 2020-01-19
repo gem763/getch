@@ -22,12 +22,18 @@
   <div class="ui vertical center aligned segment">
     <div class="ui text container">
       <div class="ui icon secondary menu">
+        <div class="item" onclick='window.history.back()'>
+          <img src="{% static 'materials/icons8-left-100.png' %}">
+        </div>
+
         <a class="item" href="#">
           <img src="{% static 'materials/icons8-heart-100.png' %}">
         </a>
+
         <div id='comment' class="item" href="#" onclick='poster("show", {{ch.pk}})'>
           <img src="{% static 'materials/icons8-topic-100.png' %}" style="width:20px;height:20px;">
         </div>
+
         <a class="item" href="#">
           <img src="{% static 'materials/icons8-upload-100.png' %}">
         </a>
@@ -36,6 +42,16 @@
           <a class="item" href="#">
             <img src="{% static 'materials/icons8-bookmark-100.png' %}">
           </a>
+
+          {% if user.is_superuser %}
+          <div class="edit item" onclick=''>
+            <img src="{% static 'materials/icons8-edit-100.png' %}" style="width:21px;height:21px;">
+          </div>
+
+          <div class="delete item" onclick='confirm_delete({{ch.pk}})'>
+            <img src="{% static 'materials/icons8-waste-100.png' %}" style="width:21px;height:21px;">
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>

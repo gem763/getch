@@ -1,0 +1,72 @@
+<style>
+  #confirm {
+    z-index: 50;
+    position: fixed;
+    background: white;
+    left: 20px;
+    right: 20px;
+    top: 0px;
+    /* height: 100px; */
+    border: 1px solid black;
+    visibility: collapse;
+    opacity: 0;
+    transition: all 0.1s ease;
+  }
+
+  #confirm .image {
+    background: none;
+    padding-top: 20px;
+    padding-bottom: 5px;
+    text-align: center;
+  }
+
+  #confirm .image img {
+    width: 40px;
+    height: 40px;
+  }
+
+  #confirm .header {
+    background: none;
+    padding: 5px;
+    text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 20px;
+  }
+
+  #confirm .description {
+    padding: 5px;
+    text-align: center;
+  }
+
+  #confirm .footbuttons {
+    background: none;
+    padding: 5px;
+  }
+
+  #confirm .footbuttons .button {
+    width: 45%;
+    border-radius: 0;
+    margin: 5px;
+  }
+
+  #confirm-show:checked ~ #confirm {
+    visibility: visible;
+    opacity: 1;
+    top: 90px;
+  }
+</style>
+
+{% load static %}
+<input id="confirm-show" type="checkbox">
+
+<div id='confirm' ch_id=''>
+  <div class='image'>
+    <img src="{% static 'materials/icons8-waste-100.png' %}">
+  </div>
+  <div class='header'><strong>DELETE</strong> THIS POST?</div>
+  <div class='description'>Once deleted, it can't be recovered</div>
+  <div class='footbuttons'>
+    <div class="cancel ui basic black mini button" onclick='confirm("hide")'>CANCEL</div>
+    <div class="save ui black mini button" onclick='channel_delete()'>DELETE</div>
+  </div>
+</div>

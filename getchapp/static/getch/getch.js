@@ -45,8 +45,13 @@ function set_position(e) {
 
 function publisher(mode) {
   if (mode=='hide') {
+    $('body').css('pointer-events', 'auto');
     $('#publisher-show').prop('checked', false);
+
   } else if (mode=='show') {
+    $('body').css('pointer-events', 'none');
+    $('#canvas').css('pointer-events', 'auto');
+    $('#publisher').css('pointer-events', 'auto');
     $('#publisher .prompt').val('');
     $('#publisher-show').prop('checked', true);
   }
@@ -193,11 +198,6 @@ $('#publisher .editor .cancel.button').click(function() {
 
 function tag_save(save_button) {
   var spinner = new Spinner().spin(document.body);
-  // $('#publisher .editor input[name="x"]').attr('value', pos.x);
-  // $('#publisher .editor input[name="y"]').attr('value', pos.y);
-  // $('#publisher .editor input[name="brand_id"]').attr('value', pos.brand_id);
-  // $('#publisher .editor input[name="item_id"]').attr('value', pos.item_id);
-
   let formData = new FormData($(save_button).closest('form')[0]);
   let on_id = $('#publisher').attr('on_id');
 
@@ -249,8 +249,6 @@ function post_save(save_button) {
     processData: false,
     success: function(data) {
       if (on_id=='none') {
-        // console.log(data.ch_id);
-        // var url = $(block).attr("href");
         window.location.assign('/channel/'+data.ch_id); //.replace()로 하면 history가 저장 안된다
 
       } else {
@@ -295,9 +293,13 @@ function load_tagfeeds(ch_id) {
 
 function poster(mode, ch_id) {
   if (mode=='hide') {
+    $('body').css('pointer-events', 'auto');
     $('#poster-show').prop('checked', false);
 
   } else if (mode=='show') {
+    $('body').css('pointer-events', 'none');
+    $('#poster').css('pointer-events', 'auto');
+
     const on_id = (ch_id==undefined) ? 'none' : ch_id;
     $('#poster').attr('on_id', on_id);
     $('#poster .tagimage input').val('');
@@ -306,4 +308,32 @@ function poster(mode, ch_id) {
     $('#poster .tagtext textarea').val('');
     $('#poster-show').prop('checked', true);
   }
+}
+
+
+function confirm(mode) {
+  if (mode=='hide') {
+    $('body').css('pointer-events', 'auto');
+    $('#confirm-show').prop('checked', false);
+
+  } else if (mode=='show') {
+    $('body').css('pointer-events', 'none');
+    $('#confirm').css('pointer-events', 'auto');
+    $('#confirm-show').prop('checked', true);
+  }
+}
+
+function confirm_delete(ch_id) {
+  $('#confirm').attr('ch_id', ch_id);
+  confirm('show');
+}
+
+function channel_delete() {
+  // spinner를 틀어준다. 어짜피 다른 페이지를 로딩하므로, stop할 필요X
+  var spinner = new Spinner().spin(document.body);
+
+  let ch_id = $('#confirm').attr('ch_id');
+  // console.log(ch_id);
+  var url = '/channel/' + ch_id + '/delete/'
+  window.location.assign(url);
 }

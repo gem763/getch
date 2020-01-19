@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # from django.contrib.auth.decorators import login_required
 from getchapp.models import Channel, User, Brand, Item, Post, Tag, Pix, Avatar
@@ -87,7 +88,7 @@ def post_save(request):
             return render(request, 'getchapp/posts.html', {'ch':post.on})
         else:
             return JsonResponse({'ch_id':post.pk}, safe=False)
-            
+
 
 def tagfeeds(request, pk):
     ch = Channel.objects.get(pk=pk)
@@ -98,6 +99,12 @@ def channel(request, pk):
     ch = Channel.objects.get(pk=pk)
     ctx = {'ch':ch, 'chtype':ch.typeof, 'brands':brands_search, 'items':items_search}
     return render(request, 'getchapp/channel.html', ctx)
+
+
+def channel_delete(requst, pk):
+    ch = Channel.objects.get(pk=pk)
+    ch.delete()
+    return HttpResponseRedirect(reverse('intro'))
 
 
 # def save_tag(request, pk):

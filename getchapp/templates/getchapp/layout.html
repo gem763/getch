@@ -29,6 +29,31 @@
     *:focus {
       outline: none;
     }
+
+    :root {
+      --tagger-imgsize: 40px;
+      --rainbow: linear-gradient(
+        to right,
+        #E7484F,
+        #E7484F 16.65%,
+        #F68B1D 16.65%,
+        #F68B1D 33.3%,
+        #FCED00 33.3%,
+        #FCED00 49.95%,
+        #009E4F 49.95%,
+        #009E4F 66.6%,
+        #00AAC3 66.6%,
+        #00AAC3 83.25%,
+        #732982 83.25%,
+        #732982 100%,
+        #E7484F 100%
+      );
+    }
+
+    input[type='checkbox'] {
+      display: none;
+      visibility: hidden;
+    }
   </style>
   {% endblock css %}
 </head>
@@ -45,6 +70,7 @@
     {% block mastbody %}
     {% endblock mastbody %}
     {% include 'getchapp/poster.html' %}
+    {% include 'getchapp/confirm.html' %}
   </div>
 
 
@@ -55,7 +81,7 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
   <script src="{% static 'semantic/semantic.min.js' %}"></script>
   <script src="{% static 'spin/spin.js' %}"></script>
-  <script src="{% static 'getch/tagger.js' %}"></script>
+  <script src="{% static 'getch/getch.js' %}"></script>
   <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
   <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.js"></script>
 
