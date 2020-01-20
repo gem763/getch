@@ -1,3 +1,4 @@
+{% load static %}
 <style>
   #actionbar {
     background: none;
@@ -13,51 +14,100 @@
   #actionbar .item > img {
     width: 25px;
     height: 25px;
+    padding-left: 25px; /* Equal to width of new image */
+    display: block;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  #actionbar .back.item img {
+    background-image: url({% static 'materials/icons8-left-100.png' %});
+  }
+
+  #actionbar .like.item[state='on'] img {
+    background-image: url({% static 'materials/icons8-filled-heart-100.png' %});
+  }
+
+  #actionbar .like.item[state='off'] img {
+    background-image: url({% static 'materials/icons8-heart-100.png' %});
+  }
+
+  #actionbar .bookmark.item[state='on'] img {
+    background-image: url({% static 'materials/icons8-filled-bookmark-ribbon-100.png' %});
+  }
+
+  #actionbar .bookmark.item[state='off'] img {
+    background-image: url({% static 'materials/icons8-bookmark-100.png' %});
+  }
+
+  #actionbar .comment.item img {
+    background-image: url({% static 'materials/icons8-topic-100.png' %});
+    width: 20px;
+    height: 20px;
+    padding-left: 20px;
+  }
+
+  #actionbar .share.item img {
+    background-image: url({% static 'materials/icons8-upload-100.png' %});
+  }
+
+  #actionbar .edit.item img {
+    background-image: url({% static 'materials/icons8-edit-100.png' %});
+    width: 21px;
+    height: 21px;
+    padding-left: 21px;
+  }
+
+  #actionbar .delete.item img {
+    background-image: url({% static 'materials/icons8-waste-100.png' %});
+    width: 21px;
+    height: 21px;
+    padding-left: 21px;
   }
 </style>
 
-
-<div id='actionbar'>
-  {% load static %}
+{% load ctags %}
+<div id='actionbar' ch='{{ch.pk}}'>
   <div class="ui vertical center aligned segment">
     <div class="ui text container">
       <div class="ui icon secondary menu">
 
         {% if ch.on %}
-        <a class="item" href='{% url "channel" ch.on.pk %}'>
-          <img src="{% static 'materials/icons8-left-100.png' %}">
+        <a class="back item" href='{% url "channel" ch.on.pk %}'>
+          <img>
         </a>
-
         {% else %}
-        <div class="item" onclick='window.history.back()'>
-          <img src="{% static 'materials/icons8-left-100.png' %}">
+        <div class="back item" onclick='window.history.back()'>
+          <img>
         </div>
         {% endif %}
 
-        <div class="item" onclick='like({{ch.pk}})'>
-          <img src="{% static 'materials/icons8-heart-100.png' %}">
+        <div class="like item" state='{% if user.is_authenticated and user|like:ch %}on{% else %}off{% endif %}' onclick='flag(this)'>
+          <img>
         </div>
 
-        <div id='comment' class="item" href="#" onclick='poster("show", {{ch.pk}})'>
-          <img src="{% static 'materials/icons8-topic-100.png' %}" style="width:20px;height:20px;">
+        <div class="comment item" href="#" onclick='poster("show", {{ch.pk}})'>
+          <img>
         </div>
 
-        <a class="item" href="#">
-          <img src="{% static 'materials/icons8-upload-100.png' %}">
+        <a class="share item" href="#">
+          <img>
         </a>
 
         <div class="right menu">
-          <a class="item" href="#">
-            <img src="{% static 'materials/icons8-bookmark-100.png' %}">
-          </a>
+          <div class="bookmark item" state='{% if user.is_authenticated and user|bookmark:ch %}on{% else %}off{% endif %}' onclick='flag(this)'>
+            <img>
+          </div>
 
           {% if user.is_superuser %}
-          <div class="edit item" onclick=''>
-            <img src="{% static 'materials/icons8-edit-100.png' %}" style="width:21px;height:21px;">
+          <div class="edit item" onclick='console.log(1234)'>
+            <img>
           </div>
 
           <div class="delete item" onclick='confirm_delete({{ch.pk}})'>
-            <img src="{% static 'materials/icons8-waste-100.png' %}" style="width:21px;height:21px;">
+            <img>
           </div>
           {% endif %}
         </div>

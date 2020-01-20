@@ -17,27 +17,12 @@ import requests
 import urllib
 
 # https://github.com/shanbay/django-vote
-from vote.models import VoteModel
-from vote.managers import VotableManager
+# from vote.models import VoteModel
+# from vote.managers import VotableManager
 
 
 GETCH_MASTER = 'get.ch@getch.com'
 
-
-class LikeModel(models.Model):
-    nlikes = models.IntegerField(default=0, db_index=True)
-    votes = VotableManager()
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        self.vote_score = self.calculate_vote_score
-        super(VoteModel, self).save(*args, **kwargs)
-
-    @property
-    def calculate_vote_score(self):
-        return self.num_vote_up - self.num_vote_down
 
 
 class BigIdAbstract(models.Model):
@@ -51,15 +36,17 @@ def _default_master():
     return User.objects.get(email=GETCH_MASTER)
 
 
-class Channel(BigIdAbstract, VoteModel):
+class Channel(BigIdAbstract):
     name = models.CharField(max_length=120, blank=False, null=False)
     keywords = models.TextField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     nlikes = models.IntegerField(default=0)
+    nbookmarks = models.IntegerField(default=0)
+    nreports = models.IntegerField(default=0)
+
     master = models.ForeignKey('User', blank=True, null=True, on_delete=models.SET(_default_master), related_name='mastering')
     on = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL)
     text = models.TextField(max_length=500, blank=True, null=True)
-
     pix = models.ForeignKey('Pix', blank=True, null=True, on_delete=models.SET_NULL, related_name='+')
     avatar = models.ForeignKey('Avatar', blank=True, null=True, on_delete=models.SET_NULL, related_name='+')
 
@@ -115,6 +102,8 @@ class Item(Channel):
 
 class User(AbstractEmailUser, Channel):
     nickname = models.CharField(max_length=120, blank=False, null=False)
+    likes = models.ManyToManyField(Channel, blank=True, related_name='users_liked')
+    bookmarks = models.ManyToManyField(Channel, blank=True, related_name='users_bookmarked')
 
     def init_user(self):
         self.name = self.email

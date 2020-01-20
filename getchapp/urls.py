@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('channel/<int:pk>/', v.channel, name='channel'),
     path('channel/<int:pk>/delete/', v.channel_delete, name='channel_delete'),
+    path('channel/<int:pk>/flag/', v.channel_flag, name='channel_flag'),
     path('channel/tag/save/', v.tag_save, name='tag_save'),
     path('channel/post/save/', v.post_save, name='post_save'),
     # path('channel/tag/<int:pk>/', v.tag, name='tag'),

@@ -49,8 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'custom_user',
     'el_pagination',
-    'widget_tweaks',
-    'vote'
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [

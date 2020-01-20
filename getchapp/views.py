@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
 from django.urls import reverse
+from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 from getchapp.models import Channel, User, Brand, Item, Post, Tag, Pix, Avatar
 from .forms import TagForm, PostForm
 from datetime import datetime
@@ -105,6 +106,32 @@ def channel_delete(requst, pk):
     ch = Channel.objects.get(pk=pk)
     ch.delete()
     return HttpResponseRedirect(reverse('intro'))
+
+
+@login_required
+def channel_flag(request, pk):
+    action = request.GET.get('action', None)
+    tobe = request.GET.get('tobe', None)
+    chs = Channel.objects.filter(pk=pk)
+
+    if action=='like':
+        myflags = request.user.likes
+        nfield = 'nlikes'
+
+    elif action=='bookmark':
+        myflags = request.user.bookmarks
+        nfield = 'nbookmarks'
+
+    if tobe=='on':
+        myflags.add(chs[0])
+        chs.update(**{nfield:F(nfield)+1})
+
+    else:
+        myflags.remove(chs[0])
+        chs.update(**{nfield:F(nfield)-1})
+
+    return JsonResponse({'action':action, 'tobe':tobe}, safe=False)
+
 
 
 # def save_tag(request, pk):

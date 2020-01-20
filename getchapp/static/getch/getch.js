@@ -323,22 +323,62 @@ function confirm(mode) {
   }
 }
 
+
 function confirm_delete(ch_id) {
   $('#confirm').attr('ch_id', ch_id);
   confirm('show');
 }
+
 
 function channel_delete() {
   // spinner를 틀어준다. 어짜피 다른 페이지를 로딩하므로, stop할 필요X
   var spinner = new Spinner().spin(document.body);
 
   let ch_id = $('#confirm').attr('ch_id');
-  // console.log(ch_id);
   var url = '/channel/' + ch_id + '/delete/'
   window.location.assign(url);
 }
 
 
-function like(ch_id) {
-  console.log(ch_id);
+function flag(item) {
+  let asis = $(item).attr('state');
+  let ch = $(item).closest('#actionbar').attr('ch');
+  var data;
+
+  if ($(item).hasClass('like')) {
+    if (asis=='on') {
+      data = { action:'like', tobe:'off' }
+      $(item).attr('state', 'off');
+
+    } else {
+      data = { action:'like', tobe:'on' }
+      $(item).attr('state', 'on');
+    }
+
+  } else if ($(item).hasClass('bookmark')) {
+    if (asis=='on') {
+      data = { action:'bookmark', tobe:'off' }
+      $(item).attr('state', 'off');
+
+    } else {
+      data = { action:'bookmark', tobe:'on' }
+      $(item).attr('state', 'on');
+    }
+  }
+
+  $.ajax({
+    url: '/channel/' + ch + '/flag/',
+    type: 'GET',
+    data: data,
+    dataType:'json',
+    cache: false,
+    contentType: false,
+    success: function(resp) {
+      console.log(resp);
+    },
+    error: function(xhr, errmsg, err) {
+      console.log(xhr.status + ': ' + xhr.responseText);
+    },
+    complete: function() {}
+  });
 }
