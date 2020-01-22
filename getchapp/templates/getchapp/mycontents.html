@@ -1,0 +1,19 @@
+<style>
+</style>
+
+<div id='mycontents' class="grid">
+
+  {% for ch in channels %}
+  <div class="grid-item">
+    <div>
+      <a href="/channel/{{ch.id}}">
+        <img class="ui image" src="{{ch.pix.src.url}}"/>
+      </a>
+
+      {% include "getchapp/barcode.html" %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="grid-sizer"></div>
+</div>

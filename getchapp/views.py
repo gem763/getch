@@ -32,9 +32,21 @@ def posting(request):
 #         form = PostForm()
 #         return render(request, 'getchapp/posting.html', {'form':form})
 #
-#
+@login_required
 def my(request):
-    return render(request, 'getchapp/my.html')
+    likes = request.user.likes.all()
+    # bookmarks = request.user.bookmarks.all()
+    return render(request, 'getchapp/my.html', {'likes':likes})
+
+
+def mycontents(request, content):
+    if content=='likes':
+        channels = request.user.likes.all()
+
+    elif content=='bookmarks':
+        channels = request.user.bookmarks.all()
+
+    return render(request, 'getchapp/mycontents.html', {'channels':channels})
 
 
 def _create_pix(request):

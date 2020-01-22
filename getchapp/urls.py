@@ -7,6 +7,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('posting/', v.posting, name='posting'),
     path('my/', v.my, name='my'),
+    path('my/<str:content>/', v.mycontents, name='mycontents'),
     # path('channel/brand/<int:pk>/', v.brand, name='brand'),
     # path('channel/item/<int:pk>/', v.item, name='item'),
     # path('channel/user/<int:pk>/', v.user, name='user'),

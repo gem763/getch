@@ -6,13 +6,39 @@
     #signout:hover {
       opacity: 0.5;
     }
+
+    .grid {}
+
+    .grid:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    .grid-sizer,
+    .grid-item {
+      width: 50%;
+      float: left;
+      padding: 5px;
+      padding-bottom:0px;
+      background: none;
+    }
+
+    .grid-item img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .grid-item img:hover {
+      opacity: 0.5;
+    }
   </style>
 {% endblock css %}
 
 
 {% block mastbody %}
-<div class="ui center aligned vertical segment" style="background:none;height:500px;margin-top:120px">
-  <div class="ui container">
+<div class="ui center aligned vertical segment" style="background:none;margin-top:70px;border:none;">
+  <div class="ui container" style='padding-top:20px;'>
 
     <div class="ui centered dimmable image" id="profile_image">
       <div class="ui dimmer" style="border-radius:10px;">
@@ -22,18 +48,26 @@
           </div>
         </div>
       </div>
-      <img class="ui centered image" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="object-fit:cover;width:150px;height:150px;">
+      <img class="ui centered image" src="{{ user.avatar.src.url }}" style="object-fit:cover;width:150px;height:150px;">
     </div>
 
-
-    <h1>{{ user.socialaccount_set.all.0.extra_data.name }}</h1>
-    <h1>{{ user.socialaccount_set.all.0.uid }}</h1>
+    <h1>@{{ user.nickname }}</h1>
     <p>
       {{ user.email }} <br>
     </p>
 
-    <br>
-    <a id="signout" class="ui black button" href="{% url 'account_logout' %}" style="border-radius:0;">Sign-out</a>
+    <a id="signout" class="ui black mini button" href="{% url 'account_logout' %}" style="border-radius:0;">Sign-out</a>
+  </div>
+</div>
+
+<div class="ui center aligned vertical segment" style="background:none;">
+  <div class="ui container">
+    <div class="likes ui basic black mini button" style='border-radius:0;margin:5px;width:45%;' onclick='load_mycontents("likes")'>LIKES</div>
+    <div class="bookmarks ui basic black mini button" style='border-radius:0;margin:5px;width:45%;' onclick='load_mycontents("bookmarks")'>BOOKMARKS</div>
+  </div>
+
+  <div class="ui container">
+    {% include 'getchapp/mycontents.html' with channels=likes %}
   </div>
 </div>
 {% endblock mastbody %}
@@ -43,6 +77,22 @@
   <script>
     $('#profile_image').dimmer({
       on: 'hover'
+    });
+
+    var $grid = $('.grid').masonry({
+      itemSelector: '.grid-item',
+      percentPosition: true,
+      columnWidth: '.grid-sizer'
+    });
+
+    $grid.imagesLoaded().progress(function() {
+      $grid.masonry('layout');
+    });
+
+    $('.ui.barcode.icon').popup({
+      inline: true,
+      hoverable: true,
+      position: 'top right',
     });
   </script>
 {% endblock js %}
