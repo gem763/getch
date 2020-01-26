@@ -27,6 +27,7 @@
 
   #channelheader > table td:last-child {
     padding: 0;
+    padding-right: 10px;
     color: white;
     font-size: 12px;
     position: relative;
@@ -62,15 +63,17 @@
         </td>
 
         <td>
-          <p>@{{ ch.master.nickname }}</p>
-          <p class='text'>
+          <p class='text' style='background:none;'>
+            <span><strong>{{ ch.master.nickname }}</strong></span>
+          </p>
+          <p class='text' style='margin-top:-7px;'>
             <span>
               {{ ch.text }}
             </span>
           </p>
-          <p class='created-at'>
+          <!-- <p class='created-at'>
             {{ ch.created_at|date:"Y-m-d"}}
-          </p>
+          </p> -->
 
           {% if without_pix %}
           {% else %}
@@ -78,6 +81,10 @@
             <img src="{{ ch.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
           </a>
           {% endif %}
+
+          <div style='padding:5px;font-size:10px;opacity:0.7;text-align:right;margin-right:5px;'>
+            {{ ch.created_at|date:"M Y"|upper }}
+          </div>
         </td>
       </tr>
     </tbody>

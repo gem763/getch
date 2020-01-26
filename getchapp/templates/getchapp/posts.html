@@ -61,15 +61,15 @@
           </td>
 
           <td>
-            <p>{{ post.master.email }}</p>
-            <p class='text'>
+            <p><strong>{{ post.master.nickname }}</strong></p>
+            <p class='text' style='margin-top:-7px;'>
               <span>
                 {{ post.text }}
               </span>
             </p>
-            <p class='created-at'>
+            <!-- <p class='created-at'>
               {{ post.created_at|date:"Y-m-d"}}
-            </p>
+            </p> -->
 
             <a href='{{ post.get_absolute_url }}'>
               <img src="{{ post.pix.src.url }}" style='width:100%;height:auto;display:block;'/>
