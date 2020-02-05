@@ -12,6 +12,16 @@ brands_search = list(Brand.objects.all().values('pk', 'name', 'avatar__src', 'ca
 items_search = Item.objects.order_by('name')
 
 
+def play(request):
+    channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')
+    return render(request, 'getchapp/play.html', {'channels':channels})
+
+
+def ch(request, n):
+    channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')[:n]
+    return render(request, 'getchapp/ch.html', {'channels':channels})
+
+
 def intro(request):
     channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')
     return render(request, 'getchapp/intro.html', {'channels':channels})

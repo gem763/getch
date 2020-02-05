@@ -1,0 +1,19 @@
+<script type='text/x-template' id='chview-template'>
+  <div style='background:lightblue;width:100%;height:100%'>
+    [[what]]
+  </div>
+</script>
+
+<script>
+  Vue.component('chview', {
+    delimiters: ['[[', ']]'],
+    template: '#chview-template',
+    props: ['what'],
+    data: function() {
+      return {
+        test: 'kkk'
+      }
+    },
+    mounted: function() {}
+  });
+</script>
