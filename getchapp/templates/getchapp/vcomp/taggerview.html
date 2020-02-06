@@ -1,0 +1,84 @@
+<style>
+  .taggerview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: none;
+    z-index: 1;
+  }
+
+  .tagpointer {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    /* transform: translate(-50%, -50%); */
+    border-radius: 50px;
+    background: rgba(22,187,204,1);
+    box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
+  }
+
+  .tagpointer img {
+    vertical-align: middle;
+    width: 35px;
+    height: 35px;
+    background: none;
+  }
+
+  .tagpointer-enter-active,
+  .tagpointer-leave-active {
+    transition: all 0.1s ease;
+  }
+
+  .tagpointer-enter,
+  .tagpointer-leave-to {
+    opacity: 0;
+  }
+</style>
+
+<script type='text/x-template' id='taggerview-template'>
+  <div ref='canvas' class='taggerview' @click='set_position'>
+    <transition name='tagpointer'>
+      <div v-show='tagpointer_on' class='tagpointer' :style="{left:`${x}px`, top:`${y}px`}">
+        <img src="/static/materials/white/icons8-plus-100.png"/>
+      </div>
+    </transition>
+  </div>
+</script>
+
+<script>
+  Vue.component('taggerview', {
+    delimiters: ['[[', ']]'],
+    template: '#taggerview-template',
+    data: function() {
+      return {
+        x: 0,
+        y: 0,
+        tagpointer_on: false,
+      }
+    },
+
+    mounted: function() {
+      $('.tagpointer').draggable({
+        containment: 'parent', // 부모요소 안에 종속
+        opacity: 0.5,
+      });
+    },
+
+    methods: {
+      set_position: function(event) {
+        // let canvas = this.$refs.canvas;
+        // let w = canvas.offsetWidth;
+        // let h = canvas.offsetHeight;
+        this.x = event.pageX;// / w * 100;
+        this.y = event.pageY;// / h * 100;
+
+        this.tagpointer_on = !this.tagpointer_on;
+        this.$emit('toggle_tagging');
+      },
+    }
+  });
+</script>

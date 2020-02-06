@@ -22,5 +22,5 @@ urlpatterns = [
     path('channel/<int:pk>/tagfeeds/', v.tagfeeds, name='tagfeeds'),
 
     path('play/', v.play, name='play'),
-    path('ch/<int:n>/', v.ch, name='ch'),
+    path('channelset/', v.channelset, name='channelset'),
 ]

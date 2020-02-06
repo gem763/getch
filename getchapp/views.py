@@ -17,9 +17,10 @@ def play(request):
     return render(request, 'getchapp/play.html', {'channels':channels})
 
 
-def ch(request, n):
-    channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')[:n]
-    return render(request, 'getchapp/ch.html', {'channels':channels})
+def channelset(request):
+    howmany = request.GET.get('howmany', 10)
+    channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')[:int(howmany)]
+    return render(request, 'getchapp/channelset.html', {'channels':channels})
 
 
 def intro(request):
