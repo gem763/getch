@@ -63,6 +63,32 @@
   Vue.component('introview', {
     delimiters: ['[[', ']]'],
     template: '#introview-template',
-    props: ['active']
+    props: ['active'],
+    data: function() {
+      return {
+        spinner: new Spinner()
+      }
+    },
+
+    // created: function() {
+    //   this.spinner_start();
+    // },
+
+    // watch: {
+    //   active: function(active_now, active_prev) {
+    //     if (!active_now)
+    //       this.spinner_stop();
+    //   }
+    // },
+
+    methods: {
+      spinner_start: function() {
+        this.spinner.spin(document.body);
+      },
+
+      spinner_stop: function() {
+        this.spinner.stop();
+      },
+    }
   });
 </script>

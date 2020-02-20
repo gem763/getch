@@ -40,7 +40,8 @@
 
     <taggerview @toggle_tagging='tagging=!tagging'></taggerview>
     <panelview :active='panelview' @toggle_panel='panelview=!panelview'></panelview>
-    <actionview :tagging='tagging' @toggle_panel='panelview=!panelview'></actionview>
+    <actionview :tagging='tagging' @toggle_panel='panelview=!panelview' @toggle_mypage='mypageview=!mypageview'></actionview>
+    <mypageview :active='mypageview' @toggle_mypage='mypageview=!mypageview'></mypageview>
   </div>
 
 
@@ -53,11 +54,13 @@
   <script src="{% static 'semantic/semantic.min.js' %}"></script>
   <script src="{% static 'vue/vue.js' %}"></script>
   <script src="{% static 'swiper/swiper.js' %}"></script>
+  <script src="{% static 'spin/spin.js' %}"></script>
   {% include "getchapp/vcomp/chview.html" %}
   {% include "getchapp/vcomp/introview.html" %}
   {% include "getchapp/vcomp/actionview.html" %}
   {% include "getchapp/vcomp/taggerview.html" %}
   {% include "getchapp/vcomp/panelview.html" %}
+  {% include "getchapp/vcomp/mypageview.html" %}
 
 
   <script>
@@ -73,6 +76,7 @@
         },
         swiper: null,
         panelview: false,
+        mypageview: false,
       },
 
       created: function() {

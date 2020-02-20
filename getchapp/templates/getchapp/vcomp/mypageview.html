@@ -1,0 +1,108 @@
+<style>
+  .mypage-trans-enter-active,
+  .mypage-trans-leave-active {
+    transition: all 0.2s ease;
+  }
+
+  .mypage-trans-enter,
+  .mypage-trans-leave-to {
+    transform: translateX(100%);
+  }
+
+  #signout:hover {
+    opacity: 0.5;
+  }
+
+  .grid {}
+
+  .grid:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  .grid-sizer,
+  .grid-item {
+    width: 50%;
+    float: left;
+    padding: 5px;
+    padding-bottom:0px;
+    background: none;
+  }
+
+  .grid-item img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .grid-item img:hover {
+    opacity: 0.5;
+  }
+</style>
+
+
+<script type='text/x-template' id='mypageview-template'>
+  <transition name='mypage-trans'>
+    <div v-if='active' class='mypageview' style='height:100%;width:100%;background:white;position:fixed;bottom:0;z-index:2;display:flex;flex-direction:column;'>
+      <div class='item' style='position:absolute;top:10px;right:10px;width:25px;height:25px;' @click='$emit("toggle_mypage")'>
+        <img src="/static/materials/icons8-delete-100.png" style='width:100%;height:100%;'>
+      </div>
+
+      <img class="ui centered image" src="{{ user.avatar.src.url }}" style="object-fit:cover;width:150px;height:150px;margin-left:0;">
+
+      <div style='text-align:center;flex-grow:1;width:100%;overflow-y:auto'>
+        <h1>@{{ user.nickname }}</h1>
+        <p>
+          {{ user.email }} <br>
+        </p>
+
+        <a id="signout" class="ui black mini button" href="{% url 'account_logout' %}" style="border-radius:0;">Sign-out</a>
+
+        <div style='text-align:center'>
+          <div class="likes ui basic black mini button" style='border-radius:0;margin:5px;width:45%;' onclick='load_mycontents("likes")'>LIKES</div>
+          <div class="bookmarks ui basic black mini button" style='border-radius:0;margin:5px;width:45%;' onclick='load_mycontents("bookmarks")'>BOOKMARKS</div>
+        </div>
+
+        {% include 'getchapp/mycontents.html' with channels=likes %}
+      </div>
+    </div>
+  </transition>
+</script>
+
+
+<script>
+  Vue.component('mypageview', {
+    delimiters: ['[[', ']]'],
+    template: '#mypageview-template',
+    props: ['active'],
+    data: function() {
+      return {
+        // activated: false,
+        // masonry_grid: null
+      }
+    }
+  });
+
+
+  function load_mycontents(content) {
+    var spinner = new Spinner().spin(document.body);
+
+    $.ajax({
+      url: '/my/' + content,
+      type: 'GET',
+      data: {},
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(data) {
+        $('#mycontents').html(data);
+      },
+      error: function(xhr, errmsg, err) {
+        console.log(xhr.status + ': ' + xhr.responseText);
+      },
+      complete: function() {
+        spinner.stop();
+      }
+    });
+  }
+</script>

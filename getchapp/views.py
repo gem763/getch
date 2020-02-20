@@ -14,7 +14,8 @@ items_search = Item.objects.order_by('name')
 
 def play(request):
     channels = Channel.objects.exclude(pix__isnull=True).order_by('-created_at')
-    return render(request, 'getchapp/play.html', {'channels':channels})
+    likes = request.user.likes.all()
+    return render(request, 'getchapp/play.html', {'channels':channels, 'likes':likes})
 
 
 def channelset(request):
